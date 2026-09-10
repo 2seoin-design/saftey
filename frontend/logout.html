@@ -85,12 +85,12 @@
 <!-- 액션 버튼들 -->
 <div class="space-y-3 mb-6">
 <!-- 메인 로그아웃 확인 버튼 -->
-<button class="w-full py-3.5 px-4 rounded-xl safety-btn-gradient text-white font-bold text-sm shadow-md shadow-[#60C219]/25 flex items-center justify-center gap-1.5 active:scale-[0.99] transition-transform">
+<button class="w-full py-3.5 px-4 rounded-xl safety-btn-gradient text-white font-bold text-sm shadow-md shadow-[#60C219]/25 flex items-center justify-center gap-1.5 active:scale-[0.99] transition-transform" id="btn-logout">
 <span class="">로그아웃</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
 <!-- 취소 / 홈으로 돌아가기 버튼 -->
-<button class="w-full py-3.5 px-4 rounded-xl bg-white text-[#475569] font-semibold text-sm border border-[#CBD5E1] hover:bg-[#F8FAFC] flex items-center justify-center gap-1 active:scale-[0.99] transition-transform">
+<button class="w-full py-3.5 px-4 rounded-xl bg-white text-[#475569] font-semibold text-sm border border-[#CBD5E1] hover:bg-[#F8FAFC] flex items-center justify-center gap-1 active:scale-[0.99] transition-transform" onclick="location.href='mainhome.html'">
 <span class="material-symbols-outlined text-[18px]">close</span>
 <span class="">취소하고 계속 이용하기</span>
 </button>
@@ -129,5 +129,6 @@
 <span class="text-[11px] font-medium">마이</span>
 </button>
 </nav>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../backend/user_logout"></script>
 </body></html>
