@@ -105,23 +105,22 @@ tailwind.config = {
 <body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen">
 
 <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
-  <div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+  <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+
+    <!-- 왼쪽: 로고 이미지 + 로고 텍스트 -->
     <div class="flex items-center gap-2">
-      <img src="/img/saftey_logo_nottext.png" alt="안전디딤돌 로고" class="h-9 w-auto object-contain">
-      <button class="flex items-center gap-0.5 text-left group bg-surface-container-low px-2 py-0.5 rounded-full">
-        <span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-primary transition-colors truncate max-w-[90px]">종로구 혜화동</span>
-        <span class="material-symbols-outlined text-[14px] text-on-surface-variant group-hover:text-primary transition-colors">arrow_drop_down</span>
+      <img src="/img/safety_logo_image.png" alt="안전디딤돌 로고" class="h-12 w-auto object-contain">
+      <img src="/img/safety_logo_text.png" alt="안전디딤돌 로고 텍스트" class="h-6 w-auto object-contain">
+    </div>
+
+    <!-- 오른쪽: 로그인 안내 문구(회색 필박스) + 로그인 버튼 -->
+    <div class="flex items-center gap-2">
+      <p class="font-label-md text-label-sm text-on-surface-variant whitespace-nowrap bg-surface-container-low px-3 py-1.5 rounded-full">로그인 후 이용해주세요</p>
+      <button aria-label="로그인" class="w-8 h-8 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform shadow-sm shrink-0" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
+        <span class="material-symbols-outlined text-[20px]">login</span>
       </button>
     </div>
-    <div class="flex items-center gap-space-xs">
-      <button aria-label="알림" class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors relative text-on-surface-variant">
-        <span class="material-symbols-outlined text-[22px]">notifications</span>
-        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span>
-      </button>
-      <button aria-label="새 제보 작성" class="w-8 h-8 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform shadow-sm" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
-        <span class="material-symbols-outlined text-[20px]">add</span>
-      </button>
-    </div>
+
   </div>
 </header>
 
@@ -133,12 +132,9 @@ tailwind.config = {
       <div class="flex items-center w-full h-14 bg-surface-container-lowest rounded-full px-space-md shadow-[0_4px_20px_-2px_rgba(15,118,110,0.06)] gap-space-xs">
         <span class="material-symbols-outlined text-primary text-[24px]">search</span>
         <input aria-label="안전 보행로 및 위험 지역 검색" class="flex-1 bg-transparent text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none min-w-0" placeholder="위험 지역, 안심 보행로, 대피소 검색..." type="text">
-        <button aria-label="음성 검색" class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center text-primary active:scale-95 transition-transform">
-          <span class="material-symbols-outlined text-[20px]">mic</span>
-        </button>
-        <button aria-label="안전 필터 설정" class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center active:scale-95 transition-transform shadow-sm" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%); box-shadow: rgba(96,194,25,0.35) 0px 4px 12px;">
+        <!-- <button aria-label="안전 필터 설정" class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center active:scale-95 transition-transform shadow-sm" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%); box-shadow: rgba(96,194,25,0.35) 0px 4px 12px;">
           <span class="material-symbols-outlined text-[19px]">tune</span>
-        </button>
+        </button> -->
       </div>
     </div>
 
@@ -179,7 +175,6 @@ tailwind.config = {
     <section class="flex flex-col gap-space-xs">
       <div class="flex items-center justify-between px-1">
         <h3 class="font-headline-md text-headline-md text-on-surface font-bold">4대 생활안전 핵심 기능</h3>
-        <span class="font-label-sm text-label-sm text-primary font-bold">실시간 활성화</span>
       </div>
       <div class="grid grid-cols-2 gap-space-xs">
         <button class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
@@ -197,7 +192,6 @@ tailwind.config = {
             <div class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
               <span class="material-symbols-outlined text-[22px]">wb_twilight</span>
             </div>
-            <span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">30Lux+</span>
           </div>
           <div class="font-title-sm text-title-sm text-on-surface font-bold">조도·위험 히트맵</div>
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">가로등 밝기 기반 안심 밤길 탐색</div>
@@ -207,7 +201,6 @@ tailwind.config = {
             <div class="w-10 h-10 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
               <span class="material-symbols-outlined text-[22px]">accessible_forward</span>
             </div>
-            <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm font-bold">경사 2°↓</span>
           </div>
           <div class="font-title-sm text-title-sm text-on-surface font-bold">단차 제로 무장애길</div>
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">휠체어·유모차 최적 평지 경로</div>
