@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="ko" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>세이프티 로그아웃</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+KR:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .safety-btn-gradient {
+      background: linear-gradient(135deg, #60C219 0%, #4FA912 100%);
+    }
+    .safety-hero-bg {
+      background: linear-gradient(135deg, #60C219 0%, #4FA912 100%);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FBED] text-[#1E293B] antialiased min-h-screen flex flex-col justify-between selection:bg-[#60C219] selection:text-white max-w-md mx-auto shadow-md">
+<!-- TOP HEADER (로그인 페이지와 100% 동일한 헤더) -->
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 py-3 flex items-center justify-between shadow-sm">
+<!-- Left: 로고 & 동네 선택 -->
+<div class="flex items-center gap-2.5">
+<img alt="세이프티 로고" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmi0bp0EIgmnXeTW7GYeh_VXu2pX5bmHL9ZtFab2rM0nX1R-VlgGOMKdfJH0lOl4CQDAc58qtfpecRjLYVH7eaqvvzYhM-k5m4-v9e_T6mQPfjwlSqt4fyy9z08zggU9cYsBvi-8ypfC3S5F-FjkJ2bI5sbalfZOeA7XhjmbMn_JYFXShaHwXqmBsERVNzyYZA4X8HhSvh-vL7PQ1XVt3rDtyMYR4b6JM8bgVCpqA7l_yWXxlYuW19YUf4WcMEyF4uK2Q">
+<div class="flex items-center gap-1 bg-[#F1F5F9] px-2.5 py-1 rounded-full text-xs font-semibold text-[#334155] border border-[#E2E8F0] cursor-pointer active:scale-95 transition-transform">
+<span class="">종로구 혜화동</span>
+<span class="material-symbols-outlined text-[14px] text-[#64748B]">arrow_drop_down</span>
+</div>
+</div>
+<!-- Right: 알림 & 플러스 버튼 -->
+<div class="flex items-center gap-2">
+<button aria-label="알림" class="relative p-1.5 rounded-full text-[#475569] hover:bg-[#F1F5F9] transition-colors">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-[#EF4444] rounded-full ring-2 ring-white"></span>
+</button>
+<button aria-label="추가 액션" class="w-8 h-8 rounded-full safety-hero-bg text-white flex items-center justify-center shadow-sm shadow-[#60C219]/30 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px] font-bold">add</span>
+</button>
+</div>
+</header>
+<!-- MAIN BODY CONTENT (로그아웃 확인 & 안내 카드) -->
+<main class="flex-1 px-5 flex flex-col max-w-md mx-auto w-full pt-4 pb-6">
+<!-- 아이콘 & 로고 엠블럼 -->
+<div class="flex flex-col items-center text-center mb-4">
+
+<h1 class="text-2xl font-bold text-[#0F172A] tracking-tight mb-1.5">안전하게 로그아웃하시겠어요?</h1>
+
+</div>
+<!-- 로그아웃 대상 계정 정보 박스 -->
+<div class="bg-white rounded-2xl p-4 border border-[#E2E8F0] shadow-sm mb-5">
+<div class="flex items-center justify-between pb-3 border-b border-[#F1F5F9] mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-[#EAF8E2] border border-[#DCF3C8] flex items-center justify-center text-[#60C219] font-bold text-sm">
+            김
+          </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="text-sm font-bold text-[#0F172A]">김지혜 파수꾼</span>
+<span class="text-[10px] font-semibold text-[#60C219] bg-[#EEF9E4] px-1.5 py-0.5 rounded-full border border-[#D7F2BE]">1급 안전</span>
+</div>
+<span class="text-xs text-[#64748B]">example@safety.kr</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-[#94A3B8] block">보유 포인트</span>
+<span class="text-xs font-bold text-[#4FA912]">18,500 P</span>
+</div>
+</div>
+<!-- 안심 안전망 연동 안내 -->
+<div class="bg-[#F8FBED] rounded-xl p-3 border border-[#E7F3D3] flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[#60C219] text-[18px] shrink-0 mt-0.5">verified_user</span>
+<div class="text-[11px] text-[#475569] leading-relaxed">
+          로그아웃 시 실시간 안심 우회 알림 및 10초 간편제보 포인트 적립 서비스가 일시 중단됩니다.
+        </div>
+</div>
+</div>
+<!-- 액션 버튼들 -->
+<div class="space-y-3 mb-6">
+<!-- 메인 로그아웃 확인 버튼 -->
+<button class="w-full py-3.5 px-4 rounded-xl safety-btn-gradient text-white font-bold text-sm shadow-md shadow-[#60C219]/25 flex items-center justify-center gap-1.5 active:scale-[0.99] transition-transform">
+<span class="">로그아웃</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<!-- 취소 / 홈으로 돌아가기 버튼 -->
+<button class="w-full py-3.5 px-4 rounded-xl bg-white text-[#475569] font-semibold text-sm border border-[#CBD5E1] hover:bg-[#F8FAFC] flex items-center justify-center gap-1 active:scale-[0.99] transition-transform">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span class="">취소하고 계속 이용하기</span>
+</button>
+</div>
+<!-- 부가 옵션 -->
+<div class="flex items-center justify-center gap-4 text-xs text-[#64748B]">
+
+
+
+
+
+</div>
+</main>
+<!-- BOTTOM NAVIGATION (로그인 페이지와 100% 동일한 홈 활성화 플로팅 탭바) -->
+<nav class="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0] px-4 py-2 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.03)]">
+<!-- 홈 (활성화: 원형 세이프티 그린 플로팅 스타일) -->
+<button class="flex flex-col items-center justify-center group focus:outline-none">
+<div class="w-11 h-11 rounded-full safety-hero-bg text-white flex items-center justify-center shadow-md shadow-[#60C219]/30 -mt-3 mb-0.5 active:scale-95 transition-transform">
+<span class="material-symbols-outlined fill text-[22px]">home</span>
+</div>
+<span class="text-[11px] font-bold text-[#4FA912]">홈</span>
+</button>
+<!-- 안전지도 -->
+<button class="flex flex-col items-center justify-center py-1 text-[#64748B] hover:text-[#0F172A] transition-colors group">
+<span class="material-symbols-outlined text-[22px] mb-0.5 group-hover:scale-105 transition-transform">map</span>
+<span class="text-[11px] font-medium">안전지도</span>
+</button>
+<!-- 10초제보 -->
+<button class="flex flex-col items-center justify-center py-1 text-[#64748B] hover:text-[#0F172A] transition-colors group">
+<span class="material-symbols-outlined text-[22px] mb-0.5 group-hover:scale-105 transition-transform">photo_camera</span>
+<span class="text-[11px] font-medium">10초제보</span>
+</button>
+<!-- 마이 -->
+<button class="flex flex-col items-center justify-center py-1 text-[#64748B] hover:text-[#0F172A] transition-colors group">
+<span class="material-symbols-outlined text-[22px] mb-0.5 group-hover:scale-105 transition-transform">person</span>
+<span class="text-[11px] font-medium">마이</span>
+</button>
+</nav>
+
+</body></html>
