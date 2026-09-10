@@ -142,21 +142,17 @@ tailwind.config = {
       </div>
     </div>
 
- <!-- 실시간 안전 히어로 카드 -->
-<section class="relative w-full rounded-2xl p-space-md overflow-hidden border border-white/20" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 60%, rgb(67,147,14) 100%); box-shadow: rgba(255,255,255,0.35) 0px 1px 1px inset, rgba(70,159,15,0.35) 0px 8px 24px -6px;">
-  <div class="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
-
-  <div class="relative z-10 flex items-end gap-space-sm min-h-[120px]">
-    <!-- 안내 캐릭터 -->
-    <img src="/img/safety_charc_annae.png" alt="안전디딤돌 안내 캐릭터" class="h-28 w-auto object-contain shrink-0 self-end">
+<!-- 실시간 안전 히어로 카드 -->
+<section
+  class="relative w-full rounded-2xl p-space-lg overflow-hidden border border-white/20 flex items-center justify-center min-h-[220px]"
+  style="background: radial-gradient(circle at center, #84a567 0%, #7aad4e 100%); box-shadow: rgba(255,255,255,0.35) 0px 1px 1px inset, rgba(70,159,15,0.35) 0px 8px 24px -6px;"
+>
+  <div class="relative z-10 flex flex-col items-center gap-3 w-full">
 
     <!-- 말풍선 -->
-    <div class="relative bg-white rounded-2xl rounded-bl-none px-space-sm py-space-xs shadow-[0_6px_16px_rgba(0,0,0,0.15)] flex items-center gap-1.5 mb-2">
-      <!-- 말풍선 꼬리 (캐릭터 쪽을 향함) -->
-      <span class="absolute left-0 bottom-0 -translate-x-[6px] w-0 h-0 border-t-[10px] border-t-transparent border-r-[10px] border-r-white"></span>
-
-      <p class="font-title-sm text-title-sm text-on-surface font-bold leading-snug">
-        우리동네 위험구간을<br>제보해주세요!
+    <div class="relative bg-white rounded-2xl px-space-lg py-space-sm shadow-[0_6px_16px_rgba(0,0,0,0.15)] flex items-center justify-center gap-2 w-full max-w-[280px]">
+      <p class="font-title-sm text-title-sm text-on-surface font-bold text-center leading-snug">
+        우리동네 위험구간을 제보해주세요!
       </p>
 
       <button
@@ -168,7 +164,14 @@ tailwind.config = {
       >
         <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
       </button>
+
+      <!-- 말풍선 꼬리 (캐릭터 머리 쪽, 아래 방향) -->
+      <span class="absolute left-1/2 -translate-x-1/2 -bottom-[9px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[10px] border-t-white"></span>
     </div>
+
+    <!-- 안내 캐릭터 -->
+    <img src="/img/safety_charc_annae.png" alt="안전디딤돌 안내 캐릭터" class="h-28 w-auto object-contain">
+
   </div>
 </section>
 
@@ -221,66 +224,6 @@ tailwind.config = {
         </button>
       </div>
     </section>
-
-    <!-- 실시간 제보 현황 -->
-    <section class="flex flex-col gap-space-xs">
-      <div class="flex items-center justify-between px-1">
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim animate-ping"></span>
-          <h3 class="font-headline-md text-headline-md text-on-surface font-bold">실시간 제보 현황</h3>
-        </div>
-        <a class="font-label-sm text-label-sm text-primary font-bold flex items-center" href="#">
-          전체 보기
-          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-        </a>
-      </div>
-
-      <div class="p-space-sm rounded-2xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,118,110,0.04)] flex gap-space-sm">
-        <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-surface-container">
-          <img class="w-full h-full object-cover" alt="보도블록 침하 제보 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8Ia6MgbUROh0vy5X8hwhO3uQfjvYesaTwGEMhkpa91Wa39jjdZtmDaGCmX32MQLrHB4PflLC8Dj_AmTvf2E149kUEdoV_SRepc7KTa49vzi5D0_zyZF3FNTPxy_Xfe6u5Dd3pLQZKTIbkUgCvxHH5eRixzDgTyfiDZt_E28gqgv8pNbUVYO3Z8oympVhaoPXdm3b5ukNyVqtIzFQDQzujdW8e76KDMcICBIjZU_fhkr1U5o5q4Odc">
-        </div>
-        <div class="flex-1 flex flex-col justify-between min-w-0">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">위험 접수</span>
-              <span class="font-label-sm text-label-sm text-outline">3분 전</span>
-            </div>
-            <h4 class="font-title-sm text-title-sm text-on-surface font-bold truncate mt-1">혜화초등학교 옆 보도블록 심한 침하</h4>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <span class="font-label-sm text-label-sm text-primary font-bold">종로구청 도로과 전송 완료</span>
-            <div class="flex items-center gap-1 text-outline font-label-sm text-label-sm">
-              <span class="material-symbols-outlined text-[14px]">thumb_up</span>
-              <span>24</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-space-sm rounded-2xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,118,110,0.04)] flex gap-space-sm">
-        <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-surface-container">
-          <img class="w-full h-full object-cover" alt="가로등 교체 완료 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTTeemtPP-OJQSFvcrw815IftkIKpaeCYQwgZBxl6qyKWsH1LxFSR7blTqZn5qJRFdROkkcbvfkAnczLNoIkZKgviTpZNTiV4HZ-eWhs5sSek347PAkBM10mBBT2A3NxbkJPMJ49cVKapJsPxReYgSLfse3EGLNEMX7SGMhaHxhM_xPClN9wpkHsQVJy1H-swtzRla4ip0BiqpRM-GqiJHdxMSBvPd5CZNR4M6H_XYGKYnG-q7Wl_c">
-        </div>
-        <div class="flex-1 flex flex-col justify-between min-w-0">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">정비 완료</span>
-              <span class="font-label-sm text-label-sm text-outline">18분 전</span>
-            </div>
-            <h4 class="font-title-sm text-title-sm text-on-surface font-bold truncate mt-1">연남동 382번지 스마트 가로등 교체</h4>
-            <p class="font-body-md text-body-md text-on-surface-variant truncate">골목 조도 12Lux → 48Lux 대폭 개선</p>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <span class="font-label-sm text-label-sm text-secondary font-bold">마포구 안전관리팀 확인</span>
-            <div class="flex items-center gap-1 text-outline font-label-sm text-label-sm">
-              <span class="material-symbols-outlined text-[14px]">favorite</span>
-              <span>67</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </div>
 </main>
 
