@@ -96,6 +96,7 @@
 
 </div>
 <!-- 7. 메인 가입하기 CTA 버튼 -->
+<p class="hidden font-body-sm text-body-sm text-error text-center" id="signup-error"></p>
 <div class="pt-2">
 <button class="w-full h-[52px] rounded-lg bg-gradient-to-r from-primary-container to-secondary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-[0.99] transition-all" id="btn-submit" type="button">
 <span class="">회원가입 완료</span>
@@ -165,6 +166,9 @@
       });
     });
   }
-</script></main>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../backend/sign_in"></script>
+</main>
 
 </body></html>
