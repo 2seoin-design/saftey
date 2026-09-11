@@ -69,7 +69,8 @@ export function computeSimilarityScore(targetRouteCoords, userGpsLogs) {
  * GPS 궤적-목표 경로 일치도 분석 및 리워드 지급 판정
  * @param {Array<{lat:number,lng:number}>} targetRouteCoords - 선택한 도형 산책로 좌표
  * @param {Array<{lat:number,lng:number,timestamp:number}>} userGpsLogs - 실제 GPS 궤적
- * @param {string} userId - Supabase auth 사용자 id
+ * @param {string} userId - 호출한 사용자 id (현재 로그인 세션과 일치해야 실제 지급됨,
+ *   메시지 표시/로깅용 - 실제 지급 대상은 서버에서 auth.uid()로 강제 확인함)
  * @returns {Promise<{similarityScore:number, rewardEligible:boolean, message:string}>}
  */
 export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userId) {
@@ -87,10 +88,8 @@ export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userI
     };
   }
 
-  const { data: claimed, error } = await supabase.rpc('claim_walk_reward', {
-    p_user_id: userId,
-    p_reward_amount: REWARD_AMOUNT,
-  });
+  // p_user_id를 클라이언트가 넘기면 조작 가능하므로 RPC가 서버에서 auth.uid()로 직접 확인함
+  const { data: claimed, error } = await supabase.rpc('claim_walk_reward');
 
   if (error) {
     return { similarityScore, rewardEligible: false, message: `리워드 지급 확인 중 오류: ${error.message}` };

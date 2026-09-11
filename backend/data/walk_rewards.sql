@@ -23,8 +23,10 @@ create policy "Users can view own claims"
 -- ============================================================
 -- RPC: 일치도 검증 통과 시 리워드 지급 시도 (원자적 - 동시 요청에도 하루 1회만 성공)
 -- 반환값 true = 오늘 처음 지급됨 / false = 오늘 이미 지급받음
+-- user_id를 파라미터로 받지 않고 auth.uid()로 직접 확인함 - 그렇지 않으면 클라이언트가
+-- 임의의 user_id/금액을 넘겨 남의 계정에 리워드를 지급시키거나 금액을 조작할 수 있음
 -- ============================================================
-create or replace function public.claim_walk_reward(p_user_id uuid, p_reward_amount integer default 200)
+create or replace function public.claim_walk_reward()
 returns boolean
 language plpgsql
 security definer
@@ -32,9 +34,14 @@ set search_path = public
 as $$
 declare
   affected integer;
+  v_user_id uuid := auth.uid();
 begin
+  if v_user_id is null then
+    raise exception 'authentication required';
+  end if;
+
   insert into walk_challenge_claims (user_id, claim_date, reward_amount)
-  values (p_user_id, current_date, p_reward_amount)
+  values (v_user_id, current_date, 200)
   on conflict (user_id, claim_date) do nothing;
 
   get diagnostics affected = row_count;
@@ -43,9 +50,9 @@ begin
     return false;
   end if;
 
-  update profiles set points = points + p_reward_amount where id = p_user_id;
+  update profiles set points = points + 200 where id = v_user_id;
   return true;
 end;
 $$;
 
-grant execute on function public.claim_walk_reward(uuid, integer) to authenticated;
+grant execute on function public.claim_walk_reward() to authenticated;

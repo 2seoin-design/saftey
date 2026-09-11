@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>안심 산책로</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; }
+  #map_div { width: 100%; height: 100%; }
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 12px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .toolbar button {
+    border: none; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700;
+    cursor: pointer; color: #fff; background: #9aa0a6;
+  }
+  .toolbar button.shape { background: #60c219; }
+  .toolbar button.shape.selected { background: #2563eb; }
+  .toolbar button#btnGenerate { background: #16a34a; }
+  .toolbar button#btnSimulateWalk { background: #f59e0b; }
+  #status { font-size: 12px; color: #444; width: 100%; white-space: pre-line; }
+  #loginNotice {
+    position: fixed; inset: 0; z-index: 40; background: rgba(255,255,255,0.95);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="shape" data-shape="rhombus">마름모 (10분)</button>
+  <button class="shape" data-shape="heart">하트 (20분)</button>
+  <button class="shape" data-shape="star">별 (30분)</button>
+  <button class="shape" data-shape="fish">물고기 (60분)</button>
+  <button class="shape" data-shape="crown">왕관 (90분)</button>
+  <button id="btnGenerate" disabled>내 위치로 산책로 생성</button>
+  <button id="btnSimulateWalk" disabled>GPS 궤적 시뮬레이션(일치도 테스트)</button>
+  <span id="status"></span>
+</div>
+
+<div id="map_div"></div>
+
+<div id="loginNotice">
+  <p>로그인 후 이용해주세요 (리워드 지급을 위해 필요)</p>
+  <a href="login.html">로그인하러 가기</a>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+  }
+}
+</script>
+<script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
+
+<script type="module">
+  import { supabase } from '../backend/data/supabaseService.js';
+  import { generateShapeRoute, SHAPE_CONFIG } from '../backend/data/shapeRouteService.js';
+  import { analyzeGpsSimilarity } from '../backend/data/patternMatchService.js';
+
+  const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
+
+  const map = new Tmapv2.Map('map_div', {
+    center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+    width: '100%',
+    height: '100%',
+    zoom: 17,
+  });
+
+  const statusEl = document.getElementById('status');
+  const btnGenerate = document.getElementById('btnGenerate');
+  const btnSimulate = document.getElementById('btnSimulateWalk');
+  const shapeButtons = document.querySelectorAll('.shape');
+
+  let selectedShape = null;
+  let userLocation = null;
+  let currentRoute = null;
+  let routePolyline = null;
+  let userId = null;
+
+  shapeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      shapeButtons.forEach((b) => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedShape = btn.dataset.shape;
+      updateGenerateButton();
+    });
+  });
+
+  function updateGenerateButton() {
+    btnGenerate.disabled = !(selectedShape && userLocation);
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
+        updateGenerateButton();
+      },
+      () => {
+        statusEl.textContent = '위치 접근이 거부되어 서울시청 기준으로 진행합니다.';
+        userLocation = DEFAULT_CENTER;
+        updateGenerateButton();
+      }
+    );
+  }
+
+  btnGenerate.addEventListener('click', async () => {
+    statusEl.textContent = `${SHAPE_CONFIG[selectedShape].label} 산책로 생성 중... (실제 도로를 따라가므로 몇 초 걸릴 수 있음)`;
+    btnGenerate.disabled = true;
+    try {
+      currentRoute = await generateShapeRoute({ lat: userLocation.lat, lng: userLocation.lng, shape: selectedShape });
+
+      if (routePolyline) routePolyline.setMap(null);
+      routePolyline = new Tmapv2.Polyline({
+        path: currentRoute.waypoints.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+        strokeColor: '#16a34a',
+        strokeWeight: 6,
+        map,
+      });
+
+      statusEl.textContent =
+        `${SHAPE_CONFIG[selectedShape].label}: 실제 거리 ${currentRoute.distanceKm.toFixed(2)}km ` +
+        `(목표 ${currentRoute.targetDistanceKm}km) / 예상 ${currentRoute.estimatedMinutes}분 / ` +
+        `안심점수 ${currentRoute.score}` + (currentRoute.blocked ? ' / 경로상 위험제보 있음' : '');
+      btnSimulate.disabled = false;
+    } catch (err) {
+      statusEl.textContent = '산책로 생성 실패: ' + err.message;
+    } finally {
+      btnGenerate.disabled = false;
+    }
+  });
+
+  // 실제로 걷지 않고도 GPS 일치도 로직을 확인해볼 수 있도록, 생성된 경로 좌표에
+  // 약간의 노이즈(±5m 랜덤)를 섞어 "실제로 걸었다면 이랬을 법한" 궤적을 흉내냄
+  function simulateGpsLogFrom(waypoints) {
+    const jitterDeg = 0.00004; // 약 4~5m
+    return waypoints.map((p, i) => ({
+      lat: p.lat + (Math.random() - 0.5) * jitterDeg,
+      lng: p.lng + (Math.random() - 0.5) * jitterDeg,
+      timestamp: Date.now() + i * 1000,
+    }));
+  }
+
+  btnSimulate.addEventListener('click', async () => {
+    if (!currentRoute) return;
+    statusEl.textContent = 'GPS 궤적 일치도 분석 중...';
+    const fakeGpsLog = simulateGpsLogFrom(currentRoute.waypoints);
+    const result = await analyzeGpsSimilarity(currentRoute.waypoints, fakeGpsLog, userId);
+    statusEl.textContent = `[시뮬레이션] 일치도 ${result.similarityScore}% - ${result.message}`;
+  });
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    userId = user.id;
+    document.getElementById('loginNotice').hidden = true;
+  }
+</script>
+</body>
+</html>
