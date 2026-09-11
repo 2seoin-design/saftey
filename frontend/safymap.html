@@ -172,9 +172,9 @@
   <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen" style="background-color: rgb(245, 245, 245);">
     <div class="flex flex-col w-full">
 
-      <!-- Route Summary Ribbon -->
-      <div class="px-gutter-mobile pt-space-md pb-space-xs">
-        <div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border border-outline-variant/30 mb-2.5 relative">
+      <!-- Route  Ribbon -->
+      <div class="px-gutter-mobile pt-space-md pb-1">
+        <div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border border-outline-variant/30 relative">
           <div class="flex items-center gap-3">
             <div class="flex flex-col items-center justify-center shrink-0 pt-1 pb-1">
               <div class="w-2.5 h-2.5 rounded-full" style="background-color: #60c219; box-shadow: 0 0 0 3px rgba(96, 194, 25, 0.2);"></div>
@@ -182,160 +182,46 @@
               <div class="w-2.5 h-2.5 rounded-full" style="background-color: #ba1a1a; box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.2);"></div>
             </div>
             <div class="flex-1 flex flex-col gap-2 min-w-0">
-              <div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
+              <div class="relative flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container shrink-0" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">출발</span>
-                  <input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="혜화역 4번 출구 (현재 위치)" placeholder="출발지 입력">
+                  <input id="safymap-start-input" class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" placeholder="출발지 입력 (주소 또는 장소명)" autocomplete="off">
                 </div>
-                <button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                <button type="button" id="safymap-start-mylocation-btn" aria-label="현재 위치로 설정" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
                   <span class="material-symbols-outlined text-[15px]">my_location</span>
                 </button>
+                <button type="button" id="safymap-start-search-btn" aria-label="출발지 검색" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0 ml-1">
+                  <span class="material-symbols-outlined text-[15px]">search</span>
+                </button>
+
+                <!-- 출발지 검색 결과 드롭다운 -->
+                <ul id="safymap-start-results" class="hidden absolute left-0 right-0 top-full mt-1 z-30 bg-surface-container-lowest rounded-lg shadow-lg border border-outline-variant/30 max-h-56 overflow-y-auto"></ul>
               </div>
-              <div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
+              <div class="relative flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-error-container text-on-error-container shrink-0">도착</span>
-                  <input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="서울대학교병원 본관·소아별관" placeholder="도착지 검색 (예: 서울대병원 소아별관)">
+                  <input id="safymap-dest-input" class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" placeholder="도착지 검색 (주소 또는 장소명)" autocomplete="off">
                 </div>
-                <button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                <button type="button" id="safymap-dest-search-btn" aria-label="도착지 검색" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
                   <span class="material-symbols-outlined text-[16px]">search</span>
                 </button>
-              </div>
-            </div>
-            <div class="shrink-0 flex items-center">
-              <button type="button" aria-label="출발지-도착지 전환" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface-variant transition-colors shadow-sm active:scale-95">
-                <span class="material-symbols-outlined text-[18px]">swap_vert</span>
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 min-w-0">
-              <div class="w-7 h-7 rounded-full flex items-center justify-center text-on-primary shrink-0" style="background-color: rgb(96, 194, 25);">
-                <span class="material-symbols-outlined text-[16px]">my_location</span>
-              </div>
-              <div class="flex flex-col min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-label-sm text-label-sm text-on-surface-variant font-bold">현재 위치</span>
-                  <span class="px-1.5 py-0.2 text-[11px] rounded bg-secondary-container text-on-secondary-container font-bold" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">GPS 정상 (±3m)</span>
-                </div>
-                <span class="font-title-sm text-title-sm text-on-surface font-bold truncate">혜화역 4번 출구 앞 (반경 500m)</span>
+                <!-- 도착지 검색 결과 드롭다운 -->
+                <ul id="safymap-dest-results" class="hidden absolute left-0 right-0 top-full mt-1 z-30 bg-surface-container-lowest rounded-lg shadow-lg border border-outline-variant/30 max-h-56 overflow-y-auto"></ul>
               </div>
             </div>
-            <button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm flex items-center gap-1 hover:bg-surface-container-high transition-colors">
-              <span class="material-symbols-outlined text-[14px]">refresh</span>재탐색
-            </button>
-          </div>
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-            <button class="px-2.5 py-1 rounded-full text-on-primary font-label-sm text-label-sm font-bold shrink-0 shadow-sm" style="background-color: rgb(96, 194, 25);">전체 (10)</button>
-            <button class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">warning</span>위험 4건
-            </button>
-            <button class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">
-              <span class="material-symbols-outlined text-[14px]">accessible</span>무장애 6건
-            </button>
-            <button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">light</span>안심가로등
-            </button>
           </div>
         </div>
       </div>
 
-      <!-- Map Simulation View -->
-      <div class="px-gutter-mobile py-space-xs">
-        <div class="relative w-full h-48 rounded-xl overflow-hidden shadow-md bg-surface-dim">
-          <div class="absolute inset-0 w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD-sLch2yX1EovzXdlRmaWiLj56PCk1IkD7TQR0SLTICMH-NmhOV6ABojVPNnmmHBzlPcLAkxuuj0anttAElQh5IiWP_4l9ULZ8PyJ3oj8ng0FJyjB2rL7T8r_lJV0pxQ-dOYHB6OXOFN2C83uOIV7A8wbfl64JGftMphD8bKpyWl5gUwf_C0dOdZNXmZ6oUd364xW689M-GjxKnmCT2KcX2ygZd4KfAGgxX7Dl9vUJLxgtKFuhoG00&quot;); filter: brightness(0.92) contrast(1.05);"></div>
-          <div class="absolute inset-0 bg-on-background/25"></div>
-          <svg class="absolute inset-0 w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 360 200">
-            <circle cx="90" cy="130" r="26" fill="#60c219" fill-opacity="0.2" class="animate-pulse"></circle>
-            <circle cx="90" cy="130" r="14" fill="#60c219" fill-opacity="0.35"></circle>
-            <circle cx="90" cy="130" r="6" fill="#ffffff" stroke="#4fa912" stroke-width="2.5"></circle>
-            <path d="M 90 130 Q 150 115 210 80 T 290 60" stroke="#4fa912" stroke-width="3" stroke-dasharray="4 4" opacity="0.85"></path>
-            <path d="M 90 130 Q 140 145 220 160" stroke="#ba1a1a" stroke-width="2.5" stroke-dasharray="3 3" opacity="0.7"></path>
-          </svg>
-          <div class="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-outline-variant/30 flex items-center gap-1.5">
+      <!-- Live Map View (TMAP) -->
+      <div class="px-gutter-mobile pt-1 pb-space-xs">
+        <div class="relative w-full h-[560px] rounded-xl overflow-hidden shadow-md bg-surface-dim">
+          <div id="safymap_div" class="absolute inset-0 w-full h-full"></div>
+
+          <div class="absolute top-3 left-3 z-10 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-outline-variant/30 flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full animate-pulse" style="background-color: rgb(96, 194, 25);"></div>
-            <span class="font-label-sm text-label-sm text-on-surface font-bold">현재 위치 (혜화역)</span>
-          </div>
-          <div class="absolute top-3 right-4 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-primary/30">
-            <div class="w-4 h-4 rounded-full flex items-center justify-center text-on-primary text-[10px]" style="background-color: rgb(96, 194, 25);">
-              <span class="material-symbols-outlined text-[11px]">accessible</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-[10px] font-bold text-on-surface leading-tight">승강기·경사로</span>
-              <span class="text-[9px] text-secondary font-bold leading-tight">서울대병원 방면</span>
-            </div>
-          </div>
-          <div class="absolute top-14 right-16 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20">
-            <span class="material-symbols-outlined text-[13px] text-error">warning</span>
-            <div class="flex flex-col">
-              <span class="text-[10px] font-bold leading-tight">돌계단 42단</span>
-              <span class="text-[9px] text-error leading-tight font-bold">휠체어 불가</span>
-            </div>
-          </div>
-          <div class="absolute bottom-11 left-6 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20">
-            <span class="material-symbols-outlined text-[13px] text-error">report_problem</span>
-            <span class="text-[10px] font-bold leading-tight">보도 파손 단차 5cm</span>
-          </div>
-          <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 px-2.5 py-1 rounded-full bg-on-background/85 backdrop-blur-md text-surface-container-lowest shadow-md">
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px] text-secondary-fixed">verified_user</span>
-              <span class="font-label-sm text-label-sm font-bold">시민 검증단 120명 실사 완료</span>
-            </div>
-            <span class="text-[11px] text-secondary-fixed flex items-center gap-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse"></span>실시간 관제 연동 중
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Route Cards (위험 주의 구간) -->
-      <div class="px-gutter-mobile py-space-sm flex flex-col gap-space-sm">
-        <div class="flex items-center justify-between mt-1">
-          <span class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-1">
-            <span class="material-symbols-outlined text-[18px] text-error">fmd_bad</span>위험 주의 구간 (4건)
-          </span>
-          <span class="font-label-sm text-label-sm text-on-surface-variant">전복·단차 주의</span>
-        </div>
-        <div class="flex flex-col gap-2">
-          <!-- Card 1 -->
-          <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden">
-            <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div>
-            <div class="pl-2 flex flex-col gap-1.5">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5">
-                    <span class="material-symbols-outlined text-[13px]">warning</span>돌계단 주의
-                  </span>
-                  <span class="font-title-sm text-title-sm text-on-surface font-bold">혜화로 3길 돌계단 구간</span>
-                </div>
-                <span class="font-label-sm text-label-sm text-error font-bold">거리 120m</span>
-              </div>
-              <p class="font-label-md text-label-md text-on-surface-variant">단차 42단 급경사 (경사도 14.2%) · 휠체어/유모차/어르신 보행 불가</p>
-              <div class="flex items-center gap-1 px-2 py-1 rounded bg-error-container/40 text-error text-[12px] font-bold">
-                <span class="material-symbols-outlined text-[14px]">no_stroller</span>우회로 이용 필수 · 시민 18건 위험 제보 누적
-              </div>
-            </div>
-          </div>
-          <!-- Card 2 -->
-          <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden">
-            <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div>
-            <div class="pl-2 flex flex-col gap-1.5">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5">
-                    <span class="material-symbols-outlined text-[13px]">handyman</span>보도 파손
-                  </span>
-                  <span class="font-title-sm text-title-sm text-on-surface font-bold">성균관로 입구 보도블록 침하</span>
-                </div>
-                <span class="font-label-sm text-label-sm text-error font-bold">거리 230m</span>
-              </div>
-              <p class="font-label-md text-label-md text-on-surface-variant">단차 5cm 블록 들뜸 · 비오는 날 미끄럼 및 발 걸림 전도 위험</p>
-              <div class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container-low text-on-surface-variant text-[12px]">
-                <span class="material-symbols-outlined text-[14px] text-secondary">update</span>구청 보수 작업 접수 완료 (예정: 내일 14시)
-              </div>
-            </div>
+            <span id="safymap-current-label" class="font-label-sm text-label-sm text-on-surface font-bold">현재 위치 (혜화역)</span>
           </div>
         </div>
       </div>
@@ -344,59 +230,290 @@
       <div class="h-36" id="route-cta-spacer"></div>
 
       <!-- Route Guidance CTA (스크롤해도 화면에 고정, 위 스페이서가 콘텐츠 가림 방지) -->
-      <div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]" id="route-cta-bar">
+      <!-- 하단 내비게이션의 '안전지도' 버튼을 누르면 표시되고, 다시 누르면 숨겨짐 -->
+      <div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out translate-y-full opacity-0 pointer-events-none" id="route-cta-bar">
         <div class="max-w-[480px] mx-auto px-gutter-mobile py-2.5">
-          <div class="flex flex-col gap-2.5">
-            <button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-nav-btn" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 60%, rgb(67, 147, 14) 100%); color: rgb(255, 255, 255); box-shadow: rgba(96, 194, 25, 0.4) 0px 8px 20px;" type="button">
-              <span class="material-symbols-outlined text-[22px]">near_me</span>
-              <span>안심서비스 경로로 길안내!</span>
-              <div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1">
-                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </div>
+          <div class="flex items-start justify-center gap-8">
+            <button class="flex flex-col items-center gap-1.5" id="start-nav-btn" type="button">
+              <span class="w-16 h-16 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 60%, rgb(67, 147, 14) 100%); box-shadow: rgba(96, 194, 25, 0.4) 0px 8px 20px;">
+                <span class="material-symbols-outlined text-white text-[28px]">near_me</span>
+              </span>
+              <span class="font-label-sm text-label-sm font-bold text-on-surface">안심 귀갓길</span>
             </button>
-            <button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-barrier-free-btn" style="background: linear-gradient(135deg, rgb(15, 118, 110) 0%, rgb(0, 92, 85) 100%); color: rgb(255, 255, 255); box-shadow: rgba(15, 118, 110, 0.35) 0px 8px 20px;" type="button">
-              <span class="material-symbols-outlined text-[22px]">accessible</span>
-              <span>무장애 경로로 길안내!</span>
-              <div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1">
-                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </div>
+            <button class="flex flex-col items-center gap-1.5" id="start-barrier-free-btn" type="button">
+              <span class="w-16 h-16 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform" style="background: linear-gradient(135deg, rgb(15, 118, 110) 0%, rgb(0, 92, 85) 100%); box-shadow: rgba(15, 118, 110, 0.35) 0px 8px 20px;">
+                <span class="material-symbols-outlined text-white text-[28px]">directions_walk</span>
+              </span>
+              <span class="font-label-sm text-label-sm font-bold text-on-surface">안전 산책로</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Interaction Scripts -->
+      <!-- TMAP SDK (route_map.html과 동일한 appKey 사용) -->
+      <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&amp;appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
+
+      <!-- 실제 지도 초기화 -->
       <script>
         (function() {
+          const HYEHWA_STATION = { lat: 37.5822, lng: 127.0019 };
+          const TMAP_APP_KEY = 'B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc';
+          const mapDiv = document.getElementById('safymap_div');
+          const currentLabel = document.getElementById('safymap-current-label');
+          if (!mapDiv || typeof Tmapv2 === 'undefined') return;
+
+          const map = new Tmapv2.Map(mapDiv.id, {
+            center: new Tmapv2.LatLng(HYEHWA_STATION.lat, HYEHWA_STATION.lng),
+            width: '100%',
+            height: '100%',
+            zoom: 16,
+          });
+
+          let currentMarker = new Tmapv2.Marker({
+            position: new Tmapv2.LatLng(HYEHWA_STATION.lat, HYEHWA_STATION.lng),
+            map: map,
+            title: '현재 위치 (혜화역)',
+          });
+          let lastKnownPosition = null; // { lat, lng } - watchPosition으로 추적된 가장 최근 위치
+
+          // 좌표 -> 실제 주소 문자열로 변환 (TMAP 역지오코딩)
+          // addressType=A10은 지번주소+도로명주소를 함께 반환해 주소가 두 개처럼 보이므로,
+          // 도로명주소 하나만 나오는 A02를 사용함
+          async function reverseGeocode(lat, lng) {
+            const url = `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat=${lat}&lon=${lng}&coordType=WGS84GEO&addressType=A02&appKey=${TMAP_APP_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('역지오코딩 실패');
+            const data = await res.json();
+            return data?.addressInfo?.fullAddress || null;
+          }
+
+          function updateCurrentPosition(lat, lng) {
+            lastKnownPosition = { lat, lng };
+            const here = new Tmapv2.LatLng(lat, lng);
+            map.setCenter(here);
+            currentMarker.setMap(null);
+            currentMarker = new Tmapv2.Marker({ position: here, map: map, title: '현재 위치' });
+
+            if (currentLabel) {
+              currentLabel.textContent = '내 위치 확인 중...';
+              reverseGeocode(lat, lng)
+                .then((address) => { if (currentLabel) currentLabel.textContent = address || '현재 위치'; })
+                .catch(() => { if (currentLabel) currentLabel.textContent = '현재 위치'; });
+            }
+          }
+
+          // 위치 권한이 허용되면 실제 현재 위치를 지속적으로 추적하여 지도 중심/마커/라벨을 갱신
+          if (!window.isSecureContext) {
+            // Geolocation API는 보안 컨텍스트(https 또는 localhost)에서만 동작함.
+            // file://로 직접 연 경우 대부분의 브라우저가 즉시 권한을 거부함.
+            console.warn('[safymap] Geolocation requires a secure context. 현재 origin:', location.href);
+            if (currentLabel) currentLabel.textContent = '현재 위치 (혜화역) · 위치 추적은 http(localhost) 또는 https 환경에서만 동작해요';
+          } else if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+              (pos) => updateCurrentPosition(pos.coords.latitude, pos.coords.longitude),
+              (err) => {
+                console.error('[safymap] Geolocation error:', err.code, err.message);
+                const reasons = {
+                  1: '위치 권한이 거부되었어요',
+                  2: '위치 정보를 가져올 수 없어요',
+                  3: '위치 요청이 시간 초과됐어요',
+                };
+                if (currentLabel) currentLabel.textContent = `현재 위치 (혜화역) · ${reasons[err.code] || '위치를 가져오지 못했어요'}`;
+              },
+              { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+            );
+          } else {
+            if (currentLabel) currentLabel.textContent = '현재 위치 (혜화역) · 이 브라우저는 위치 정보를 지원하지 않아요';
+          }
+
+          // ---- 출발지/도착지 검색 (주소/장소명) -> 결과 리스트 표시 -> 선택 시 지도에 마커 표시 ----
+          async function searchPois(keyword) {
+            const url = `https://apis.openapi.sk.com/tmap/pois?version=1&searchKeyword=${encodeURIComponent(keyword)}&resCoordType=WGS84GEO&reqCoordType=WGS84GEO&count=8&page=1&appKey=${TMAP_APP_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('장소 검색 실패');
+            const data = await res.json();
+            return data?.searchPoiInfo?.pois?.poi || [];
+          }
+
+          function setupPoiSearch(inputEl, resultsEl, markerTitlePrefix) {
+            if (!inputEl) return null;
+            let marker = null;
+            let timer = null;
+            let token = 0;
+
+            function hideResults() {
+              if (!resultsEl) return;
+              resultsEl.classList.add('hidden');
+              resultsEl.innerHTML = '';
+            }
+
+            function setLocation(lat, lng, label) {
+              if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+              inputEl.value = label || '';
+              hideResults();
+
+              const pos = new Tmapv2.LatLng(lat, lng);
+              if (marker) marker.setMap(null);
+              marker = new Tmapv2.Marker({ position: pos, map: map, title: `${markerTitlePrefix}: ${label || ''}` });
+              map.setCenter(pos); // 지도에 실시간 반영
+            }
+
+            function selectPoi(poi) {
+              const lat = parseFloat(poi.noorLat || poi.frontLat);
+              const lng = parseFloat(poi.noorLon || poi.frontLon);
+              setLocation(lat, lng, poi.name || '');
+            }
+
+            function renderResults(pois) {
+              if (!resultsEl) return;
+              if (!pois.length) {
+                resultsEl.innerHTML = '<li class="px-3 py-2.5 text-[12px] text-on-surface-variant">검색 결과가 없어요</li>';
+                resultsEl.classList.remove('hidden');
+                return;
+              }
+              resultsEl.innerHTML = pois.map((poi) => {
+                const address = [poi.upperAddrName, poi.middleAddrName, poi.lowerAddrName, poi.roadName].filter(Boolean).join(' ');
+                return `<li class="px-3 py-2.5 border-b border-outline-variant/20 last:border-b-0 cursor-pointer hover:bg-surface-container-low">
+                  <div class="text-[13px] font-bold text-on-surface truncate">${poi.name || ''}</div>
+                  <div class="text-[11px] text-on-surface-variant truncate">${address}</div>
+                </li>`;
+              }).join('');
+              resultsEl.classList.remove('hidden');
+              Array.from(resultsEl.children).forEach((li, i) => {
+                li.addEventListener('click', () => selectPoi(pois[i]));
+              });
+            }
+
+            async function runSearch(keyword) {
+              const myToken = ++token;
+              try {
+                const pois = await searchPois(keyword);
+                if (myToken !== token) return; // 더 최신 검색이 있으면 이전 응답은 버림
+                renderResults(pois);
+              } catch (err) {
+                console.error('[safymap] POI search error:', err);
+              }
+            }
+
+            inputEl.addEventListener('input', () => {
+              const keyword = inputEl.value.trim();
+              clearTimeout(timer);
+              if (!keyword) { hideResults(); return; }
+              timer = setTimeout(() => runSearch(keyword), 300);
+            });
+
+            document.addEventListener('click', (e) => {
+              if (inputEl.contains(e.target) || (resultsEl && resultsEl.contains(e.target))) return;
+              hideResults();
+            });
+
+            function searchNow() {
+              const keyword = inputEl.value.trim();
+              clearTimeout(timer);
+              if (!keyword) { hideResults(); return; }
+              runSearch(keyword);
+            }
+
+            return { setLocation, searchNow };
+          }
+
+          const startPoiSearch = setupPoiSearch(document.getElementById('safymap-start-input'), document.getElementById('safymap-start-results'), '출발');
+          const destPoiSearch = setupPoiSearch(document.getElementById('safymap-dest-input'), document.getElementById('safymap-dest-results'), '도착');
+
+          // ---- 출발지/도착지 검색(돋보기) 버튼: 클릭 시 즉시 검색 실행 (입력만으로도 자동 검색되지만, 눌러도 동작함) ----
+          const startSearchBtn = document.getElementById('safymap-start-search-btn');
+          if (startSearchBtn && startPoiSearch) {
+            startSearchBtn.addEventListener('click', () => startPoiSearch.searchNow());
+          }
+          const destSearchBtn = document.getElementById('safymap-dest-search-btn');
+          if (destSearchBtn && destPoiSearch) {
+            destSearchBtn.addEventListener('click', () => destPoiSearch.searchNow());
+          }
+
+          // ---- 출발지의 '현재 위치로 설정' 버튼 ----
+          const startMyLocationBtn = document.getElementById('safymap-start-mylocation-btn');
+          if (startMyLocationBtn && startPoiSearch) {
+            startMyLocationBtn.addEventListener('click', () => {
+              function applyAsStart(lat, lng) {
+                startPoiSearch.setLocation(lat, lng, '현재 위치 확인 중...');
+                reverseGeocode(lat, lng)
+                  .then((address) => startPoiSearch.setLocation(lat, lng, address || '현재 위치'))
+                  .catch(() => startPoiSearch.setLocation(lat, lng, '현재 위치'));
+              }
+
+              if (lastKnownPosition) {
+                applyAsStart(lastKnownPosition.lat, lastKnownPosition.lng);
+                return;
+              }
+              if (!navigator.geolocation) return;
+              navigator.geolocation.getCurrentPosition(
+                (pos) => applyAsStart(pos.coords.latitude, pos.coords.longitude),
+                () => alert('현재 위치를 가져오지 못했어요. 위치 권한을 확인해주세요.')
+              );
+            });
+          }
+        })();
+      </script>
+
+      <!-- Interaction Scripts -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
           const navBtn = document.getElementById('start-nav-btn');
           const barrierFreeBtn = document.getElementById('start-barrier-free-btn');
 
           if (navBtn) {
             navBtn.addEventListener('click', function() {
+              const startValue = document.getElementById('safymap-start-input')?.value.trim();
+              const destValue = document.getElementById('safymap-dest-input')?.value.trim();
+              if (!startValue || !destValue) {
+                window.showSafymapToast('출발지 및 도착지를 설정해주세요.');
+                return;
+              }
               window.location.href = 'realtime_map.html';
             });
           }
 
           if (barrierFreeBtn) {
             barrierFreeBtn.addEventListener('click', function() {
-              window.location.href = 'barrierfree_map.html';
+              window.location.href = 'walking_line.html';
             });
           }
 
-          // 고정된 길안내 CTA 바 실제 높이만큼 스페이서를 맞춰 콘텐츠가 가려지지 않게 함
+          // 길안내 CTA 바: 나타날 땐 아래에서 위로 슬라이드 업, 사라질 땐 아래로 슬라이드 다운
           const ctaBar = document.getElementById('route-cta-bar');
           const ctaSpacer = document.getElementById('route-cta-spacer');
-          function syncCtaSpacerHeight() {
-            if (ctaBar && ctaSpacer) {
-              ctaSpacer.style.height = ctaBar.offsetHeight + 'px';
+          let ctaVisible = false;
+
+          function applyCtaVisibility() {
+            if (!ctaBar) return;
+            if (ctaVisible) {
+              ctaBar.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+              ctaBar.classList.add('translate-y-0', 'opacity-100');
+            } else {
+              ctaBar.classList.remove('translate-y-0', 'opacity-100');
+              ctaBar.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
             }
+            // 실제 콘텐츠 높이만큼 스페이서를 확보 (transform은 레이아웃 높이에 영향을 주지 않으므로
+            // 숨김 상태일 땐 0으로 직접 맞춰줌)
+            if (ctaSpacer) ctaSpacer.style.height = ctaVisible ? ctaBar.offsetHeight + 'px' : '0px';
           }
-          syncCtaSpacerHeight();
-          window.addEventListener('resize', syncCtaSpacerHeight);
+          applyCtaVisibility();
+          window.addEventListener('resize', applyCtaVisibility);
           if (window.ResizeObserver && ctaBar) {
-            new ResizeObserver(syncCtaSpacerHeight).observe(ctaBar);
+            new ResizeObserver(applyCtaVisibility).observe(ctaBar);
           }
-        })();
+
+          // 하단 내비게이션의 '안전지도' 버튼: 누를 때마다 길안내 CTA 바를 보였다 숨겼다 함
+          const ctaToggleBtn = document.getElementById('safymap-cta-toggle');
+          if (ctaToggleBtn && ctaBar) {
+            ctaToggleBtn.addEventListener('click', function() {
+              ctaVisible = !ctaVisible;
+              ctaToggleBtn.setAttribute('aria-pressed', String(ctaVisible));
+              applyCtaVisibility();
+            });
+          }
+        });
       </script>
 
     </div>
@@ -410,9 +527,9 @@
         <span class="font-label-sm text-label-sm">홈</span>
       </a>
       <div class="flex flex-col items-center -mt-6">
-        <a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="safymap.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+        <button type="button" id="safymap-cta-toggle" aria-pressed="false" aria-controls="route-cta-bar" class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
           <span class="material-symbols-outlined text-[26px] text-white">map</span>
-        </a>
+        </button>
         <span class="font-label-sm text-label-sm font-bold mt-1" style="color: rgb(79, 169, 18);">안전지도</span>
       </div>
       <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="10report.html">
@@ -425,5 +542,26 @@
       </a>
     </div>
   </nav>
+
+  <!-- 안내 토스트 (출발/도착지 미입력 등 공용 안내) -->
+  <div id="safymap-toast" class="fixed left-1/2 -translate-x-1/2 z-[60] px-5 py-3 rounded-full bg-[#1E293B]/90 text-white font-label-md text-label-md font-bold shadow-lg backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300" style="bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));"></div>
+
+  <script>
+    (function() {
+      const toast = document.getElementById('safymap-toast');
+      let toastTimer = null;
+      window.showSafymapToast = function(message) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+        }, 2000);
+      };
+    })();
+  </script>
 </body>
 </html>
