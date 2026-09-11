@@ -439,6 +439,16 @@
     const openFileSelector = () => albumInput && albumInput.click();
 
     const updateCurrentLocation = () => {
+      const shouldRequestLocation = window.confirm(
+        '현재 위치를 확인하려면 위치 권한이 필요합니다.\n위치 권한을 허용하시겠습니까?'
+      );
+
+      if (!shouldRequestLocation) {
+        currentLocationText.textContent = '위치 권한이 허용되지 않았습니다';
+        currentLocationAccuracy.textContent = 'GPS 사용 안 함';
+        return;
+      }
+
       if (!navigator.geolocation) {
         currentLocationText.textContent = '이 브라우저에서는 위치를 사용할 수 없습니다.';
         currentLocationAccuracy.textContent = 'GPS 사용 불가';
