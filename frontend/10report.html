@@ -305,6 +305,7 @@
   </nav>
 
   <!-- 4. 자바스크립트 로직 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // 위험 유형 다중 선택 (Toggle) - hover 스타일 처리
     const chips = document.querySelectorAll('.hazard-chip');
@@ -346,8 +347,11 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const descriptionInput = document.querySelector('textarea');
     const currentLocationText = document.getElementById('currentLocationText');
     const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
+    let currentPosition = null;
+    let detectedReportType = 'HAZARD';
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
     const TMAP_APP_KEY = 'B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc';
@@ -433,6 +437,16 @@
           throw new Error(`${result.error || 'AI 분석에 실패했습니다.'}${detail}`);
         }
         selectHazardCategory(result.category);
+        detectedReportType = {
+          road_damage: 'HAZARD',
+          streetlight: 'HAZARD',
+          stairs: 'STAIRS',
+          obstruction: 'CONSTR',
+          other: 'HAZARD'
+        }[result.category] || 'HAZARD';
+        if (descriptionInput && !descriptionInput.value.trim()) {
+          descriptionInput.value = result.description || '';
+        }
         showAnalysisState({
           loading: false,
           category: categoryLabels[result.category] || '',
@@ -485,6 +499,7 @@
 
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
+          currentPosition = coords;
           currentLocationText.textContent =
             '현재 위치 주소 확인 중...';
           currentLocationAccuracy.textContent = Number.isFinite(coords.accuracy)
@@ -546,8 +561,46 @@
 
     // 제보 완료 시 포인트 500P 추가 및 저장 (마이페이지 연동)
     const submitBtn = document.getElementById('submitReportBtn');
+    const supabaseClient = window.supabase.createClient(
+      'https://gaicuiithjllwillleyo.supabase.co',
+      'sb_publishable_N5Cb72wbtKj-HhjIoZ20Aw_XBDlvTsy'
+    );
+
+    const claimReportReward = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        throw new Error('로그인한 사용자만 리워드를 받을 수 있습니다.');
+      }
+
+      const { data, error } = await supabaseClient.rpc('claim_report_reward');
+      if (error) throw error;
+      if (!data?.reward_granted) {
+        throw new Error('오늘은 이미 제보 리워드를 받았습니다.');
+      }
+      return data;
+    };
+
+    const saveReport = async () => {
+      if (!currentPosition) {
+        throw new Error('현재 위치를 확인한 뒤 다시 제출해주세요.');
+      }
+
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        throw new Error('로그인한 사용자만 제보할 수 있습니다.');
+      }
+
+      const { error } = await supabaseClient.from('reports').insert({
+        user_id: user.id,
+        report_type: detectedReportType,
+        description: descriptionInput?.value.trim() || 'AI 분석 위험 제보',
+        location: `POINT(${currentPosition.longitude} ${currentPosition.latitude})`
+      });
+      if (error) throw error;
+    };
+
     if (submitBtn) {
-      submitBtn.addEventListener('click', () => {
+      submitBtn.addEventListener('click', async () => {
         if (submitBtn.dataset.submitting === "true") return;
         submitBtn.dataset.submitting = "true";
 
@@ -557,17 +610,23 @@
         `;
         submitBtn.classList.add('opacity-90');
 
-        setTimeout(() => {
-          const currentPoints = parseInt(localStorage.getItem('userPoints') || '0', 10);
-          const newPoints = currentPoints + 500;
-          localStorage.setItem('userPoints', newPoints);
-
+        try {
+          await saveReport();
+          const reward = await claimReportReward();
           submitBtn.innerHTML = `
             <span class="material-symbols-outlined text-[22px]">check_circle</span>
-            <span class="font-bold">접수 완료! +500P 적립 완료 (총 ${newPoints.toLocaleString()}P)</span>
+            <span class="font-bold">접수 완료! +500P 적립 완료 (총 ${Number(reward.total_points).toLocaleString()}P)</span>
           `;
           submitBtn.style.background = 'linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(0, 80, 54) 100%)';
-        }, 1200);
+        } catch (error) {
+          submitBtn.dataset.submitting = "false";
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[22px]">send</span>
+            <span>10초 만에 안심 제보 완료 (+500P 적립)</span>
+          `;
+          alert(error.message);
+        }
       });
     }
 
