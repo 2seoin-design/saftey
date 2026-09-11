@@ -614,19 +614,17 @@
     const submitBtn = document.getElementById('submitReportBtn');
     const supabaseClient = window.sb;
 
-    const claimReportReward = async (reportId) => {
+    const claimReportReward = async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
       const user = session?.user;
       if (!user) {
         throw new Error('로그인한 사용자만 리워드를 받을 수 있습니다.');
       }
 
-      const { data, error } = await supabaseClient.rpc('claim_report_reward', {
-        p_report_id: reportId
-      });
+      const { data, error } = await supabaseClient.rpc('claim_report_reward');
       if (error) throw error;
       if (!data?.reward_granted) {
-        throw new Error('이 제보에는 이미 리워드가 지급되었습니다.');
+        throw new Error('오늘은 이미 제보 리워드를 받았습니다.');
       }
       return data;
     };
@@ -685,8 +683,8 @@
         submitBtn.classList.add('opacity-90');
 
         try {
-          const reportId = await saveReport();
-          const reward = await claimReportReward(reportId);
+          await saveReport();
+          const reward = await claimReportReward();
           submitBtn.innerHTML = `
             <span class="material-symbols-outlined text-[22px]">check_circle</span>
             <span class="font-bold">접수 완료! +500P 적립 완료 (총 ${Number(reward.total_points).toLocaleString()}P)</span>
