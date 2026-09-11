@@ -344,6 +344,7 @@
     const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
+    const TMAP_APP_KEY = 'B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc';
     const categoryLabels = {
       road_damage: '보도·포트홀 파손',
       streetlight: '가로등·조도 불량',
@@ -449,6 +450,26 @@
 
     const openFileSelector = () => albumInput && albumInput.click();
 
+    const reverseGeocode = async (latitude, longitude) => {
+      const url = new URL('https://apis.openapi.sk.com/tmap/geo/reversegeocoding');
+      url.search = new URLSearchParams({
+        version: '1',
+        lat: String(latitude),
+        lon: String(longitude),
+        coordType: 'WGS84GEO',
+        addressType: 'A02',
+        appKey: TMAP_APP_KEY
+      });
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`주소 변환에 실패했습니다. (${response.status})`);
+      }
+
+      const data = await response.json();
+      return data?.addressInfo?.fullAddress || null;
+    };
+
     const updateCurrentLocation = () => {
       if (!navigator.geolocation) {
         currentLocationText.textContent = '이 브라우저에서는 위치를 사용할 수 없습니다.';
@@ -459,10 +480,19 @@
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
           currentLocationText.textContent =
-            `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            '현재 위치 주소 확인 중...';
           currentLocationAccuracy.textContent = Number.isFinite(coords.accuracy)
             ? `GPS 오차 ±${Math.round(coords.accuracy)}m`
             : 'GPS 확인 완료';
+          reverseGeocode(coords.latitude, coords.longitude)
+            .then((address) => {
+              currentLocationText.textContent = address
+                || `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            })
+            .catch(() => {
+              currentLocationText.textContent =
+                `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            });
         },
         (error) => {
           currentLocationText.textContent = error.code === error.PERMISSION_DENIED
