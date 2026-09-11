@@ -1,6 +1,6 @@
 (async () => {
-      const SUPABASE_URL = 'https://uaiokdnbzbvpmoqnvsho.supabase.co';
-      const SUPABASE_KEY = 'sb_publishable_smBlW5ILkjZmAcYCi14K9A_LS4TktdR';
+      const SUPABASE_URL = 'https://gaicuiithjllwillleyo.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_N5Cb72wbtKj-HhjIoZ20Aw_XBDlvTsy';
       const STATUS_VALUES = ['pending', 'reviewing', 'approved', 'rejected'];
       const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
       const GEMINI_API_KEY = window.GEMINI_API_KEY || '';
