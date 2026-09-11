@@ -193,9 +193,9 @@
           <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-[12px]">
             <div class="flex items-center gap-2 min-w-0">
               <span class="material-symbols-outlined text-red-500 text-[18px] shrink-0" style="font-variation-settings: 'FILL' 1;">location_on</span>
-              <span class="font-semibold text-gray-800 truncate">종로구 대학로 101 앞 보도</span>
+              <span id="currentLocationText" class="font-semibold text-gray-800 truncate">현재 위치 확인 중...</span>
             </div>
-            <span class="text-[11px] text-gray-500 shrink-0 font-medium ml-1">GPS 오차 ±2m 연동</span>
+            <span id="currentLocationAccuracy" class="text-[11px] text-gray-500 shrink-0 font-medium ml-1">GPS 확인 중</span>
           </div>
         </div>
       </div>
@@ -329,6 +329,8 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const currentLocationText = document.getElementById('currentLocationText');
+    const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
     const categoryLabels = {
@@ -436,7 +438,37 @@
 
     const openFileSelector = () => albumInput && albumInput.click();
 
+    const updateCurrentLocation = () => {
+      if (!navigator.geolocation) {
+        currentLocationText.textContent = '이 브라우저에서는 위치를 사용할 수 없습니다.';
+        currentLocationAccuracy.textContent = 'GPS 사용 불가';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          currentLocationText.textContent =
+            `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+          currentLocationAccuracy.textContent = Number.isFinite(coords.accuracy)
+            ? `GPS 오차 ±${Math.round(coords.accuracy)}m`
+            : 'GPS 확인 완료';
+        },
+        (error) => {
+          currentLocationText.textContent = error.code === error.PERMISSION_DENIED
+            ? '위치 권한을 허용해주세요'
+            : '현재 위치를 확인하지 못했습니다';
+          currentLocationAccuracy.textContent = 'GPS 확인 실패';
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 30000
+        }
+      );
+    };
+
     if (cameraBtn) cameraBtn.addEventListener('click', openFileSelector);
+    updateCurrentLocation();
 
     if (albumInput && cameraPreview) {
       albumInput.addEventListener('change', (e) => {
