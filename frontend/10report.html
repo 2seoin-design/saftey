@@ -152,12 +152,12 @@
             <div></div>
           </div>
 
-          <div class="absolute top-10 left-12 right-12 bottom-12 border-2 border-[#60C219] rounded-lg shadow-[0_0_15px_rgba(96,194,25,0.45)] pointer-events-none flex flex-col justify-between p-2">
+          <div id="aiScanOverlay" class="absolute top-10 left-12 right-12 bottom-12 border-2 border-[#60C219] rounded-lg shadow-[0_0_15px_rgba(96,194,25,0.45)] pointer-events-none flex flex-col justify-between p-2">
             <div class="flex items-center justify-between">
-              <span class="bg-[#4FA912]/95 text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide flex items-center gap-1 backdrop-blur-sm">
+              <span id="aiScanStatus" class="bg-[#4FA912]/95 text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide flex items-center gap-1 backdrop-blur-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>AI 분석 중
               </span>
-              <span class="text-white text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded">단차 4.5cm</span>
+              <span id="aiScanMeasurement" class="text-white text-[10px] font-mono bg-black/60 px-1.5 py-0.5 rounded">사진을 등록해주세요</span>
             </div>
             <div class="self-end">
               <div class="w-4 h-4 border-r-2 border-b-2 border-[#60C219]"></div>
@@ -180,14 +180,14 @@
         </div>
 
         <div class="p-3.5 space-y-2.5">
-          <div class="bg-emerald-50/70 border border-emerald-200/90 rounded-xl p-2.5 flex items-start gap-2.5">
+          <div id="aiAnalysisResult" class="bg-gray-50 border border-gray-200 rounded-xl p-2.5 flex items-start gap-2.5" aria-live="polite">
             <span class="material-symbols-outlined text-[#4FA912] text-[20px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
             <div class="flex-1">
               <div class="flex items-center justify-between">
-                <p class="text-[13px] font-bold text-gray-900">[AI 위험 감지] 보도블록 심한 침하</p>
-                <span class="text-[11px] font-bold text-[#4FA912] bg-white px-1.5 py-0.5 rounded border border-emerald-200">신뢰도 98.4%</span>
+                <p id="aiAnalysisTitle" class="text-[13px] font-bold text-gray-900">사진을 등록하면 AI 분석 결과가 표시됩니다</p>
+                <span id="aiAnalysisConfidence" class="hidden text-[11px] font-bold text-[#4FA912] bg-white px-1.5 py-0.5 rounded border border-emerald-200"></span>
               </div>
-              <p class="text-[12px] text-gray-600 mt-0.5 font-medium">지반 침하 및 단차 4.5cm 위험 · 유모차 및 휠체어 전도 주의</p>
+              <p id="aiAnalysisDescription" class="text-[12px] text-gray-600 mt-0.5 font-medium">카메라 또는 앨범에서 위험 구간 사진을 선택해주세요.</p>
             </div>
           </div>
           <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-[12px]">
@@ -323,6 +323,74 @@
     const cameraBtnIcon = document.getElementById('cameraBtnIcon');
     const albumInput = document.getElementById('albumInput');
     const cameraPreview = document.getElementById('cameraPreview');
+    const aiScanStatus = document.getElementById('aiScanStatus');
+    const aiScanMeasurement = document.getElementById('aiScanMeasurement');
+    const aiAnalysisResult = document.getElementById('aiAnalysisResult');
+    const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
+    const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
+    const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+
+    const showAnalysisState = ({ loading, title, description, confidence = '', measurement = '' }) => {
+      if (aiScanStatus) {
+        aiScanStatus.innerHTML = loading
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>AI 분석 중'
+          : '<span class="w-1.5 h-1.5 rounded-full bg-white"></span>AI 분석 완료';
+      }
+      if (aiScanMeasurement) aiScanMeasurement.textContent = measurement;
+      if (aiAnalysisTitle) aiAnalysisTitle.textContent = title;
+      if (aiAnalysisDescription) aiAnalysisDescription.textContent = description;
+      if (aiAnalysisConfidence) {
+        aiAnalysisConfidence.textContent = confidence;
+        aiAnalysisConfidence.classList.toggle('hidden', !confidence);
+      }
+      if (aiAnalysisResult) {
+        aiAnalysisResult.className = loading
+          ? 'bg-blue-50/70 border border-blue-200/90 rounded-xl p-2.5 flex items-start gap-2.5'
+          : 'bg-emerald-50/70 border border-emerald-200/90 rounded-xl p-2.5 flex items-start gap-2.5';
+      }
+    };
+
+    const showAiAnalysis = async (file) => {
+      showAnalysisState({
+        loading: true,
+        title: '사진을 분석하고 있습니다...',
+        description: '위험 요소와 보행 안전 정보를 확인하는 중입니다.',
+        measurement: '분석 중'
+      });
+
+      try {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('사진을 읽지 못했습니다.'));
+          reader.readAsDataURL(file);
+        });
+        const response = await fetch('/api/analyze-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mimeType: file.type,
+            data: String(dataUrl).split(',')[1]
+          })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'AI 분석에 실패했습니다.');
+        showAnalysisState({
+          loading: false,
+          title: result.title,
+          description: result.description,
+          confidence: `신뢰도 ${Number(result.confidence).toFixed(1)}%`,
+          measurement: result.measurement
+        });
+      } catch (error) {
+        showAnalysisState({
+          loading: false,
+          title: 'AI 분석에 실패했습니다',
+          description: error.message,
+          measurement: '분석 실패'
+        });
+      }
+    };
 
     const openFileSelector = () => albumInput && albumInput.click();
 
@@ -332,9 +400,19 @@
       albumInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
+          if (file.size > 10 * 1024 * 1024) {
+            showAnalysisState({
+              loading: false,
+              title: 'AI 분석에 실패했습니다',
+              description: '사진은 10MB 이하만 분석할 수 있습니다.',
+              measurement: '분석 실패'
+            });
+            return;
+          }
           const reader = new FileReader();
           reader.onload = function(evt) {
             cameraPreview.src = evt.target.result;
+            showAiAnalysis(file);
             // 사진 등록 후 카메라 버튼 아이콘을 재촬영(refresh) 아이콘으로 변경
             if (cameraBtnIcon) {
               cameraBtnIcon.textContent = 'refresh';
