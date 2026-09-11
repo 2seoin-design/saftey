@@ -100,9 +100,11 @@ tailwind.config = {
     main > :last-child { margin-bottom: 0 !important; }
   }
   ::-webkit-scrollbar { display: none; }
+  body.page-transition { opacity: 0; transition: opacity 0.22s ease; }
+  body.page-transition.page-loaded { opacity: 1; }
 </style>
 </head>
-<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen">
+<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen page-transition">
 
 <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
   <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
@@ -222,20 +224,20 @@ tailwind.config = {
 <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
   <div class="h-16 px-gutter-mobile flex items-center justify-around relative">
     <div class="flex-1 flex flex-col items-center relative -top-3">
-      <a aria-current="page" class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="#" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
+      <a aria-current="page" class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="mainhome.html" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
         <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">home</span>
       </a>
       <span class="font-label-sm text-[11px] font-bold mt-1" style="color: rgb(79,169,18);">홈</span>
     </div>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
       <span class="material-symbols-outlined text-[22px]">map</span>
       <span class="font-label-sm text-[11px]">안전지도</span>
     </a>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
       <span class="material-symbols-outlined text-[22px]">photo_camera</span>
       <span class="font-label-sm text-[11px]">10초제보</span>
     </a>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html">
       <span class="material-symbols-outlined text-[22px]">person</span>
       <span class="font-label-sm text-[11px]">마이</span>
     </a>
@@ -248,6 +250,19 @@ tailwind.config = {
       if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(8);
       }
+    });
+  });
+
+  // 페이지 전환 시 자연스러운 페이드 효과
+  requestAnimationFrame(() => document.body.classList.add('page-loaded'));
+
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.classList.remove('page-loaded');
+      setTimeout(() => { window.location.href = href; }, 200);
     });
   });
 </script>

@@ -227,12 +227,9 @@
 
     // 3. Quick Report Redirect
     const reportBtn = document.getElementById('quickReportRewardBtn');
-    if (reportBtn) {
+    if (reportBtn) {  
       reportBtn.addEventListener('click', () => {
-        const targetTab = document.querySelector('nav a[data-path="quick-report"]');
-        if (targetTab) {
-          targetTab.click();
-        }
+      window.location.href = '10report.html';
       });
     }
 
