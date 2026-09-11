@@ -4,8 +4,9 @@
       const STATUS_VALUES = ['pending', 'reviewing', 'approved', 'rejected'];
       const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
       const GEMINI_API_KEY = window.GEMINI_API_KEY || '';
-      const GEMINI_MODEL = 'gemini-2.0-flash';
+      const GEMINI_MODEL = 'gemini-2.5-flash';
       const AI_CLASSIFIER_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+      const AI_PROXY_ENDPOINT = window.AI_API_ENDPOINT || '/api/analyze-image';
       const AI_CLASSIFICATION_TIMEOUT = 30000;
       const AI_CATEGORY_DEFINITIONS = Object.freeze([
         {
@@ -195,57 +196,68 @@
         if (!(file instanceof File) || !file.type.startsWith('image/')) {
           throw new Error('AI 분석을 진행할 이미지 파일이 없습니다.');
         }
-        if (!GEMINI_API_KEY || GEMINI_API_KEY === 'PASTE_YOUR_GEMINI_API_KEY_HERE') {
-          throw new Error('10report.js 상단의 GEMINI_API_KEY에 Gemini API 키를 입력해주세요.');
-        }
-
         emit('report:ai-classification-started', { file });
         const controller = new AbortController();
         const timeoutId = window.setTimeout(() => controller.abort(), AI_CLASSIFICATION_TIMEOUT);
         try {
-          const response = await fetch(
-            `${AI_CLASSIFIER_ENDPOINT}?key=${encodeURIComponent(GEMINI_API_KEY)}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{
-                  role: 'user',
-                  parts: [
-                    {
-                      inlineData: {
-                        mimeType: file.type,
-                        data: await fileToBase64(file)
-                      }
-                    },
-                    {
+          const data = await fileToBase64(file);
+          const request = GEMINI_API_KEY && GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_API_KEY_HERE'
+            ? {
+                url: `${AI_CLASSIFIER_ENDPOINT}?key=${encodeURIComponent(GEMINI_API_KEY)}`,
+                body: {
+                  contents: [{
+                    role: 'user',
+                    parts: [
+                      {
+                        inline_data: {
+                          mime_type: file.type,
+                          data
+                        }
+                      },
+                      {
                       text: [
                         '이 사진에 찍힌 보행 안전 위험을 아래 5개 카테고리 중 정확히 하나로 분류하세요.',
+                        '싱크홀, 도로 함몰, 큰 구멍, 포트홀, 보도 붕괴와 같이 지면이 꺼지거나 파손된 경우는 반드시 road_damage로 분류하세요.',
                         ...AI_CATEGORY_DEFINITIONS.map(({ id, label }) => `- ${id}: ${label}`),
                         '사진에 위험 요소가 명확하지 않으면 other를 선택하세요.',
                         '응답은 JSON 형식만 반환하세요. confidence는 0부터 1 사이 숫자입니다.',
                         'explanation은 한국어로 짧게 작성하세요.'
                       ].join('\n')
-                    }
-                  ]
-                }],
-                generationConfig: {
-                  temperature: 0,
-                  responseMimeType: 'application/json',
-                  responseSchema: {
-                    type: 'OBJECT',
-                    properties: {
-                      category: {
-                        type: 'STRING',
-                        enum: AI_CATEGORY_DEFINITIONS.map(({ id }) => id)
+                      }
+                    ]
+                  }],
+                  generationConfig: {
+                    temperature: 0,
+                    responseMimeType: 'application/json',
+                    responseSchema: {
+                      type: 'OBJECT',
+                      properties: {
+                        category: {
+                          type: 'STRING',
+                          enum: AI_CATEGORY_DEFINITIONS.map(({ id }) => id)
+                        },
+                        confidence: { type: 'NUMBER' },
+                        explanation: { type: 'STRING' }
                       },
-                      confidence: { type: 'NUMBER' },
-                      explanation: { type: 'STRING' }
-                    },
-                    required: ['category', 'confidence', 'explanation']
+                      required: ['category', 'confidence', 'explanation']
+                    }
                   }
                 }
-              }),
+              }
+            : {
+                url: AI_PROXY_ENDPOINT,
+                body: {
+                  mimeType: file.type,
+                  data
+                }
+              };
+
+          const response = await fetch(
+            request.url,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(request.body),
               signal: controller.signal
             }
           );
@@ -255,6 +267,13 @@
             const message = payload?.error?.message || payload?.message
               || `AI 분류 서버가 ${response.status} 상태를 반환했습니다.`;
             throw new Error(message);
+          }
+
+          if (!GEMINI_API_KEY) {
+            if (!payload?.category) {
+              throw new Error(payload?.error || '서버에서 AI 분류 결과를 반환하지 않았습니다.');
+            }
+            return normalizeClassification(payload);
           }
 
           return normalizeClassification(parseClassificationResponse(payload));
