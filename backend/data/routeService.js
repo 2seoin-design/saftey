@@ -3,7 +3,7 @@ import { fetchNearbySafetyFacilitiesLive as fetchNearbySafetyFacilities } from '
 
 // TMAP 앱키는 클라이언트에 노출되는 것이 정상 (Google/Kakao 지도 키와 동일한 방식) -
 // TMAP 개발자센터에서 이 페이지를 서비스할 도메인으로 접근 제한을 걸어둘 것
-const TMAP_APP_KEY = 'xfSFc0gQM4817XjeLGmGgaAa14uiPlgV2NBv433D';
+const TMAP_APP_KEY = '7ZJRT0iNxB42myqIjhvAS66OZKrm0SWE9H4UVe5Y';
 const TMAP_PEDESTRIAN_URL = 'https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1';
 
 const FACILITY_SCORE = { BELL: 5, CCTV: 3, LIGHT: 1 };
