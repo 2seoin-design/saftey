@@ -329,15 +329,19 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const aiApiEndpoint = window.AI_API_ENDPOINT
+      || 'https://uaiokdnbzbvpmoqnvsho.supabase.co/functions/v1/analyze-image';
 
-    const showAnalysisState = ({ loading, title, description, confidence = '', measurement = '' }) => {
+    const showAnalysisState = ({ loading, category = '', title, description, confidence = '', measurement = '' }) => {
       if (aiScanStatus) {
         aiScanStatus.innerHTML = loading
           ? '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>AI 분석 중'
           : '<span class="w-1.5 h-1.5 rounded-full bg-white"></span>AI 분석 완료';
       }
       if (aiScanMeasurement) aiScanMeasurement.textContent = measurement;
-      if (aiAnalysisTitle) aiAnalysisTitle.textContent = title;
+      if (aiAnalysisTitle) {
+        aiAnalysisTitle.textContent = category ? `[${category}] ${title}` : title;
+      }
       if (aiAnalysisDescription) aiAnalysisDescription.textContent = description;
       if (aiAnalysisConfidence) {
         aiAnalysisConfidence.textContent = confidence;
@@ -365,28 +369,43 @@
           reader.onerror = () => reject(new Error('사진을 읽지 못했습니다.'));
           reader.readAsDataURL(file);
         });
-        const response = await fetch('/api/analyze-image', {
+        const response = await fetch(aiApiEndpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: 'sb_publishable_smBlW5ILkjZmAcYCi14K9A_LS4TktdR',
+            Authorization: 'Bearer sb_publishable_smBlW5ILkjZmAcYCi14K9A_LS4TktdR'
+          },
           body: JSON.stringify({
             mimeType: file.type,
             data: String(dataUrl).split(',')[1]
           })
         });
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'AI 분석에 실패했습니다.');
+        if (!response.ok) {
+          const detail = result.detail ? ` (${result.detail})` : '';
+          throw new Error(`${result.error || 'AI 분석에 실패했습니다.'}${detail}`);
+        }
         showAnalysisState({
           loading: false,
+          category: result.category === 'road_damage' ? '보도·포트홀 파손'
+            : result.category === 'streetlight' ? '가로등·조도 불량'
+              : result.category === 'stairs' ? '계단·단차 턱'
+                : result.category === 'obstruction' ? '불법 적치물·통행방해'
+                  : result.category === 'other' ? '기타 위험' : '',
           title: result.title,
           description: result.description,
           confidence: `신뢰도 ${Number(result.confidence).toFixed(1)}%`,
           measurement: result.measurement
         });
       } catch (error) {
+        const message = error instanceof TypeError
+          ? 'Supabase AI 함수에 연결할 수 없습니다. Supabase Function 배포 상태와 주소를 확인해주세요.'
+          : error.message;
         showAnalysisState({
           loading: false,
           title: 'AI 분석에 실패했습니다',
-          description: error.message,
+          description: message,
           measurement: '분석 실패'
         });
       }
