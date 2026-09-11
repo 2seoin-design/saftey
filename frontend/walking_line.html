@@ -1,165 +1,465 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>안심 산책로</title>
-<style>
-  html, body { margin: 0; padding: 0; height: 100%; font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; }
-  #map_div { width: 100%; height: 100%; }
-  .toolbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    padding: 10px 12px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .toolbar button {
-    border: none; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700;
-    cursor: pointer; color: #fff; background: #9aa0a6;
-  }
-  .toolbar button.shape { background: #60c219; }
-  .toolbar button.shape.selected { background: #2563eb; }
-  .toolbar button#btnGenerate { background: #16a34a; }
-  .toolbar button#btnSimulateWalk { background: #f59e0b; }
-  #status { font-size: 12px; color: #444; width: 100%; white-space: pre-line; }
-  #loginNotice {
-    position: fixed; inset: 0; z-index: 40; background: rgba(255,255,255,0.95);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-  }
-  [hidden] { display: none !important; }
-</style>
-</head>
-<body>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 
-<div class="toolbar">
-  <button class="shape" data-shape="rhombus">마름모 (10분)</button>
-  <button class="shape" data-shape="heart">하트 (20분)</button>
-  <button class="shape" data-shape="star">별 (30분)</button>
-  <button class="shape" data-shape="fish">물고기 (60분)</button>
-  <button class="shape" data-shape="crown">왕관 (90분)</button>
-  <button id="btnGenerate" disabled>내 위치로 산책로 생성</button>
-  <button id="btnSimulateWalk" disabled>GPS 궤적 시뮬레이션(일치도 테스트)</button>
-  <span id="status"></span>
-</div>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 
-<div id="map_div"></div>
-
-<div id="loginNotice">
-  <p>로그인 후 이용해주세요 (리워드 지급을 위해 필요)</p>
-  <a href="login.html">로그인하러 가기</a>
-</div>
-
-<script type="importmap">
-{
-  "imports": {
-    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
-  }
-}
-</script>
-<script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
-
-<script type="module">
-  import { supabase } from '../backend/data/supabaseService.js';
-  import { generateShapeRoute, SHAPE_CONFIG } from '../backend/data/shapeRouteService.js';
-  import { analyzeGpsSimilarity } from '../backend/data/patternMatchService.js';
-
-  const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
-
-  const map = new Tmapv2.Map('map_div', {
-    center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
-    width: '100%',
-    height: '100%',
-    zoom: 17,
-  });
-
-  const statusEl = document.getElementById('status');
-  const btnGenerate = document.getElementById('btnGenerate');
-  const btnSimulate = document.getElementById('btnSimulateWalk');
-  const shapeButtons = document.querySelectorAll('.shape');
-
-  let selectedShape = null;
-  let userLocation = null;
-  let currentRoute = null;
-  let routePolyline = null;
-  let userId = null;
-
-  shapeButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      shapeButtons.forEach((b) => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedShape = btn.dataset.shape;
-      updateGenerateButton();
-    });
-  });
-
-  function updateGenerateButton() {
-    btnGenerate.disabled = !(selectedShape && userLocation);
-  }
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
-        updateGenerateButton();
-      },
-      () => {
-        statusEl.textContent = '위치 접근이 거부되어 서울시청 기준으로 진행합니다.';
-        userLocation = DEFAULT_CENTER;
-        updateGenerateButton();
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#80d5cb",
+            "on-primary-fixed": "#00201d",
+            "on-tertiary-container": "#dbecff",
+            "secondary": "#006c49",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#005683",
+            "on-error-container": "#93000a",
+            "outline": "#6e7977",
+            "secondary-container": "#6cf8bb",
+            "primary-container": "#0f766e",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#a3faef",
+            "on-primary-fixed-variant": "#00504a",
+            "on-secondary-container": "#00714d",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#004b73",
+            "background": "#f9f9ff",
+            "tertiary-container": "#006fa8",
+            "surface-container-highest": "#dce2f7",
+            "on-background": "#141b2b",
+            "inverse-primary": "#80d5cb",
+            "surface-bright": "#f9f9ff",
+            "inverse-surface": "#293040",
+            "on-primary": "#ffffff",
+            "surface-variant": "#dce2f7",
+            "on-secondary-fixed": "#002113",
+            "surface-dim": "#d3daef",
+            "surface-container-high": "#e1e8fd",
+            "surface-tint": "#006a63",
+            "surface-container": "#e9edff",
+            "primary-fixed": "#9cf2e8",
+            "tertiary-fixed": "#cce5ff",
+            "secondary-fixed-dim": "#4edea3",
+            "on-surface": "#141b2b",
+            "tertiary-fixed-dim": "#93ccff",
+            "surface-container-low": "#f1f3ff",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#3e4947",
+            "primary": "#005c55",
+            "on-secondary-fixed-variant": "#005236",
+            "surface": "#f9f9ff",
+            "inverse-on-surface": "#edf0ff",
+            "on-tertiary-fixed": "#001d31",
+            "on-tertiary": "#ffffff",
+            "on-error": "#ffffff",
+            "outline-variant": "#bdc9c6",
+            "secondary-fixed": "#6ffbbe"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "space-xxs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "gutter-desktop": "1.5rem",
+            "container-max": "1200px",
+            "space-3xl": "4.5rem",
+            "space-md": "1rem",
+            "space-2xl": "3rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-hero-mobile": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Plus Jakarta Sans"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-hero": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+            "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "display-hero-mobile": ["28px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "headline-xl-mobile": ["24px", {"lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-xl": ["32px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+            "display-hero": ["44px", {"lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "800"}]
+          }
+        }
       }
-    );
-  }
+    };
+  </script>
 
-  btnGenerate.addEventListener('click', async () => {
-    statusEl.textContent = `${SHAPE_CONFIG[selectedShape].label} 산책로 생성 중... (실제 도로를 따라가므로 몇 초 걸릴 수 있음)`;
-    btnGenerate.disabled = true;
-    try {
-      currentRoute = await generateShapeRoute({ lat: userLocation.lat, lng: userLocation.lng, shape: selectedShape });
-
-      if (routePolyline) routePolyline.setMap(null);
-      routePolyline = new Tmapv2.Polyline({
-        path: currentRoute.waypoints.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
-        strokeColor: '#16a34a',
-        strokeWeight: 6,
-        map,
-      });
-
-      statusEl.textContent =
-        `${SHAPE_CONFIG[selectedShape].label}: 실제 거리 ${currentRoute.distanceKm.toFixed(2)}km ` +
-        `(목표 ${currentRoute.targetDistanceKm}km) / 예상 ${currentRoute.estimatedMinutes}분 / ` +
-        `안심점수 ${currentRoute.score}` + (currentRoute.blocked ? ' / 경로상 위험제보 있음' : '');
-      btnSimulate.disabled = false;
-    } catch (err) {
-      statusEl.textContent = '산책로 생성 실패: ' + err.message;
-    } finally {
-      btnGenerate.disabled = false;
+  <style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior-y: none;
+        background-color: #f9f9ff;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+      main > :first-child {
+        margin-top: 0 !important;
+      }
+      main > :last-child {
+        margin-bottom: 0 !important;
+      }
     }
-  });
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    #map_div { background: #eef1f6; }
+  </style>
 
-  // 실제로 걷지 않고도 GPS 일치도 로직을 확인해볼 수 있도록, 생성된 경로 좌표에
-  // 약간의 노이즈(±5m 랜덤)를 섞어 "실제로 걸었다면 이랬을 법한" 궤적을 흉내냄
-  function simulateGpsLogFrom(waypoints) {
-    const jitterDeg = 0.00004; // 약 4~5m
-    return waypoints.map((p, i) => ({
-      lat: p.lat + (Math.random() - 0.5) * jitterDeg,
-      lng: p.lng + (Math.random() - 0.5) * jitterDeg,
-      timestamp: Date.now() + i * 1000,
-    }));
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    }
   }
+  </script>
+  <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
+</head>
 
-  btnSimulate.addEventListener('click', async () => {
-    if (!currentRoute) return;
-    statusEl.textContent = 'GPS 궤적 일치도 분석 중...';
-    const fakeGpsLog = simulateGpsLogFrom(currentRoute.waypoints);
-    const result = await analyzeGpsSimilarity(currentRoute.waypoints, fakeGpsLog, userId);
-    statusEl.textContent = `[시뮬레이션] 일치도 ${result.similarityScore}% - ${result.message}`;
-  });
+<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen">
+  <!-- Top App Navigation Bar -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+    <div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+      <div class="flex items-center gap-space-xs">
+        <div class="flex items-center gap-2">
+          <img alt="세이프티" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT5WSmAdRD3SK1Qj_wIc6Aep1lhhkB9bLp23mRWdtMKSrUJXn7eEgVLtvAY9rxjrlYJyWCwy0PJ0JVMH-Kp0M5sC5GzCC_RE-fFYR4JH3s5If_bqtiW_p5YJ4Hsb4qZ-KdP3d_eOpMKGU8gamQjwtKW1IhE-1yTZOj28nlUY5IwjZRbjW0QVZchkOZWJaMK6IfMBoUkMODqLUerOHapQZEbAOxFW7icD81CRgGrXJJ1DvTvLLY9GQH9f3V3O_zQEB17Lo">
+          <span class="font-headline-md text-headline-md font-bold text-on-surface">안전산책로 길안내<br></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button aria-label="제보 안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-[22px]">help_outline</span>
+        </button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button">
+          <span class="material-symbols-outlined text-[20px]">add</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-    userId = user.id;
-    document.getElementById('loginNotice').hidden = true;
-  }
-</script>
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen">
+    <div class="flex flex-col w-full">
+      <!-- Route Title Card -->
+      <section class="px-gutter-mobile pt-space-xs pb-space-sm w-full">
+        <div class="flex items-center justify-between bg-surface-container-lowest/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-sm border border-outline-variant/30">
+          <div class="flex items-center gap-2">
+            <div id="courseIconWrap" class="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">
+              <span id="courseIcon" class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-1.5">
+                <span id="courseName" class="font-label-md text-label-md font-bold text-on-surface">별모양 산책로</span>
+                <span id="courseDurationBadge" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white leading-none" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">30분 코스</span>
+              </div>
+              <span id="courseInfo" class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">목표 2.0km · 안내 시작을 누르면 실제 경로가 그려집니다</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button id="btnChangeCourse" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-secondary text-label-sm font-semibold transition-colors">
+              <span class="material-symbols-outlined text-[15px]">swap_horiz</span>
+              <span>코스변경</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map Canvas -->
+      <section class="px-gutter-mobile py-space-xs w-full">
+        <div class="relative w-full h-[480px] rounded-xl overflow-hidden shadow-md bg-surface-container-low">
+          <!-- 실제 TMap 지도 -->
+          <div id="map_div" class="absolute inset-0 w-full h-full"></div>
+
+          <!-- Current Position Callout -->
+          <div class="absolute bottom-16 left-4 z-20 flex items-center gap-1.5 bg-surface-container-lowest/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md">
+            <span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+            <span id="currentPositionLabel" class="font-label-sm text-label-sm text-on-surface font-bold">현위치 확인 중...</span>
+          </div>
+
+          <!-- Patrol Status Badge -->
+          <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-secondary text-on-secondary px-3 py-1 rounded-full shadow-md">
+            <span class="material-symbols-outlined text-[16px]">shield_person</span>
+            <span class="font-label-sm text-label-sm font-bold">안심 귀갓길 알고리즘 적용</span>
+          </div>
+
+          <!-- Floating Map Controls -->
+          <div class="absolute right-3 bottom-14 z-20 flex flex-col gap-2">
+            <button aria-label="음성 안내 볼륨" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
+              <span class="material-symbols-outlined text-[20px] text-primary">volume_up</span>
+            </button>
+            <button id="btnRecenter" aria-label="현위치 재정렬" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
+              <span class="material-symbols-outlined text-[20px] text-secondary">my_location</span>
+            </button>
+          </div>
+
+          <!-- Pace / Status Bar -->
+          <div class="absolute bottom-2.5 inset-x-3 z-20 flex items-center justify-between bg-surface-container-lowest/90 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">directions_walk</span>
+              </div>
+              <div class="flex flex-col">
+                <span id="walkStatusLine1" class="font-label-sm text-label-sm text-on-surface font-bold">아직 안내를 시작하지 않았습니다</span>
+                <span id="walkStatusLine2" class="font-label-sm text-label-sm text-secondary font-semibold">코스를 고르고 안내를 시작해보세요</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navigation Action Buttons -->
+      <section class="px-gutter-mobile pt-space-xs pb-space-lg w-full">
+        <div class="flex items-center gap-3 w-full">
+          <button id="btnStartGuide" type="button" class="flex-1 h-[52px] rounded-full text-white font-bold font-label-md text-label-md flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(79, 169, 18, 0.3) 0px 4px 14px;">
+            <span class="material-symbols-outlined text-[20px]">navigation</span>
+            <span>안내 시작</span>
+          </button>
+          <button id="btnEndGuide" type="button" disabled class="flex-1 h-[52px] rounded-full bg-surface-container-high text-on-surface-variant font-semibold font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-dim active:scale-98 transition-all disabled:opacity-50">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+            <span>안내 종료</span>
+          </button>
+        </div>
+        <p id="resultLine" class="mt-2 text-label-sm text-on-surface-variant text-[12px] whitespace-pre-line"></p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-4px_24px_rgba(15,118,110,0.08)] border-t border-outline-variant/30">
+    <div class="flex items-center justify-around h-16 px-space-xs relative">
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="mainhome.html">
+        <span class="material-symbols-outlined text-[22px]">home</span>
+        <span class="font-label-sm text-label-sm">홈</span>
+      </a>
+      <div class="flex flex-col items-center -mt-6">
+        <a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="safymap.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+          <span class="material-symbols-outlined text-[26px] text-white">map</span>
+        </a>
+        <span class="font-label-sm text-label-sm font-bold mt-1" style="color: rgb(79, 169, 18);">안전지도</span>
+      </div>
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="10report.html">
+        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
+        <span class="font-label-sm text-label-sm">10초제보</span>
+      </a>
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="mypage.html">
+        <span class="material-symbols-outlined text-[22px]">person</span>
+        <span class="font-label-sm text-label-sm">마이</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Decorative micro-interactions (음성 안내 볼륨 토글) -->
+  <script>
+    document.querySelectorAll('[aria-label="음성 안내 볼륨"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const icon = btn.querySelector('span');
+        if (icon.textContent === 'volume_up') {
+          icon.textContent = 'volume_off';
+          icon.classList.remove('text-primary');
+          icon.classList.add('text-outline');
+        } else {
+          icon.textContent = 'volume_up';
+          icon.classList.remove('text-outline');
+          icon.classList.add('text-primary');
+        }
+      });
+    });
+  </script>
+
+  <!-- 실제 동작 로직: 도형 산책로 생성 + 실시간 GPS 추적 + 일치도/리워드 -->
+  <script type="module">
+    import { supabase } from '../backend/data/supabaseService.js';
+    import { generateShapeRoute, SHAPE_CONFIG } from '../backend/data/shapeRouteService.js';
+    import { analyzeGpsSimilarity } from '../backend/data/patternMatchService.js';
+
+    const SHAPE_ORDER = ['rhombus', 'heart', 'star', 'fish', 'crown'];
+    const SHAPE_ICON = { rhombus: 'diamond', heart: 'favorite', star: 'star', fish: 'set_meal', crown: 'crown' };
+    const SHAPE_ZOOM = { rhombus: 18, heart: 17, star: 16, fish: 15, crown: 14 };
+    const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 }; // 서울시청 (위치 미허용 시 폴백)
+
+    let shapeIndex = SHAPE_ORDER.indexOf('star');
+    let userLocation = null;
+    let userId = null;
+    let currentRoute = null;
+    let routePolyline = null;
+    let watchId = null;
+    let gpsLog = [];
+
+    const map = new Tmapv2.Map('map_div', {
+      center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+      width: '100%',
+      height: '100%',
+      zoom: 16,
+    });
+
+    const courseIcon = document.getElementById('courseIcon');
+    const courseName = document.getElementById('courseName');
+    const courseDurationBadge = document.getElementById('courseDurationBadge');
+    const courseInfo = document.getElementById('courseInfo');
+    const currentPositionLabel = document.getElementById('currentPositionLabel');
+    const walkStatusLine1 = document.getElementById('walkStatusLine1');
+    const walkStatusLine2 = document.getElementById('walkStatusLine2');
+    const resultLine = document.getElementById('resultLine');
+    const btnStartGuide = document.getElementById('btnStartGuide');
+    const btnEndGuide = document.getElementById('btnEndGuide');
+
+    function renderCourseCard() {
+      const shape = SHAPE_ORDER[shapeIndex];
+      const config = SHAPE_CONFIG[shape];
+      courseIcon.textContent = SHAPE_ICON[shape];
+      courseName.textContent = `${config.label}모양 산책로`;
+      courseDurationBadge.textContent = `${config.durationMin}분 코스`;
+      courseInfo.textContent = `목표 ${config.targetDistanceKm}km · 안내 시작을 누르면 실제 경로가 그려집니다`;
+    }
+    renderCourseCard();
+
+    document.getElementById('btnChangeCourse').addEventListener('click', () => {
+      if (watchId !== null) return; // 안내 중에는 코스 변경 불가
+      shapeIndex = (shapeIndex + 1) % SHAPE_ORDER.length;
+      renderCourseCard();
+    });
+
+    function updateUserLocation(lat, lng, label) {
+      userLocation = { lat, lng };
+      currentPositionLabel.textContent = label;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          updateUserLocation(pos.coords.latitude, pos.coords.longitude, '현위치 확인됨');
+          map.setCenter(new Tmapv2.LatLng(pos.coords.latitude, pos.coords.longitude));
+        },
+        () => {
+          updateUserLocation(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng, '위치 접근 거부 - 서울시청 기준');
+        }
+      );
+    } else {
+      updateUserLocation(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng, '위치 미지원 - 서울시청 기준');
+    }
+
+    document.getElementById('btnRecenter').addEventListener('click', () => {
+      if (userLocation) map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
+    });
+
+    btnStartGuide.addEventListener('click', async () => {
+      if (!userLocation) return;
+      const shape = SHAPE_ORDER[shapeIndex];
+      const config = SHAPE_CONFIG[shape];
+
+      btnStartGuide.disabled = true;
+      walkStatusLine1.textContent = `${config.label}모양 산책로 생성 중...`;
+      walkStatusLine2.textContent = '실제 도로를 따라가므로 몇 초 걸릴 수 있어요';
+      resultLine.textContent = '';
+
+      try {
+        currentRoute = await generateShapeRoute({ lat: userLocation.lat, lng: userLocation.lng, shape });
+
+        if (routePolyline) routePolyline.setMap(null);
+        routePolyline = new Tmapv2.Polyline({
+          path: currentRoute.waypoints.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+          strokeColor: '#4fa912',
+          strokeWeight: 6,
+          map,
+        });
+        map.setZoom(SHAPE_ZOOM[shape] ?? 16);
+        map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
+
+        courseInfo.textContent =
+          `실제 거리 ${currentRoute.distanceKm.toFixed(2)}km · 안심점수 ${currentRoute.score}` +
+          (currentRoute.blocked ? ' · 경로상 위험제보 있음' : '');
+
+        gpsLog = [];
+        walkStatusLine1.textContent = '안내 중 - 실제로 걸어보세요';
+        walkStatusLine2.textContent = 'GPS 궤적을 기록하고 있어요';
+        btnEndGuide.disabled = false;
+
+        if (navigator.geolocation) {
+          watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+              gpsLog.push({ lat: pos.coords.latitude, lng: pos.coords.longitude, timestamp: Date.now() });
+              updateUserLocation(pos.coords.latitude, pos.coords.longitude, '이동 중');
+            },
+            () => {},
+            { enableHighAccuracy: true }
+          );
+        }
+      } catch (err) {
+        walkStatusLine1.textContent = '산책로 생성 실패';
+        walkStatusLine2.textContent = err.message;
+        btnStartGuide.disabled = false;
+      }
+    });
+
+    btnEndGuide.addEventListener('click', async () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      btnEndGuide.disabled = true;
+      btnStartGuide.disabled = false;
+      walkStatusLine1.textContent = '아직 안내를 시작하지 않았습니다';
+      walkStatusLine2.textContent = '코스를 고르고 안내를 시작해보세요';
+
+      if (!currentRoute) return;
+
+      if (gpsLog.length < 2) {
+        resultLine.textContent = 'GPS 기록이 너무 적어 일치도를 분석할 수 없습니다.';
+        return;
+      }
+      if (!userId) {
+        resultLine.textContent = '로그인하면 완주 일치도를 분석하고 리워드를 받을 수 있어요.';
+        return;
+      }
+
+      resultLine.textContent = '일치도 분석 중...';
+      const result = await analyzeGpsSimilarity(currentRoute.waypoints, gpsLog, userId);
+      resultLine.textContent = `일치도 ${result.similarityScore}% - ${result.message}`;
+    });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) userId = user.id;
+  </script>
 </body>
 </html>
