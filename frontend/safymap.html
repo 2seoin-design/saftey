@@ -1,71 +1,413 @@
-<!DOCTYPE html><html lang="ko" style=""><head></head><body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen" style="background-color: rgb(245, 245, 245);"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed-dim": "#80d5cb", "on-primary-fixed": "#00201d", "on-tertiary-container": "#dbecff", "secondary": "#006c49", "surface-container-lowest": "#ffffff", "tertiary": "#005683", "on-error-container": "#93000a", "outline": "#6e7977", "secondary-container": "#6cf8bb", "primary-container": "#0f766e", "on-secondary": "#ffffff", "on-primary-container": "#a3faef", "on-primary-fixed-variant": "#00504a", "on-secondary-container": "#00714d", "error": "#ba1a1a", "on-tertiary-fixed-variant": "#004b73", "background": "#f9f9ff", "tertiary-container": "#006fa8", "surface-container-highest": "#dce2f7", "on-background": "#141b2b", "inverse-primary": "#80d5cb", "surface-bright": "#f9f9ff", "inverse-surface": "#293040", "on-primary": "#ffffff", "surface-variant": "#dce2f7", "on-secondary-fixed": "#002113", "surface-dim": "#d3daef", "surface-container-high": "#e1e8fd", "surface-tint": "#006a63", "surface-container": "#e9edff", "primary-fixed": "#9cf2e8", "tertiary-fixed": "#cce5ff", "secondary-fixed-dim": "#4edea3", "on-surface": "#141b2b", "tertiary-fixed-dim": "#93ccff", "surface-container-low": "#f1f3ff", "error-container": "#ffdad6", "on-surface-variant": "#3e4947", "primary": "#005c55", "on-secondary-fixed-variant": "#005236", "surface": "#f9f9ff", "inverse-on-surface": "#edf0ff", "on-tertiary-fixed": "#001d31", "on-tertiary": "#ffffff", "on-error": "#ffffff", "outline-variant": "#bdc9c6", "secondary-fixed": "#6ffbbe" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.75rem", "space-xs": "0.5rem", "space-xxs": "0.25rem", "space-lg": "1.5rem", "gutter-mobile": "1rem", "gutter-desktop": "1.5rem", "container-max": "1200px", "space-3xl": "4.5rem", "space-md": "1rem", "space-2xl": "3rem", "space-xl": "2rem" }, "fontFamily": { "body-lg": ["Plus Jakarta Sans"], "title-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "display-hero-mobile": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "display-hero": ["Plus Jakarta Sans"] }, "fontSize": { "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}], "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}], "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600"}], "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700"}], "display-hero-mobile": ["28px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}], "headline-xl-mobile": ["24px", {"lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700"}], "headline-xl": ["32px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}], "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}], "display-hero": ["44px", {"lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "800"}] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;background-color:#f9f9ff;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed-dim": "#80d5cb", "on-primary-fixed": "#00201d", "on-tertiary-container": "#dbecff", "secondary": "#006c49", "surface-container-lowest": "#ffffff", "tertiary": "#005683", "on-error-container": "#93000a", "outline": "#6e7977", "secondary-container": "#6cf8bb", "primary-container": "#0f766e", "on-secondary": "#ffffff", "on-primary-container": "#a3faef", "on-primary-fixed-variant": "#00504a", "on-secondary-container": "#00714d", "error": "#ba1a1a", "on-tertiary-fixed-variant": "#004b73", "background": "#f9f9ff", "tertiary-container": "#006fa8", "surface-container-highest": "#dce2f7", "on-background": "#141b2b", "inverse-primary": "#80d5cb", "surface-bright": "#f9f9ff", "inverse-surface": "#293040", "on-primary": "#ffffff", "surface-variant": "#dce2f7", "on-secondary-fixed": "#002113", "surface-dim": "#d3daef", "surface-container-high": "#e1e8fd", "surface-tint": "#006a63", "surface-container": "#e9edff", "primary-fixed": "#9cf2e8", "tertiary-fixed": "#cce5ff", "secondary-fixed-dim": "#4edea3", "on-surface": "#141b2b", "tertiary-fixed-dim": "#93ccff", "surface-container-low": "#f1f3ff", "error-container": "#ffdad6", "on-surface-variant": "#3e4947", "primary": "#005c55", "on-secondary-fixed-variant": "#005236", "surface": "#f9f9ff", "inverse-on-surface": "#edf0ff", "on-tertiary-fixed": "#001d31", "on-tertiary": "#ffffff", "on-error": "#ffffff", "outline-variant": "#bdc9c6", "secondary-fixed": "#6ffbbe" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.75rem", "space-xs": "0.5rem", "space-xxs": "0.25rem", "space-lg": "1.5rem", "gutter-mobile": "1rem", "gutter-desktop": "1.5rem", "container-max": "1200px", "space-3xl": "4.5rem", "space-md": "1rem", "space-2xl": "3rem", "space-xl": "2rem" }, "fontFamily": { "body-lg": ["Plus Jakarta Sans"], "title-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "display-hero-mobile": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "display-hero": ["Plus Jakarta Sans"] }, "fontSize": { "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}], "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}], "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600"}], "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700"}], "display-hero-mobile": ["28px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}], "headline-xl-mobile": ["24px", {"lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700"}], "headline-xl": ["32px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}], "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}], "display-hero": ["44px", {"lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "800"}] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;background-color:#f9f9ff;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs"><div class="flex items-center gap-2"><img alt="세이프티" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVEwwg2LmyWDfJkl6xOlUrFnRPm5nRcdpmvDrHcBbhBWanpGMwujU5q1w9PCMM0pdaSeV0QsL5_RGYxCdcEms9m-Uu5wxDkaTMn5THoWv5goGugxkcGCBPpb0kUuLrL0ifKy0gM60xEtamjLsW-FAOPB0wGNxJKOTQ7eHRXb9t18MgvqXYMeB15N0dcTrxIFR0t0LikmvIUX20Y6mvvfEDFqIsDAalZReUcOC8gApJiLRt1L1Iwybta0YJBenR5WD0Yzo"><span class="font-headline-md text-headline-md font-bold text-on-surface">안전지도</span></div></div><div class="flex items-center gap-2"><button aria-label="제보 안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[22px]">help_outline</span></button><button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button"><span class="material-symbols-outlined text-[20px]">add</span></button></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen" style="background-color: rgb(245, 245, 245);"><div class="flex flex-col w-full">
-<!-- Navigation Sub-header (Back + Screen Title) -->
-
-<!-- Route Summary Ribbon -->
-<div class="px-gutter-mobile pt-space-md pb-space-xs"><div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border border-outline-variant/30 mb-2.5 relative"><div class="flex items-center gap-3"><div class="flex flex-col items-center justify-center shrink-0 pt-1 pb-1"><div class="w-2.5 h-2.5 rounded-full" style="background-color: #60c219; box-shadow: 0 0 0 3px rgba(96, 194, 25, 0.2);"></div><div class="w-0.5 h-6 my-1 rounded-full" style="background-color: #bdc9c6; border-left: 1px dashed #6e7977;"></div><div class="w-2.5 h-2.5 rounded-full" style="background-color: #ba1a1a; box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.2);"></div></div><div class="flex-1 flex flex-col gap-2 min-w-0"><div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container shrink-0" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">출발</span><input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="혜화역 4번 출구 (현재 위치)" placeholder="출발지 입력"></div><button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"><span class="material-symbols-outlined text-[15px]">my_location</span></button></div><div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-error-container text-on-error-container shrink-0">도착</span><input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="서울대학교병원 본관·소아별관" placeholder="도착지 검색 (예: 서울대병원 소아별관)"></div><button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"><span class="material-symbols-outlined text-[16px]">search</span></button></div></div><div class="shrink-0 flex items-center"><button type="button" aria-label="출발지-도착지 전환" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface-variant transition-colors shadow-sm active:scale-95"><span class="material-symbols-outlined text-[18px]">swap_vert</span></button></div></div></div><div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2.5"><div class="flex items-center justify-between"><div class="flex items-center gap-2 min-w-0"><div class="w-7 h-7 rounded-full flex items-center justify-center text-on-primary shrink-0" style="background-color: rgb(96, 194, 25);"><span class="material-symbols-outlined text-[16px]">my_location</span></div><div class="flex flex-col min-w-0"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant font-bold">현재 위치</span><span class="px-1.5 py-0.2 text-[11px] rounded bg-secondary-container text-on-secondary-container font-bold" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">GPS 정상 (±3m)</span></div><span class="font-title-sm text-title-sm text-on-surface font-bold truncate">혜화역 4번 출구 앞 (반경 500m)</span></div></div><button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm flex items-center gap-1 hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[14px]">refresh</span>재탐색</button></div><div class="flex items-center gap-1.5 overflow-x-auto pb-0.5"><button class="px-2.5 py-1 rounded-full text-on-primary font-label-sm text-label-sm font-bold shrink-0 shadow-sm" style="background-color: rgb(96, 194, 25);">전체 (10)</button><button class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">warning</span>위험 4건</button><button class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);"><span class="material-symbols-outlined text-[14px]">accessible</span>무장애 6건</button><button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">light</span>안심가로등</button></div></div></div>
-<!-- Smart Filter Tags (Horizontal Scrollable) -->
-
-<!-- Map Simulation View (Relative Container with SVG Trajectories) -->
-<div class="px-gutter-mobile py-space-xs">
-<div class="relative w-full h-48 rounded-xl overflow-hidden shadow-md bg-surface-dim"><div class="absolute inset-0 w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD-sLch2yX1EovzXdlRmaWiLj56PCk1IkD7TQR0SLTICMH-NmhOV6ABojVPNnmmHBzlPcLAkxuuj0anttAElQh5IiWP_4l9ULZ8PyJ3oj8ng0FJyjB2rL7T8r_lJV0pxQ-dOYHB6OXOFN2C83uOIV7A8wbfl64JGftMphD8bKpyWl5gUwf_C0dOdZNXmZ6oUd364xW689M-GjxKnmCT2KcX2ygZd4KfAGgxX7Dl9vUJLxgtKFuhoG00&quot;); filter: brightness(0.92) contrast(1.05);"></div><div class="absolute inset-0 bg-on-background/25"></div><svg class="absolute inset-0 w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 360 200"><circle cx="90" cy="130" r="26" fill="#60c219" fill-opacity="0.2" class="animate-pulse"></circle><circle cx="90" cy="130" r="14" fill="#60c219" fill-opacity="0.35"></circle><circle cx="90" cy="130" r="6" fill="#ffffff" stroke="#4fa912" stroke-width="2.5"></circle><path d="M 90 130 Q 150 115 210 80 T 290 60" stroke="#4fa912" stroke-width="3" stroke-dasharray="4 4" opacity="0.85"></path><path d="M 90 130 Q 140 145 220 160" stroke="#ba1a1a" stroke-width="2.5" stroke-dasharray="3 3" opacity="0.7"></path></svg><div class="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-outline-variant/30 flex items-center gap-1.5"><div class="w-2 h-2 rounded-full animate-pulse" style="background-color: rgb(96, 194, 25);"></div><span class="font-label-sm text-label-sm text-on-surface font-bold">현재 위치 (혜화역)</span></div><div class="absolute top-3 right-4 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-primary/30"><div class="w-4 h-4 rounded-full flex items-center justify-center text-on-primary text-[10px]" style="background-color: rgb(96, 194, 25);"><span class="material-symbols-outlined text-[11px]">accessible</span></div><div class="flex flex-col"><span class="text-[10px] font-bold text-on-surface leading-tight">승강기·경사로</span><span class="text-[9px] text-secondary font-bold leading-tight">서울대병원 방면</span></div></div><div class="absolute top-14 right-16 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20"><span class="material-symbols-outlined text-[13px] text-error">warning</span><div class="flex flex-col"><span class="text-[10px] font-bold leading-tight">돌계단 42단</span><span class="text-[9px] text-error leading-tight font-bold">휠체어 불가</span></div></div><div class="absolute bottom-11 left-6 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20"><span class="material-symbols-outlined text-[13px] text-error">report_problem</span><span class="text-[10px] font-bold leading-tight">보도 파손 단차 5cm</span></div><div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 px-2.5 py-1 rounded-full bg-on-background/85 backdrop-blur-md text-surface-container-lowest shadow-md"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary-fixed">verified_user</span><span class="font-label-sm text-label-sm font-bold">시민 검증단 120명 실사 완료</span></div><span class="text-[11px] text-secondary-fixed flex items-center gap-0.5"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse"></span>실시간 관제 연동 중</span></div></div>
-</div>
-<!-- Route Comparison Cards (Side-by-side or Stacked Dual-Card Grid) -->
-<div class="px-gutter-mobile py-space-sm flex flex-col gap-space-sm"><div class="flex items-center justify-between mt-1"><span class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[18px] text-error">fmd_bad</span>위험 주의 구간 (4건)</span><span class="font-label-sm text-label-sm text-on-surface-variant">전복·단차 주의</span></div><div class="flex flex-col gap-2"><div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div><div class="pl-2 flex flex-col gap-1.5"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">warning</span>돌계단 주의</span><span class="font-title-sm text-title-sm text-on-surface font-bold">혜화로 3길 돌계단 구간</span></div><span class="font-label-sm text-label-sm text-error font-bold">거리 120m</span></div><p class="font-label-md text-label-md text-on-surface-variant">단차 42단 급경사 (경사도 14.2%) · 휠체어/유모차/어르신 보행 불가</p><div class="flex items-center gap-1 px-2 py-1 rounded bg-error-container/40 text-error text-[12px] font-bold"><span class="material-symbols-outlined text-[14px]">no_stroller</span>우회로 이용 필수 · 시민 18건 위험 제보 누적</div></div></div><div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div><div class="pl-2 flex flex-col gap-1.5"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">handyman</span>보도 파손</span><span class="font-title-sm text-title-sm text-on-surface font-bold">성균관로 입구 보도블록 침하</span></div><span class="font-label-sm text-label-sm text-error font-bold">거리 230m</span></div><p class="font-label-md text-label-md text-on-surface-variant">단차 5cm 블록 들뜸 · 비오는 날 미끄럼 및 발 걸림 전도 위험</p><div class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container-low text-on-surface-variant text-[12px]"><span class="material-symbols-outlined text-[14px] text-secondary">update</span>구청 보수 작업 접수 완료 (예정: 내일 14시)</div></div></div></div><div class="flex items-center justify-between mt-2"><span class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[18px] text-primary" style="color: rgb(79, 169, 18);">check_circle</span>무장애 안심 통행로 (6건)</span><span class="font-label-sm text-label-sm text-secondary font-bold">실사 검증 완료</span></div><div class="flex flex-col gap-2"><div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-primary/30 relative overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1.5 bg-primary" style="background-color: rgb(96, 194, 25);"></div><div class="pl-2 flex flex-col gap-1.5"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-0.5" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);"><span class="material-symbols-outlined text-[13px]">accessible</span>무단차 평지</span><span class="font-title-sm text-title-sm text-on-surface font-bold">대학로 완만 평지 안심길</span></div><span class="font-label-sm text-label-sm font-bold text-primary" style="color: rgb(79, 169, 18);">거리 680m</span></div><p class="font-label-md text-label-md text-on-surface-variant">경사도 2.1% 완만 · 전 구간 점자블록 연결 · 스마트 안심가로등 100% 설치</p></div></div><div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-primary/30 relative overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1.5 bg-primary" style="background-color: rgb(96, 194, 25);"></div><div class="pl-2 flex flex-col gap-1.5"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-0.5" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);"><span class="material-symbols-outlined text-[13px]">elevator</span>승강기 직결</span><span class="font-title-sm text-title-sm text-on-surface font-bold">서울대병원 연결 무단차 보행로</span></div><span class="font-label-sm text-label-sm font-bold text-primary" style="color: rgb(79, 169, 18);">거리 350m</span></div><p class="font-label-md text-label-md text-on-surface-variant">혜화역 4번 출구 승강기 연계 · 소아별관 경사로 무장애 진입 가능</p></div></div></div></div>
-<!-- Interactive Elevation / Slope Diagram Section -->
-
-<!-- Citizen Verification Note & Safety Guarantee -->
-
-<!-- Real-time Citizen Notes (Micro-reviews) -->
-
-<!-- Bottom Spacer for Fixed CTA Bar clearance -->
-<div class="h-36"></div>
-<!-- Fixed Bottom CTA Bar (Navigation Trigger) -->
-<div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"><div class="max-w-[480px] mx-auto px-gutter-mobile py-2.5"><div class="flex flex-col gap-2.5"><button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-nav-btn" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 60%, rgb(67, 147, 14) 100%); color: rgb(255, 255, 255); box-shadow: rgba(96, 194, 25, 0.4) 0px 8px 20px;" type="button"><span class="material-symbols-outlined text-[22px]">near_me</span><span class="">안심서비스 경로로 길안내!</span><div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div></button><button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-barrier-free-btn" style="background: linear-gradient(135deg, rgb(15, 118, 110) 0%, rgb(0, 92, 85) 100%); color: rgb(255, 255, 255); box-shadow: rgba(15, 118, 110, 0.35) 0px 8px 20px;" type="button"><span class="material-symbols-outlined text-[22px]">accessible</span><span class="">무장애 경로로 길안내!</span><div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div></button></div></div></div>
-<!-- Interaction Scripts -->
-<script>
-    (function() {
-  const navBtn = document.getElementById('start-nav-btn');
-  const barrierFreeBtn = document.getElementById('start-barrier-free-btn');
-  const voiceToggle = document.getElementById('voice-toggle-btn');
-  let voiceActive = true;
-
-  // 1. '안심서비스 경로로 길안내!' 버튼 클릭 시 realtime_map.html 이동
-  if (navBtn) {
-    navBtn.addEventListener('click', function() {
-      window.location.href = 'realtime_map.html';
-    });
-  }
-
-  // 2. '무장애 경로로 길안내!' 버튼 클릭 시 barrierfree_map.html 이동
-  if (barrierFreeBtn) {
-    barrierFreeBtn.addEventListener('click', function() {
-      window.location.href = 'barrierfree_map.html';
-    });
-  }
-
-  if (voiceToggle) {
-    voiceToggle.addEventListener('click', function() {
-      voiceActive = !voiceActive;
-      voiceToggle.textContent = voiceActive ? '끄기' : '켜기';
-      voiceToggle.previousElementSibling.lastElementChild.textContent = voiceActive 
-        ? '시각장애인·노약자 전용 음성 보행 안내 활성화됨' 
-        : '음성 안내 꺼짐 (진동 모드 동작)';
-    });
-  }
-})();
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#80d5cb",
+            "on-primary-fixed": "#00201d",
+            "on-tertiary-container": "#dbecff",
+            "secondary": "#006c49",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#005683",
+            "on-error-container": "#93000a",
+            "outline": "#6e7977",
+            "secondary-container": "#6cf8bb",
+            "primary-container": "#0f766e",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#a3faef",
+            "on-primary-fixed-variant": "#00504a",
+            "on-secondary-container": "#00714d",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#004b73",
+            "background": "#f9f9ff",
+            "tertiary-container": "#006fa8",
+            "surface-container-highest": "#dce2f7",
+            "on-background": "#141b2b",
+            "inverse-primary": "#80d5cb",
+            "surface-bright": "#f9f9ff",
+            "inverse-surface": "#293040",
+            "on-primary": "#ffffff",
+            "surface-variant": "#dce2f7",
+            "on-secondary-fixed": "#002113",
+            "surface-dim": "#d3daef",
+            "surface-container-high": "#e1e8fd",
+            "surface-tint": "#006a63",
+            "surface-container": "#e9edff",
+            "primary-fixed": "#9cf2e8",
+            "tertiary-fixed": "#cce5ff",
+            "secondary-fixed-dim": "#4edea3",
+            "on-surface": "#141b2b",
+            "tertiary-fixed-dim": "#93ccff",
+            "surface-container-low": "#f1f3ff",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#3e4947",
+            "primary": "#005c55",
+            "on-secondary-fixed-variant": "#005236",
+            "surface": "#f9f9ff",
+            "inverse-on-surface": "#edf0ff",
+            "on-tertiary-fixed": "#001d31",
+            "on-tertiary": "#ffffff",
+            "on-error": "#ffffff",
+            "outline-variant": "#bdc9c6",
+            "secondary-fixed": "#6ffbbe"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "space-xxs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "gutter-desktop": "1.5rem",
+            "container-max": "1200px",
+            "space-3xl": "4.5rem",
+            "space-md": "1rem",
+            "space-2xl": "3rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-hero-mobile": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Plus Jakarta Sans"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-hero": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+            "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "display-hero-mobile": ["28px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "headline-xl-mobile": ["24px", {"lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-xl": ["32px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+            "display-hero": ["44px", {"lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "800"}]
+          }
+        }
+      }
+    };
   </script>
-</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-4px_24px_rgba(15,118,110,0.08)] border-t border-outline-variant/30"><div class="flex items-center justify-around h-16 px-space-xs relative"><a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[22px]">home</span><span class="font-label-sm text-label-sm">홈</span></a><div class="flex flex-col items-center -mt-6"><a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="#" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;"><span class="material-symbols-outlined text-[26px] text-white">map</span></a><span class="font-label-sm text-label-sm font-bold mt-1" style="color: rgb(79, 169, 18);">안전지도</span></div><a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[22px]">photo_camera</span><span class="font-label-sm text-label-sm">10초제보</span></a><a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[22px]">person</span><span class="font-label-sm text-label-sm">마이</span></a></div></nav>
+  <style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior-y: none;
+        background-color: #f9f9ff;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+      main > :first-child {
+        margin-top: 0 !important;
+      }
+      main > :last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
 
-</body></html>
+<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen" style="background-color: rgb(245, 245, 245);">
+  <svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+    <div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+      <div class="flex items-center gap-space-xs">
+        <div class="flex items-center gap-2">
+          <img alt="세이프티" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVEwwg2LmyWDfJkl6xOlUrFnRPm5nRcdpmvDrHcBbhBWanpGMwujU5q1w9PCMM0pdaSeV0QsL5_RGYxCdcEms9m-Uu5wxDkaTMn5THoWv5goGugxkcGCBPpb0kUuLrL0ifKy0gM60xEtamjLsW-FAOPB0wGNxJKOTQ7eHRXb9t18MgvqXYMeB15N0dcTrxIFR0t0LikmvIUX20Y6mvvfEDFqIsDAalZReUcOC8gApJiLRt1L1Iwybta0YJBenR5WD0Yzo">
+          <span class="font-headline-md text-headline-md font-bold text-on-surface">안전지도</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button aria-label="제보 안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-[22px]">help_outline</span>
+        </button>
+        <button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button">
+          <span class="material-symbols-outlined text-[20px]">add</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen" style="background-color: rgb(245, 245, 245);">
+    <div class="flex flex-col w-full">
+
+      <!-- Route Summary Ribbon -->
+      <div class="px-gutter-mobile pt-space-md pb-space-xs">
+        <div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border border-outline-variant/30 mb-2.5 relative">
+          <div class="flex items-center gap-3">
+            <div class="flex flex-col items-center justify-center shrink-0 pt-1 pb-1">
+              <div class="w-2.5 h-2.5 rounded-full" style="background-color: #60c219; box-shadow: 0 0 0 3px rgba(96, 194, 25, 0.2);"></div>
+              <div class="w-0.5 h-6 my-1 rounded-full" style="background-color: #bdc9c6; border-left: 1px dashed #6e7977;"></div>
+              <div class="w-2.5 h-2.5 rounded-full" style="background-color: #ba1a1a; box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.2);"></div>
+            </div>
+            <div class="flex-1 flex flex-col gap-2 min-w-0">
+              <div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container shrink-0" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">출발</span>
+                  <input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="혜화역 4번 출구 (현재 위치)" placeholder="출발지 입력">
+                </div>
+                <button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                  <span class="material-symbols-outlined text-[15px]">my_location</span>
+                </button>
+              </div>
+              <div class="flex items-center justify-between bg-surface-container-low rounded-lg px-2.5 py-1.5">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-error-container text-on-error-container shrink-0">도착</span>
+                  <input class="bg-transparent text-[13px] font-bold text-on-surface outline-none w-full truncate placeholder-on-surface-variant" type="text" value="서울대학교병원 본관·소아별관" placeholder="도착지 검색 (예: 서울대병원 소아별관)">
+                </div>
+                <button type="button" class="w-5 h-5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">search</span>
+                </button>
+              </div>
+            </div>
+            <div class="shrink-0 flex items-center">
+              <button type="button" aria-label="출발지-도착지 전환" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface-variant transition-colors shadow-sm active:scale-95">
+                <span class="material-symbols-outlined text-[18px]">swap_vert</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center text-on-primary shrink-0" style="background-color: rgb(96, 194, 25);">
+                <span class="material-symbols-outlined text-[16px]">my_location</span>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant font-bold">현재 위치</span>
+                  <span class="px-1.5 py-0.2 text-[11px] rounded bg-secondary-container text-on-secondary-container font-bold" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">GPS 정상 (±3m)</span>
+                </div>
+                <span class="font-title-sm text-title-sm text-on-surface font-bold truncate">혜화역 4번 출구 앞 (반경 500m)</span>
+              </div>
+            </div>
+            <button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm flex items-center gap-1 hover:bg-surface-container-high transition-colors">
+              <span class="material-symbols-outlined text-[14px]">refresh</span>재탐색
+            </button>
+          </div>
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+            <button class="px-2.5 py-1 rounded-full text-on-primary font-label-sm text-label-sm font-bold shrink-0 shadow-sm" style="background-color: rgb(96, 194, 25);">전체 (10)</button>
+            <button class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">warning</span>위험 4건
+            </button>
+            <button class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1" style="background-color: rgb(234, 248, 223); color: rgb(61, 134, 10);">
+              <span class="material-symbols-outlined text-[14px]">accessible</span>무장애 6건
+            </button>
+            <button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm font-bold shrink-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">light</span>안심가로등
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Simulation View -->
+      <div class="px-gutter-mobile py-space-xs">
+        <div class="relative w-full h-48 rounded-xl overflow-hidden shadow-md bg-surface-dim">
+          <div class="absolute inset-0 w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD-sLch2yX1EovzXdlRmaWiLj56PCk1IkD7TQR0SLTICMH-NmhOV6ABojVPNnmmHBzlPcLAkxuuj0anttAElQh5IiWP_4l9ULZ8PyJ3oj8ng0FJyjB2rL7T8r_lJV0pxQ-dOYHB6OXOFN2C83uOIV7A8wbfl64JGftMphD8bKpyWl5gUwf_C0dOdZNXmZ6oUd364xW689M-GjxKnmCT2KcX2ygZd4KfAGgxX7Dl9vUJLxgtKFuhoG00&quot;); filter: brightness(0.92) contrast(1.05);"></div>
+          <div class="absolute inset-0 bg-on-background/25"></div>
+          <svg class="absolute inset-0 w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 360 200">
+            <circle cx="90" cy="130" r="26" fill="#60c219" fill-opacity="0.2" class="animate-pulse"></circle>
+            <circle cx="90" cy="130" r="14" fill="#60c219" fill-opacity="0.35"></circle>
+            <circle cx="90" cy="130" r="6" fill="#ffffff" stroke="#4fa912" stroke-width="2.5"></circle>
+            <path d="M 90 130 Q 150 115 210 80 T 290 60" stroke="#4fa912" stroke-width="3" stroke-dasharray="4 4" opacity="0.85"></path>
+            <path d="M 90 130 Q 140 145 220 160" stroke="#ba1a1a" stroke-width="2.5" stroke-dasharray="3 3" opacity="0.7"></path>
+          </svg>
+          <div class="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-outline-variant/30 flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full animate-pulse" style="background-color: rgb(96, 194, 25);"></div>
+            <span class="font-label-sm text-label-sm text-on-surface font-bold">현재 위치 (혜화역)</span>
+          </div>
+          <div class="absolute top-3 right-4 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-lg shadow-md border border-primary/30">
+            <div class="w-4 h-4 rounded-full flex items-center justify-center text-on-primary text-[10px]" style="background-color: rgb(96, 194, 25);">
+              <span class="material-symbols-outlined text-[11px]">accessible</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[10px] font-bold text-on-surface leading-tight">승강기·경사로</span>
+              <span class="text-[9px] text-secondary font-bold leading-tight">서울대병원 방면</span>
+            </div>
+          </div>
+          <div class="absolute top-14 right-16 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20">
+            <span class="material-symbols-outlined text-[13px] text-error">warning</span>
+            <div class="flex flex-col">
+              <span class="text-[10px] font-bold leading-tight">돌계단 42단</span>
+              <span class="text-[9px] text-error leading-tight font-bold">휠체어 불가</span>
+            </div>
+          </div>
+          <div class="absolute bottom-11 left-6 flex items-center gap-1 bg-error-container/95 text-on-error-container backdrop-blur-md px-2 py-0.5 rounded-lg shadow-md border border-error/20">
+            <span class="material-symbols-outlined text-[13px] text-error">report_problem</span>
+            <span class="text-[10px] font-bold leading-tight">보도 파손 단차 5cm</span>
+          </div>
+          <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1 px-2.5 py-1 rounded-full bg-on-background/85 backdrop-blur-md text-surface-container-lowest shadow-md">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-secondary-fixed">verified_user</span>
+              <span class="font-label-sm text-label-sm font-bold">시민 검증단 120명 실사 완료</span>
+            </div>
+            <span class="text-[11px] text-secondary-fixed flex items-center gap-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse"></span>실시간 관제 연동 중
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Route Cards (위험 주의 구간) -->
+      <div class="px-gutter-mobile py-space-sm flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between mt-1">
+          <span class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-[18px] text-error">fmd_bad</span>위험 주의 구간 (4건)
+          </span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">전복·단차 주의</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <!-- Card 1 -->
+          <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden">
+            <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div>
+            <div class="pl-2 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-[13px]">warning</span>돌계단 주의
+                  </span>
+                  <span class="font-title-sm text-title-sm text-on-surface font-bold">혜화로 3길 돌계단 구간</span>
+                </div>
+                <span class="font-label-sm text-label-sm text-error font-bold">거리 120m</span>
+              </div>
+              <p class="font-label-md text-label-md text-on-surface-variant">단차 42단 급경사 (경사도 14.2%) · 휠체어/유모차/어르신 보행 불가</p>
+              <div class="flex items-center gap-1 px-2 py-1 rounded bg-error-container/40 text-error text-[12px] font-bold">
+                <span class="material-symbols-outlined text-[14px]">no_stroller</span>우회로 이용 필수 · 시민 18건 위험 제보 누적
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 relative overflow-hidden">
+            <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-error"></div>
+            <div class="pl-2 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-[13px]">handyman</span>보도 파손
+                  </span>
+                  <span class="font-title-sm text-title-sm text-on-surface font-bold">성균관로 입구 보도블록 침하</span>
+                </div>
+                <span class="font-label-sm text-label-sm text-error font-bold">거리 230m</span>
+              </div>
+              <p class="font-label-md text-label-md text-on-surface-variant">단차 5cm 블록 들뜸 · 비오는 날 미끄럼 및 발 걸림 전도 위험</p>
+              <div class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container-low text-on-surface-variant text-[12px]">
+                <span class="material-symbols-outlined text-[14px] text-secondary">update</span>구청 보수 작업 접수 완료 (예정: 내일 14시)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Spacer -->
+      <div class="h-36"></div>
+
+      <!-- Fixed Bottom CTA Bar -->
+      <div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+        <div class="max-w-[480px] mx-auto px-gutter-mobile py-2.5">
+          <div class="flex flex-col gap-2.5">
+            <button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-nav-btn" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 60%, rgb(67, 147, 14) 100%); color: rgb(255, 255, 255); box-shadow: rgba(96, 194, 25, 0.4) 0px 8px 20px;" type="button">
+              <span class="material-symbols-outlined text-[22px]">near_me</span>
+              <span>안심서비스 경로로 길안내!</span>
+              <div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1">
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </div>
+            </button>
+            <button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-barrier-free-btn" style="background: linear-gradient(135deg, rgb(15, 118, 110) 0%, rgb(0, 92, 85) 100%); color: rgb(255, 255, 255); box-shadow: rgba(15, 118, 110, 0.35) 0px 8px 20px;" type="button">
+              <span class="material-symbols-outlined text-[22px]">accessible</span>
+              <span>무장애 경로로 길안내!</span>
+              <div class="w-6 h-6 rounded-full bg-primary-fixed/30 flex items-center justify-center text-on-primary ml-1">
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interaction Scripts -->
+      <script>
+        (function() {
+          const navBtn = document.getElementById('start-nav-btn');
+          const barrierFreeBtn = document.getElementById('start-barrier-free-btn');
+
+          if (navBtn) {
+            navBtn.addEventListener('click', function() {
+              window.location.href = 'realtime_map.html';
+            });
+          }
+
+          if (barrierFreeBtn) {
+            barrierFreeBtn.addEventListener('click', function() {
+              window.location.href = 'barrierfree_map.html';
+            });
+          }
+        })();
+      </script>
+
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-4px_24px_rgba(15,118,110,0.08)] border-t border-outline-variant/30">
+    <div class="flex items-center justify-around h-16 px-space-xs relative">
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">home</span>
+        <span class="font-label-sm text-label-sm">홈</span>
+      </a>
+      <div class="flex flex-col items-center -mt-6">
+        <a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="#" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+          <span class="material-symbols-outlined text-[26px] text-white">map</span>
+        </a>
+        <span class="font-label-sm text-label-sm font-bold mt-1" style="color: rgb(79, 169, 18);">안전지도</span>
+      </div>
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
+        <span class="font-label-sm text-label-sm">10초제보</span>
+      </a>
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">person</span>
+        <span class="font-label-sm text-label-sm">마이</span>
+      </a>
+    </div>
+  </nav>
+</body>
+</html>
