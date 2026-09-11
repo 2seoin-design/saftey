@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -339,11 +338,11 @@
         </div>
       </div>
 
-      <!-- Bottom Spacer -->
-      <div class="h-36"></div>
+      <!-- Bottom Spacer: 아래 고정 CTA 바 높이만큼 자동으로 맞춰 콘텐츠가 가려지지 않도록 확보하는 여백 -->
+      <div class="h-36" id="route-cta-spacer"></div>
 
-      <!-- Fixed Bottom CTA Bar -->
-      <div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+      <!-- Route Guidance CTA (스크롤해도 화면에 고정, 위 스페이서가 콘텐츠 가림 방지) -->
+      <div class="fixed bottom-16 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl p-space-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]" id="route-cta-bar">
         <div class="max-w-[480px] mx-auto px-gutter-mobile py-2.5">
           <div class="flex flex-col gap-2.5">
             <button class="w-full h-14 rounded-full bg-primary text-on-primary font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.98] transition-all" id="start-nav-btn" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 60%, rgb(67, 147, 14) 100%); color: rgb(255, 255, 255); box-shadow: rgba(96, 194, 25, 0.4) 0px 8px 20px;" type="button">
@@ -380,6 +379,20 @@
             barrierFreeBtn.addEventListener('click', function() {
               window.location.href = 'barrierfree_map.html';
             });
+          }
+
+          // 고정된 길안내 CTA 바 실제 높이만큼 스페이서를 맞춰 콘텐츠가 가려지지 않게 함
+          const ctaBar = document.getElementById('route-cta-bar');
+          const ctaSpacer = document.getElementById('route-cta-spacer');
+          function syncCtaSpacerHeight() {
+            if (ctaBar && ctaSpacer) {
+              ctaSpacer.style.height = ctaBar.offsetHeight + 'px';
+            }
+          }
+          syncCtaSpacerHeight();
+          window.addEventListener('resize', syncCtaSpacerHeight);
+          if (window.ResizeObserver && ctaBar) {
+            new ResizeObserver(syncCtaSpacerHeight).observe(ctaBar);
           }
         })();
       </script>
