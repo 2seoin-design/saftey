@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "Saftey/frontend/mainhome.html" }
+    { "source": "/", "destination": "/frontend/mainhome.html" }
   ]
 }
