@@ -146,22 +146,24 @@
 <body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen" style="background-color: rgb(245, 245, 245);">
   <svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
 
-  <!-- Header -->
+  <!-- Header (mainhome.html과 동일, 로고 텍스트 이미지 대신 '안전지도' 문구) -->
   <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
-    <div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
-      <div class="flex items-center gap-space-xs">
-        <div class="flex items-center gap-2">
-          <img alt="세이프티" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVEwwg2LmyWDfJkl6xOlUrFnRPm5nRcdpmvDrHcBbhBWanpGMwujU5q1w9PCMM0pdaSeV0QsL5_RGYxCdcEms9m-Uu5wxDkaTMn5THoWv5goGugxkcGCBPpb0kUuLrL0ifKy0gM60xEtamjLsW-FAOPB0wGNxJKOTQ7eHRXb9t18MgvqXYMeB15N0dcTrxIFR0t0LikmvIUX20Y6mvvfEDFqIsDAalZReUcOC8gApJiLRt1L1Iwybta0YJBenR5WD0Yzo">
-          <span class="font-headline-md text-headline-md font-bold text-on-surface">안전지도</span>
-        </div>
-      </div>
+    <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+
+      <!-- 왼쪽: 로고 이미지(클릭 시 홈 이동) + '안전지도' 문구(클릭 비활성) -->
       <div class="flex items-center gap-2">
-        <button aria-label="제보 안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
-          <span class="material-symbols-outlined text-[22px]">help_outline</span>
-        </button>
-        <button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button">
-          <span class="material-symbols-outlined text-[20px]">add</span>
-        </button>
+        <a href="mainhome.html" aria-label="홈으로 이동">
+          <img src="../img/safety_logo_image.png" alt="안전디딤돌 로고" class="h-12 w-auto object-contain">
+        </a>
+        <span class="font-headline-md text-headline-md font-bold text-on-surface">안전지도</span>
+      </div>
+
+      <!-- 오른쪽: 로그인 안내 문구(회색 필박스) + 로그인 버튼 -->
+      <div class="flex items-center gap-2">
+        <p class="font-label-md text-label-sm text-on-surface-variant whitespace-nowrap bg-surface-container-low px-3 py-1.5 rounded-full">로그인 후 이용해주세요</p>
+        <a href="login.html" aria-label="로그인" class="w-8 h-8 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform shadow-sm shrink-0" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
+          <span class="material-symbols-outlined text-[20px]">login</span>
+        </a>
       </div>
     </div>
   </header>
