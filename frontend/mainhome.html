@@ -2,8 +2,9 @@
 <html lang="ko">
 <head>
 <script>
-  if (localStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.href = 'login.html'; // 파일명이 다르면 실제 로그인 파일명으로 변경
+  // Supabase JS가 로그인 성공 시 저장하는 세션 토큰 존재 여부로 체크 (supabaseClient.js와 동일 프로젝트)
+  if (!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token')) {
+    window.location.href = 'login.html';
   }
 </script>
 <meta charset="utf-8">

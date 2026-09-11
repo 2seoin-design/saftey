@@ -1,0 +1,98 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const btnSubmit = document.getElementById('btn-submit');
+  if (!btnSubmit) return;
+
+  const btnCheckDup = document.getElementById('btn-check-dup');
+  const dupFeedback = document.getElementById('dup-feedback');
+  const errorEl = document.getElementById('signup-error');
+  const emailInput = document.getElementById('email');
+
+  // 마지막으로 중복확인을 통과한 이메일 (제출 시점에 이메일이 바뀌었으면 재확인 필요)
+  let dupCheckedEmail = null;
+
+  async function checkDuplicate(email) {
+    const { data: exists, error } = await sb.rpc('email_exists', { check_email: email });
+    if (error) throw error;
+    return exists;
+  }
+
+  if (btnCheckDup) {
+    btnCheckDup.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        dupFeedback.textContent = '이메일을 먼저 입력해주세요.';
+        dupFeedback.classList.remove('hidden');
+        return;
+      }
+
+      btnCheckDup.disabled = true;
+      try {
+        const exists = await checkDuplicate(email);
+        dupFeedback.textContent = exists ? '이미 가입된 이메일입니다.' : '사용 가능한 이메일입니다.';
+        dupFeedback.classList.remove('hidden', 'text-secondary', 'text-error');
+        dupFeedback.classList.add(exists ? 'text-error' : 'text-secondary');
+        dupCheckedEmail = exists ? null : email;
+      } catch (err) {
+        dupFeedback.textContent = '중복 확인 중 오류가 발생했습니다.';
+        dupFeedback.classList.remove('hidden', 'text-secondary');
+        dupFeedback.classList.add('text-error');
+      } finally {
+        btnCheckDup.disabled = false;
+      }
+    });
+  }
+
+  btnSubmit.addEventListener('click', async () => {
+    errorEl.classList.add('hidden');
+
+    const name = document.getElementById('name').value.trim();
+    const email = emailInput.value.trim();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password-confirm').value;
+
+    if (!name || !email || !password) {
+      errorEl.textContent = '이름, 이메일, 비밀번호를 모두 입력해주세요.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    if (password !== passwordConfirm) {
+      errorEl.textContent = '비밀번호가 일치하지 않습니다.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    btnSubmit.disabled = true;
+
+    // 중복확인 버튼을 안 눌렀거나 이메일을 바꿨으면 제출 직전에 다시 확인
+    if (dupCheckedEmail !== email) {
+      try {
+        const exists = await checkDuplicate(email);
+        if (exists) {
+          errorEl.textContent = '이미 가입된 이메일입니다.';
+          errorEl.classList.remove('hidden');
+          btnSubmit.disabled = false;
+          return;
+        }
+      } catch (err) {
+        errorEl.textContent = '중복 확인 중 오류가 발생했습니다.';
+        errorEl.classList.remove('hidden');
+        btnSubmit.disabled = false;
+        return;
+      }
+    }
+
+    const { error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+    btnSubmit.disabled = false;
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    location.href = 'login.html';
+  });
+});
