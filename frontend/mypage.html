@@ -192,7 +192,7 @@
               </div>
               <div class="flex flex-col min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <span class="font-title-sm text-title-sm font-bold text-on-primary truncate">김지혜 파수꾼</span>
+                  <span id="profile-name" class="font-title-sm text-title-sm font-bold text-on-primary truncate">김지혜 파수꾼</span>
                   <span class="material-symbols-outlined text-secondary-container text-[18px]" style="color: rgb(79, 169, 18); font-variation-settings: &quot;FILL&quot; 1;">verified</span>
                 </div>
                 <span class="font-label-sm text-label-sm text-on-primary-container font-medium truncate">종로구 혜화동 1동 동네 지킴이</span>
@@ -375,6 +375,25 @@
       if (pointElement) {
         pointElement.textContent = `${userPoints.toLocaleString()} P`;
       }
+    });
+  </script>
+
+  <!-- 로그인한 사용자의 회원가입 시 이름을 프로필에 표시 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../backend/data/supabaseClient.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const nameEl = document.getElementById('profile-name');
+      if (!nameEl) return;
+
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) {
+        location.href = 'login.html';
+        return;
+      }
+
+      const displayName = user.user_metadata?.name || user.email || '회원';
+      nameEl.textContent = `${displayName} 파수꾼`;
     });
   </script>
 
