@@ -265,27 +265,9 @@
       }
     }
 
-    // 중복확인 피드백
-    const btnCheckDup = document.getElementById('btn-check-dup');
-    const dupFeedback = document.getElementById('dup-feedback');
-    if (btnCheckDup && dupFeedback) {
-      btnCheckDup.addEventListener('click', () => {
-        dupFeedback.classList.remove('hidden');
-        btnCheckDup.textContent = '확인완료';
-        btnCheckDup.classList.add('bg-secondary-container', 'text-on-secondary-container');
-      });
-    }
-
-    // 회원가입 완료 버튼 클릭 처리
-    const btnSubmit = document.getElementById('btn-submit');
-    if (btnSubmit) {
-      btnSubmit.addEventListener('click', () => {
-        alert('회원가입이 완료되었습니다! 로그인 해주세요!');
-        window.location.href = 'login.html';
-      });
-    }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../backend/sign_in"></script>
+  <script src="../backend/data/supabaseClient.js"></script>
+  <script src="../backend/sign_in.js"></script>
 </body>
 </html>

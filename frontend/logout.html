@@ -166,7 +166,7 @@ tailwind.config = {
 <!-- 액션 버튼들 -->
 <div class="space-y-3 mb-6">
 <!-- 메인 로그아웃 확인 버튼 -->
-<button class="w-full py-3.5 px-4 rounded-xl safety-btn-gradient text-white font-bold text-sm shadow-md shadow-[#60C219]/25 flex items-center justify-center gap-1.5 active:scale-[0.99] transition-transform" id="btn-logout" onclick="location.href='login.html'">
+<button class="w-full py-3.5 px-4 rounded-xl safety-btn-gradient text-white font-bold text-sm shadow-md shadow-[#60C219]/25 flex items-center justify-center gap-1.5 active:scale-[0.99] transition-transform" id="btn-logout">
 <span class="">로그아웃</span>
 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
@@ -201,7 +201,8 @@ tailwind.config = {
   </div>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../backend/user_logout"></script>
+<script src="../backend/data/supabaseClient.js"></script>
+<script src="../backend/user_logout.js"></script>
 <script>
   requestAnimationFrame(() => document.body.classList.add('page-loaded'));
   document.querySelectorAll('a[href]').forEach(function (link) {

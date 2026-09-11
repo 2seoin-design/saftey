@@ -12,8 +12,9 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
  * @param {number} lng - 경도
  * @param {string} reportType - 제보 유형 ('CONSTR', 'STAIRS', 'HAZARD', 'SAFE')
  * @param {string} description - 상세 설명
+ * @param {string|null} photoUrl - Supabase Storage 사진 URL (선택)
  */
-export async function createReport(lat, lng, reportType, description) {
+export async function createReport(lat, lng, reportType, description, photoUrl = null) {
   // 현재 로그인한 사용자 정보 가져오기
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -25,7 +26,8 @@ export async function createReport(lat, lng, reportType, description) {
         report_type: reportType,
         description: description,
         // PostGIS 지오메트리 형식으로 좌표 변환 (POINT(경도 위도))
-        location: `POINT(${lng} ${lat})`
+        location: `POINT(${lng} ${lat})`,
+        ...(photoUrl ? { photo_url: photoUrl } : {})
       }
     ])
     .select();
