@@ -640,13 +640,35 @@
         throw new Error('로그인한 사용자만 제보할 수 있습니다.');
       }
 
+      if (!selectedImageFile) {
+        throw new Error('제보할 사진을 먼저 등록해주세요.');
+      }
+
+      const reportId = crypto.randomUUID();
+      const extension = selectedImageFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const imagePath = `${user.id}/${reportId}.${extension}`;
+      const { error: uploadError } = await supabaseClient.storage
+        .from('report-images')
+        .upload(imagePath, selectedImageFile, {
+          contentType: selectedImageFile.type,
+          upsert: false
+        });
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('report-images')
+        .getPublicUrl(imagePath);
+
       const { error } = await supabaseClient.from('reports').insert({
+        id: reportId,
         user_id: user.id,
         report_type: detectedReportType,
         description: descriptionInput?.value.trim() || 'AI 분석 위험 제보',
-        location: `POINT(${currentPosition.longitude} ${currentPosition.latitude})`
+        location: `POINT(${currentPosition.longitude} ${currentPosition.latitude})`,
+        photo_url: publicUrlData.publicUrl
       });
       if (error) throw error;
+      return reportId;
     };
 
     if (submitBtn) {

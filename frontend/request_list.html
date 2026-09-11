@@ -308,7 +308,7 @@
         const container = document.getElementById('report-cards-container');
         const statusEl = document.getElementById('reportListStatus');
 
-        const session = await getFreshSession();
+        const { data: { session } } = await sb.auth.getSession();
         if (!session) {
           location.href = 'login.html';
           return;
@@ -348,11 +348,28 @@
         }
 
         try {
-          const res = await fetch('/api/mypage/reports', {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-          });
-          if (!res.ok) throw new Error(`제보 내역 조회 실패: ${res.status}`);
-          const { reports } = await res.json();
+          const { data: rows, error } = await sb
+            .from('reports')
+            .select('id, created_at, photo_url, report_type, description, process_status')
+            .eq('user_id', session.user.id)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+
+          const reportTypeLabels = {
+            CONSTR: '공사/장애물',
+            HAZARD: '위험 요소',
+            STAIRS: '계단/단차',
+            SAFE: '안전 제보'
+          };
+          const reports = (rows ?? []).map((row) => ({
+            id: row.id,
+            reportedAt: row.created_at,
+            photoUrl: row.photo_url,
+            reportTypeLabel: reportTypeLabels[row.report_type] ?? row.report_type,
+            description: row.description,
+            status: row.process_status ?? 'PENDING',
+            statusLabel: row.process_status === 'DONE' ? '처리 완료' : '미처리'
+          }));
 
           const pendingCount = reports.filter((r) => r.status === 'PENDING').length;
           const doneCount = reports.filter((r) => r.status === 'DONE').length;
