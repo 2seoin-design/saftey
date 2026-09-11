@@ -288,9 +288,11 @@
       <section class="px-gutter-mobile pt-space-xs pb-space-lg">
         <div class="mt-space-xs">
           <div class="mt-2 rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden divide-y divide-surface-container-high">
+            
+            <!-- 1. 내 제보 내역 및 실시간 조치 현황 -->
             <a class="flex items-center justify-between p-space-sm hover:bg-surface-container-low transition-colors group" href="request_list.html">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-primary-fixed/30 text-primary flex items-center justify-center" style="background-color: rgba(96, 194, 25, 0.18); color: rgb(50, 107, 0);">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(96, 194, 25, 0.18); color: rgb(50, 107, 0);">
                   <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
                 </div>
                 <div class="flex flex-col">
@@ -300,11 +302,22 @@
               </div>
               <span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
             </a>
-          </div>
-        </div>
 
-        <div class="mt-space-md mb-space-sm">
-          <div class="mt-2 rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden divide-y divide-surface-container-high"></div>
+            <!-- 2. 안심 산책로 성공내역 (walk_list.html 이동) -->
+<a class="flex items-center justify-between p-space-sm hover:bg-surface-container-low transition-colors group" href="walk_list.html">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(96, 194, 25, 0.18); color: rgb(50, 107, 0);">
+      <span class="material-symbols-outlined text-[20px]">directions_walk</span>
+    </div>
+    <div class="flex flex-col">
+      <span class="font-title-sm text-title-sm text-on-surface font-semibold group-hover:text-primary transition-colors">안심 산책로 성공내역</span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">완료 14회 · 누적 28.5km 달성</span>
+    </div>
+  </div>
+  <span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</a>
+
+          </div>
         </div>
 
         <!-- App Version & Log Out Footer Area -->
@@ -321,25 +334,38 @@
 
   <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
-    <div class="h-16 px-gutter-mobile flex items-center justify-around relative">
+    <div class="h-16 px-2 flex items-center justify-around relative">
+      <!-- 1. 홈 -->
       <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
         <span class="material-symbols-outlined text-[22px]">home</span>
         <span class="font-label-sm text-[11px]">홈</span>
       </a>
+
+      <!-- 2. 안전지도 -->
       <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
         <span class="material-symbols-outlined text-[22px]">map</span>
         <span class="font-label-sm text-[11px]">안전지도</span>
       </a>
+
+      <!-- 3. 10초제보 (평일 아이콘 스타일) -->
       <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
         <span class="material-symbols-outlined text-[22px]">photo_camera</span>
         <span class="font-label-sm text-[11px]">10초제보</span>
       </a>
+
+      <!-- 4. 커뮤니티 (초록색 원형 강조 버튼) -->
       <div class="flex-1 flex flex-col items-center relative -top-3">
-        <a class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="mypage.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
-          <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: &quot;FILL&quot; 1;">person</span>
+        <a class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="community.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+          <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">group</span>
         </a>
-        <span class="font-label-sm text-[11px] font-bold text-[#4FA912] mt-1">마이</span>
+        <span class="font-label-sm text-[11px] font-bold text-[#4FA912] mt-1">커뮤니티</span>
       </div>
+
+      <!-- 5. 마이 (평일 아이콘 스타일) -->
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html">
+        <span class="material-symbols-outlined text-[22px]">person</span>
+        <span class="font-label-sm text-[11px]">마이</span>
+      </a>
     </div>
   </nav>
 
