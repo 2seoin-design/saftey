@@ -3,9 +3,95 @@
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 <title>세이프티 로그아웃</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary-fixed-dim": "#80d5cb",
+        "on-primary-fixed": "#00201d",
+        "on-tertiary-container": "#dbecff",
+        "secondary": "#006c49",
+        "surface-container-lowest": "#ffffff",
+        "tertiary": "#005683",
+        "on-error-container": "#93000a",
+        "outline": "#6e7977",
+        "secondary-container": "#6cf8bb",
+        "primary-container": "#0f766e",
+        "on-secondary": "#ffffff",
+        "on-primary-container": "#a3faef",
+        "on-primary-fixed-variant": "#00504a",
+        "on-secondary-container": "#00714d",
+        "error": "#ba1a1a",
+        "on-tertiary-fixed-variant": "#004b73",
+        "background": "#f9f9ff",
+        "tertiary-container": "#006fa8",
+        "surface-container-highest": "#dce2f7",
+        "on-background": "#141b2b",
+        "inverse-primary": "#80d5cb",
+        "surface-bright": "#f9f9ff",
+        "inverse-surface": "#293040",
+        "on-primary": "#ffffff",
+        "surface-variant": "#dce2f7",
+        "on-secondary-fixed": "#002113",
+        "surface-dim": "#d3daef",
+        "surface-container-high": "#e1e8fd",
+        "surface-tint": "#006a63",
+        "surface-container": "#e9edff",
+        "primary-fixed": "#9cf2e8",
+        "tertiary-fixed": "#cce5ff",
+        "secondary-fixed-dim": "#4edea3",
+        "on-surface": "#141b2b",
+        "tertiary-fixed-dim": "#93ccff",
+        "surface-container-low": "#f1f3ff",
+        "error-container": "#ffdad6",
+        "on-surface-variant": "#3e4947",
+        "primary": "#005c55",
+        "on-secondary-fixed-variant": "#005236",
+        "surface": "#f9f9ff",
+        "inverse-on-surface": "#edf0ff",
+        "on-tertiary-fixed": "#001d31",
+        "on-tertiary": "#ffffff",
+        "on-error": "#ffffff",
+        "outline-variant": "#bdc9c6",
+        "secondary-fixed": "#6ffbbe"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: {
+        "space-sm": "0.75rem", "space-xs": "0.5rem", "space-xxs": "0.25rem",
+        "space-lg": "1.5rem", "gutter-mobile": "1rem", "gutter-desktop": "1.5rem",
+        "container-max": "1200px", "space-3xl": "4.5rem", "space-md": "1rem",
+        "space-2xl": "3rem", "space-xl": "2rem"
+      },
+      fontFamily: {
+        "body-lg": ["Plus Jakarta Sans"], "title-sm": ["Plus Jakarta Sans"],
+        "label-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"],
+        "headline-xl-mobile": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"],
+        "body-md": ["Plus Jakarta Sans"]
+      },
+      fontSize: {
+        "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+        "title-sm": ["16px", { lineHeight: "24px", letterSpacing: "-0.005em", fontWeight: "600" }],
+        "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "600" }],
+        "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "700" }],
+        "headline-xl-mobile": ["24px", { lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "700" }],
+        "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }]
+      }
+    }
+  }
+};
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+KR:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 <style>
+    @layer base {
+      html, body { width: 100%; margin: 0; padding: 0; }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    }
+    ::-webkit-scrollbar { display: none; }
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
       -webkit-tap-highlight-color: transparent;
@@ -25,29 +111,27 @@
   </style>
 </head>
 <body class="bg-[#F8FBED] text-[#1E293B] antialiased min-h-screen flex flex-col justify-between selection:bg-[#60C219] selection:text-white max-w-md mx-auto shadow-md">
-<!-- TOP HEADER (로그인 페이지와 100% 동일한 헤더) -->
-<header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 py-3 flex items-center justify-between shadow-sm">
-<!-- Left: 로고 & 동네 선택 -->
-<div class="flex items-center gap-2.5">
-<img alt="세이프티 로고" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmi0bp0EIgmnXeTW7GYeh_VXu2pX5bmHL9ZtFab2rM0nX1R-VlgGOMKdfJH0lOl4CQDAc58qtfpecRjLYVH7eaqvvzYhM-k5m4-v9e_T6mQPfjwlSqt4fyy9z08zggU9cYsBvi-8ypfC3S5F-FjkJ2bI5sbalfZOeA7XhjmbMn_JYFXShaHwXqmBsERVNzyYZA4X8HhSvh-vL7PQ1XVt3rDtyMYR4b6JM8bgVCpqA7l_yWXxlYuW19YUf4WcMEyF4uK2Q">
-<div class="flex items-center gap-1 bg-[#F1F5F9] px-2.5 py-1 rounded-full text-xs font-semibold text-[#334155] border border-[#E2E8F0] cursor-pointer active:scale-95 transition-transform">
-<span class="">종로구 혜화동</span>
-<span class="material-symbols-outlined text-[14px] text-[#64748B]">arrow_drop_down</span>
-</div>
-</div>
-<!-- Right: 알림 & 플러스 버튼 -->
-<div class="flex items-center gap-2">
-<button aria-label="알림" class="relative p-1.5 rounded-full text-[#475569] hover:bg-[#F1F5F9] transition-colors">
-<span class="material-symbols-outlined text-[22px]">notifications</span>
-<span class="absolute top-1 right-1 w-2 h-2 bg-[#EF4444] rounded-full ring-2 ring-white"></span>
-</button>
-<button aria-label="추가 액션" class="w-8 h-8 rounded-full safety-hero-bg text-white flex items-center justify-center shadow-sm shadow-[#60C219]/30 active:scale-95 transition-transform">
-<span class="material-symbols-outlined text-[20px] font-bold">add</span>
-</button>
-</div>
+<!-- TOP HEADER (메인 홈화면 완벽 일치) -->
+<header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+  <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+
+    <!-- 왼쪽: 로고 이미지 + 로고 텍스트 -->
+    <div class="flex items-center gap-2">
+      <img src="../img/safety_logo_image.png" alt="안전디딤돌 로고" class="h-12 w-auto object-contain">
+      <img src="../img/safety_logo_text.png" alt="안전디딤돌 로고 텍스트" class="h-6 w-auto object-contain">
+    </div>
+
+    <!-- 오른쪽: 로그인 안내 문구(회색 필박스) + 로그인 버튼 -->
+    <div class="flex items-center gap-2">
+      <p class="font-label-md text-label-sm text-on-surface-variant whitespace-nowrap bg-surface-container-low px-3 py-1.5 rounded-full">로그인 후 이용해주세요</p>
+      <button aria-label="로그인" class="w-8 h-8 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform shadow-sm shrink-0" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
+        <span class="material-symbols-outlined text-[20px]">login</span>
+      </button>
+    </div>
+  </div>
 </header>
 <!-- MAIN BODY CONdTENT (로그아웃 확인 & 안내 카드) -->
-<main class="flex-1 px-5 flex flex-col max-w-md mx-auto w-full pt-4 pb-6">
+<main class="flex-1 px-5 flex flex-col max-w-md mx-auto w-full pt-20 pb-6">
 <!-- 아이콘 & 로고 엠블럼 -->
 <div class="flex flex-col items-center text-center mb-4">
 
