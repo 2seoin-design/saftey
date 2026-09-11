@@ -151,7 +151,7 @@
         </button>
         <!-- 헤더 로고 이미지 -->
         <img alt="세이프티" class="h-7 object-contain shrink-0" src="../img/safety_logo_image.png">
-        <h1 class="text-[18px] font-bold text-gray-900 tracking-tight ml-0.5">포인트 교환처</h1>
+        <h1 class="text-[18px] font-bold text-gray-900 tracking-tight ml-0.5">포인트 사용 가능처</h1>
       </div>
       <div class="flex items-center gap-1">
         <button aria-label="포인트 이용안내" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
@@ -167,34 +167,6 @@
   <!-- 메인 콘텐츠 영역 -->
   <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen">
     <div class="flex flex-col w-full">
-      
-      <!-- 프로필 및 포인트 세션 -->
-      <section class="px-gutter-mobile pt-space-xs pb-space-sm">
-      
-          <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-secondary-container/20 blur-2xl pointer-events-none"></div>
-          <div class="absolute -left-10 bottom-0 w-28 h-28 rounded-full bg-primary-fixed/20 blur-xl pointer-events-none"></div>
-          <div class="flex items-center justify-between relative z-10">
-            <div class="flex items-center gap-space-xs min-w-0">
-              <div class="relative flex-shrink-0">
-              </div>
-            </div>
-          </div>
-          <div class="mt-space-md p-space-sm rounded-xl bg-surface-container-lowest/15 backdrop-blur-md shadow-inner relative z-10">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 text-on-primary-container">
-                <span class="material-symbols-outlined text-[16px]">stars</span>
-                <span class="font-label-sm text-label-sm tracking-wide">보유 리워드 포인트</span>
-              </div>
-            </div>
-            <div class="flex items-baseline justify-between mt-1">
-              <div class="flex items-baseline gap-1">
-                <!-- ID 지정하여 수량 변경 가능하게 조작 -->
-                <span id="user-points" class="font-display-hero-mobile text-display-hero-mobile font-bold tracking-tight text-on-primary">18,500</span>
-                <span class="font-title-sm text-title-sm font-bold text-secondary-container">P</span>
-              </div>
-            </div>
-          </div>
-      </section>
 
       <!-- 포인트 교환 상품 목록 -->
       <section class="px-gutter-mobile py-space-xs">
@@ -202,32 +174,23 @@
           <div>
             <div class="flex items-center gap-1.5">
               <span class="material-symbols-outlined text-primary text-[20px]" style="color: rgb(79, 169, 18); font-variation-settings: 'FILL' 1;">storefront</span>
-              <h2 class="font-headline-md text-headline-md text-on-surface font-bold">포인트 교환 상품</h2>
+              <h2 class="font-headline-md text-headline-md text-on-surface font-bold">포인트 사용 가능처</h2>
             </div>
-            <p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">🎉포인트를 사용해서 상품권으로 교환하세요🎉</p>
           </div>
         </div>
 
         <!-- 상품 그리드 -->
         <div class="grid grid-cols-2 gap-space-xs mt-space-sm">
-          
+
           <!-- 상품 1 -->
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="편의점 1만원권" src="../img/cu.png">
-                <span class="absolute top-2 left-2 bg-error text-on-error font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold shadow-sm">인기 1위</span>
+                <img class="w-full h-full object-cover" src="../img/cu.png">
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 동네편의점</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">편의점 1만원권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">편의점</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">15,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(15000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
 
@@ -235,19 +198,11 @@
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="편의점 2만원권" src="../img/cu.png">
-                <span class="absolute top-2 left-2 bg-error text-on-error font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold shadow-sm">인기 2위</span>
+                <img class="w-full h-full object-cover" src="../img/bike.png">
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 동네편의점</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">편의점 2만원권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">따릉이</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">25,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(25000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
 
@@ -255,18 +210,11 @@
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="따릉이" src="../img/bike.png">
+                <img class="w-full h-full object-cover" src="../img/young.png">
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">공공자전거</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">따릉이 30일권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">올리브영</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">10,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(10000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
 
@@ -274,18 +222,11 @@
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="올리브영" src="../img/young.png">
+                <img class="w-full h-full object-cover" src="../img/delivery.png">
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 올리브영</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">올리브영 2만원권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">배달의민족</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">25,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(25000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
 
@@ -293,18 +234,11 @@
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="배달의민족" src="../img/delivery.png">
+                <img class="w-full h-full object-cover" src="../img/coupang.png">
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 배달의민족</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">배달의민족 1만원권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">쿠팡이츠</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">15,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(15000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
 
@@ -312,40 +246,13 @@
           <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
             <div class="relative">
               <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img class="w-full h-full object-cover" data-alt="쿠팡이츠" src="../img/coupang.png">
+                <img src="../img/dalso.png" class="w-full h-full object-cover" >
               </div>
               <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 쿠팡이츠</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">쿠팡이츠 1만원권</h3>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">다이소</h3>
               </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">15,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(15000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
             </div>
           </div>
-
-          <!-- 상품 7 -->
-          <div class="flex flex-col rounded-2xl bg-surface-container-lowest p-3 shadow-sm relative justify-between">
-            <div class="relative">
-              <div class="w-full aspect-square rounded-xl overflow-hidden bg-surface-container-low relative">
-                <img src="../img/dalso.png" alt="다이소" class="w-full h-full object-cover" >
-              </div>
-              <div class="mt-2.5">
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">안심 다이소</span>
-                <h3 class="font-title-sm text-title-sm text-on-surface font-bold leading-snug line-clamp-2">다이소 5천원권</h3>
-              </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-surface-container-high flex flex-col gap-2">
-              <div class="flex items-baseline justify-between">
-                <span class="font-title-sm text-title-sm font-bold text-on-surface">10,000 <span class="text-primary font-semibold">P</span></span>
-              </div>
-              <button onclick="exchangePoint(10000)" class="w-full py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255);" type="button">교환하기</button>
-            </div>
-          </div>
-
         </div>
 
         <!-- 협력 안내 바 -->
@@ -386,33 +293,5 @@
       </div>
     </div>
   </nav>
-
-  <!-- 포인트 차감 Script -->
-  <script>
-    function exchangePoint(price) {
-      const pointElem = document.getElementById('user-points');
-      const pointValueElem = document.getElementById('user-points-value');
-      
-      // 현재 포인트 읽기
-      let currentPoints = parseInt(pointElem.innerText.replace(/,/g, ''), 10);
-
-      // 잔액 확인
-      if (currentPoints < price) {
-        alert('포인트가 부족합니다!');
-        return;
-      }
-
-      // 차감 및 표시 업데이트
-      currentPoints -= price;
-      const formattedPoints = currentPoints.toLocaleString();
-      pointElem.innerText = formattedPoints;
-      if (pointValueElem) {
-        pointValueElem.innerText = `(지역화폐 ${formattedPoints}원 가치)`;
-      }
-
-      // 교환 완료 안내
-      alert('교환이 완료되었습니다!');
-    }
-  </script>
 </body>
 </html>
