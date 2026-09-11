@@ -170,30 +170,13 @@
       
       <!-- 프로필 및 포인트 세션 -->
       <section class="px-gutter-mobile pt-space-xs pb-space-sm">
-        <div class="w-full rounded-2xl p-space-md shadow-lg relative overflow-hidden bg-primary-container text-on-primary" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 50%, rgb(61, 139, 14) 100%);">
+      
           <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-secondary-container/20 blur-2xl pointer-events-none"></div>
           <div class="absolute -left-10 bottom-0 w-28 h-28 rounded-full bg-primary-fixed/20 blur-xl pointer-events-none"></div>
           <div class="flex items-center justify-between relative z-10">
             <div class="flex items-center gap-space-xs min-w-0">
               <div class="relative flex-shrink-0">
-                <div class="w-12 h-12 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5">
-                  <img class="w-full h-full rounded-full object-cover" data-alt="프로필 이미지" src="profile.jpg">
-                </div>
-                <div class="absolute -bottom-1 -right-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">shield</span>Lv.4
-                </div>
               </div>
-              <div class="flex flex-col min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-title-sm text-title-sm font-bold text-on-primary truncate">김지혜 파수꾼</span>
-                  <span class="material-symbols-outlined text-secondary-container text-[18px]" style="color: rgb(79, 169, 18); font-variation-settings: 'FILL' 1;">verified</span>
-                </div>
-                <span class="font-label-sm text-label-sm text-on-primary-container font-medium truncate">종로구 혜화동 안심가디언</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-1 bg-on-primary/10 px-2.5 py-1 rounded-full backdrop-blur-md">
-              <span class="material-symbols-outlined text-[16px] text-on-primary-container">toll</span>
-              <span class="font-label-sm text-label-sm text-on-primary-container font-semibold">수수료 0원</span>
             </div>
           </div>
           <div class="mt-space-md p-space-sm rounded-xl bg-surface-container-lowest/15 backdrop-blur-md shadow-inner relative z-10">
@@ -202,21 +185,15 @@
                 <span class="material-symbols-outlined text-[16px]">stars</span>
                 <span class="font-label-sm text-label-sm tracking-wide">보유 리워드 포인트</span>
               </div>
-              <span class="font-label-sm text-label-sm text-on-primary/90 flex items-center">실시간 적립 완료</span>
             </div>
             <div class="flex items-baseline justify-between mt-1">
               <div class="flex items-baseline gap-1">
                 <!-- ID 지정하여 수량 변경 가능하게 조작 -->
                 <span id="user-points" class="font-display-hero-mobile text-display-hero-mobile font-bold tracking-tight text-on-primary">18,500</span>
                 <span class="font-title-sm text-title-sm font-bold text-secondary-container">P</span>
-                <span id="user-points-value" class="font-label-sm text-label-sm text-on-primary-container ml-1 font-medium">(지역화폐 18,500원 가치)</span>
               </div>
-              <button class="px-3 py-1.5 rounded-full font-label-md text-label-md font-bold shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center gap-0.5" style="background-color: rgb(255, 255, 255); color: rgb(50, 107, 0);" type="button">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">history</span>내역조회
-              </button>
             </div>
           </div>
-        </div>
       </section>
 
       <!-- 포인트 교환 상품 목록 -->

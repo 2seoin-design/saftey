@@ -402,7 +402,8 @@
       const avatarEl = document.getElementById('profile-avatar');
       if (!nameEl) return;
 
-      const { data: { user } } = await sb.auth.getUser();
+      const { data: { session } } = await sb.auth.getSession();
+      const user = session?.user;
       if (!user) {
         location.href = 'login.html';
         return;
