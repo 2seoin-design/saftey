@@ -1,8 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-// 1. Supabase 클라이언트 초기화 (.env 환경 변수 활용)
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+// 1. Supabase 클라이언트 초기화
+// 브라우저(<script type="module">)에는 process가 없으므로 존재 여부부터 확인 -
+// Node(테스트/수집 스크립트)에서는 .env 값을, 브라우저에서는 saftey 프로젝트 값을 그대로 사용
+const hasProcessEnv = typeof process !== 'undefined' && process.env;
+const supabaseUrl = (hasProcessEnv && process.env.REACT_APP_SUPABASE_URL) || 'https://gaicuiithjllwillleyo.supabase.co';
+const supabaseKey = (hasProcessEnv && process.env.REACT_APP_SUPABASE_ANON_KEY) || 'sb_publishable_N5Cb72wbtKj-HhjIoZ20Aw_XBDlvTsy';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 

@@ -29,27 +29,33 @@ create policy "safety_facilities_public_read"
 -- 쓰기(insert/update)는 정책을 두지 않음: dataIngestion.js는 service role 키로 RLS를 우회함
 
 -- ============================================================
--- 2. reports: 실시간 사용자 제보 (3시간 후 자동 소멸)
+-- 2. reports: 실시간 사용자 제보 (status/expires_at 기반 소멸)
+--    실제 운영 중인 구조를 그대로 문서화함 (id는 uuid, upvotes/status 포함)
 -- ============================================================
 create table if not exists reports (
-  id bigint generated always as identity primary key,
-  user_id uuid references auth.users(id) on delete set null,
-  report_type text not null check (report_type in ('CONSTR', 'STAIRS', 'HAZARD', 'SAFE')),
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz default now(),
+  user_id uuid references auth.users(id) on delete cascade,
+  report_type varchar not null,
   description text,
+  upvotes integer default 1,
+  status varchar default 'ACTIVE',
   location geography(Point, 4326) not null,
-  created_at timestamptz not null default now()
+  expires_at timestamptz default (now() + interval '3 hours')
 );
 
 create index if not exists reports_location_gist on reports using gist (location);
-create index if not exists reports_created_at_idx on reports (created_at);
+create index if not exists reports_expires_at_idx on reports (expires_at);
 
 alter table reports enable row level security;
 
-create policy "reports_public_read"
+drop policy if exists "Anyone can view active reports" on reports;
+create policy "Anyone can view active reports"
   on reports for select
-  using (true);
+  using (status = 'ACTIVE' and expires_at > now());
 
-create policy "reports_authenticated_insert"
+drop policy if exists "Anyone can create reports" on reports;
+create policy "Anyone can create reports"
   on reports for insert
   with check (true);
 
@@ -106,7 +112,7 @@ as $$
 $$;
 
 -- ============================================================
--- 4. RPC: 반경 N미터 내 실시간 제보 조회 (3시간 이내 건만)
+-- 4. RPC: 반경 N미터 내 실시간 제보 조회 (status=ACTIVE, 만료 전 건만)
 -- ============================================================
 create or replace function get_nearby_reports(
   user_lat double precision,
@@ -114,27 +120,29 @@ create or replace function get_nearby_reports(
   radius_meters double precision default 500
 )
 returns table (
-  id bigint,
-  report_type text,
+  id uuid,
+  report_type varchar,
   description text,
   lat double precision,
   lng double precision,
-  distance_m double precision,
+  upvotes integer,
   created_at timestamptz
 )
-language sql
-stable
+language plpgsql
 as $$
+begin
+  return query
   select
     r.id,
     r.report_type,
     r.description,
     ST_Y(r.location::geometry) as lat,
     ST_X(r.location::geometry) as lng,
-    ST_Distance(r.location, ST_MakePoint(user_lng, user_lat)::geography) as distance_m,
+    r.upvotes,
     r.created_at
-  from reports r
-  where r.created_at > now() - interval '3 hours'
-    and ST_DWithin(r.location, ST_MakePoint(user_lng, user_lat)::geography, radius_meters)
-  order by distance_m;
+  from public.reports r
+  where ST_DWithin(r.location, ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)::geography, radius_meters)
+    and r.status = 'ACTIVE'
+    and r.expires_at > now();
+end;
 $$;

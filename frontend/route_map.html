@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>안심 귀갓길 지도</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; }
+  #map_div { width: 100%; height: 100%; }
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 12px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .toolbar button {
+    border: none; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700;
+    cursor: pointer; color: #fff; background: #9aa0a6;
+  }
+  .toolbar button.active { background: linear-gradient(135deg, #60c219, #4fa912); }
+  .toolbar button#btnNormalRoute { background: #2563eb; }
+  .toolbar button#btnSafeRoute { background: #16a34a; }
+  #routeStatus { font-size: 12px; color: #444; width: 100%; }
+  /* 제보 등록 팝업 */
+  #reportPopup {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    z-index: 30; background: #fff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    padding: 16px; width: 280px;
+  }
+  #reportPopup h3 { margin: 0 0 10px; font-size: 15px; }
+  #reportPopup .types { display: flex; gap: 6px; margin-bottom: 10px; }
+  #reportPopup .types button {
+    flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid #ddd; background: #f7f7f7;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  #reportPopup .types button.selected { background: #60c219; color: #fff; border-color: #60c219; }
+  #reportPopup textarea {
+    width: 100%; box-sizing: border-box; border-radius: 8px; border: 1px solid #ddd;
+    padding: 8px; font-size: 13px; resize: none; height: 56px;
+  }
+  #reportPopup .actions { display: flex; gap: 8px; margin-top: 10px; }
+  #reportPopup .actions button { flex: 1; padding: 10px 0; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; }
+  #reportPopup .actions .submit { background: #60c219; color: #fff; }
+  #reportPopup .actions .cancel { background: #eee; color: #333; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button id="btnSetStart">내 위치를 출발지로</button>
+  <button id="btnDestMode">지도 클릭으로 도착지 선택</button>
+  <button id="btnNormalRoute" disabled>일반 경로 보기</button>
+  <button id="btnSafeRoute" disabled>안심 경로 보기</button>
+  <span id="routeStatus"></span>
+</div>
+
+<div id="map_div"></div>
+
+<div id="reportPopup" hidden>
+  <h3>무엇을 제보하시겠어요?</h3>
+  <div class="types">
+    <button data-type="CONSTR">공사</button>
+    <button data-type="HAZARD">위험</button>
+    <button data-type="STAIRS">계단</button>
+  </div>
+  <textarea id="reportDesc" placeholder="상세 설명 (선택)"></textarea>
+  <div class="actions">
+    <button class="cancel" id="reportCancel">취소</button>
+    <button class="submit" id="reportSubmit">제보하기</button>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+  }
+}
+</script>
+<!-- TMAP appKey는 routeService.js에 내장되어 있고, 지도 SDK 로드용으로 동일 값을 사용 -->
+<script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
+
+<script type="module">
+  import { createReport, fetchNearbyReports, subscribeToRealtimeReports } from '../backend/data/supabaseService.js';
+  import { findSafeRoute } from '../backend/data/routeService.js';
+
+  const DEFAULT_CENTER = { lat: 37.5665, lng: 126.9780 }; // 서울시청 (위치 미허용 시 폴백)
+  const REPORT_REFRESH_RADIUS_M = 2000;
+
+  const map = new Tmapv2.Map('map_div', {
+    center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+    width: '100%',
+    height: '100%',
+    zoom: 16,
+  });
+
+  let startPoint = null;   // { lat, lng }
+  let destPoint = null;
+  let startMarker = null;
+  let destMarker = null;
+  let reportMarkers = [];
+  let normalPolyline = null;
+  let safePolyline = null;
+  let destModeOn = false;
+  let pendingReportLatLng = null;
+  let routeResultCache = null; // { key, normalRoute, safeRoute }
+
+  const reportTypeIcons = { CONSTR: '🚧', HAZARD: '⚠️', STAIRS: '🪜' };
+
+  function setMarker(existingMarker, lat, lng, opts) {
+    if (existingMarker) existingMarker.setMap(null);
+    return new Tmapv2.Marker({
+      position: new Tmapv2.LatLng(lat, lng),
+      map,
+      ...opts,
+    });
+  }
+
+  // ---- 실시간 위험 제보 마커 ----
+  async function refreshReportMarkers() {
+    const center = map.getCenter();
+    const reports = await fetchNearbyReports(center.lat(), center.lng(), REPORT_REFRESH_RADIUS_M);
+    reportMarkers.forEach((m) => m.setMap(null));
+    reportMarkers = reports.map((r) =>
+      new Tmapv2.Marker({
+        position: new Tmapv2.LatLng(r.lat, r.lng),
+        map,
+        title: `${reportTypeIcons[r.report_type] ?? '❗'} ${r.description || r.report_type}`,
+      })
+    );
+  }
+  refreshReportMarkers();
+  subscribeToRealtimeReports(() => refreshReportMarkers());
+
+  // ---- 제보 등록 팝업 ----
+  const popup = document.getElementById('reportPopup');
+  const typeButtons = popup.querySelectorAll('.types button');
+  let selectedType = null;
+
+  typeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      typeButtons.forEach((b) => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedType = btn.dataset.type;
+    });
+  });
+
+  function openReportPopup(lat, lng) {
+    pendingReportLatLng = { lat, lng };
+    selectedType = null;
+    typeButtons.forEach((b) => b.classList.remove('selected'));
+    document.getElementById('reportDesc').value = '';
+    popup.hidden = false;
+  }
+
+  document.getElementById('reportCancel').addEventListener('click', () => {
+    popup.hidden = true;
+  });
+
+  document.getElementById('reportSubmit').addEventListener('click', async () => {
+    if (!selectedType || !pendingReportLatLng) {
+      alert('제보 유형을 선택해주세요.');
+      return;
+    }
+    const description = document.getElementById('reportDesc').value.trim();
+    const { lat, lng } = pendingReportLatLng;
+    const result = await createReport(lat, lng, selectedType, description);
+    if (!result.success) {
+      alert('제보 등록에 실패했습니다: ' + (result.error?.message ?? ''));
+      return;
+    }
+    popup.hidden = true;
+    refreshReportMarkers();
+  });
+
+  // ---- 지도 클릭: 도착지 선택 모드 vs 제보 모드 ----
+  const btnDestMode = document.getElementById('btnDestMode');
+  btnDestMode.addEventListener('click', () => {
+    destModeOn = !destModeOn;
+    btnDestMode.classList.toggle('active', destModeOn);
+    btnDestMode.textContent = destModeOn ? '도착지 선택 중... (클릭)' : '지도 클릭으로 도착지 선택';
+  });
+
+  map.addListener('click', (evt) => {
+    const lat = evt.latLng.lat();
+    const lng = evt.latLng.lng();
+
+    if (destModeOn) {
+      destPoint = { lat, lng };
+      destMarker = setMarker(destMarker, lat, lng, { title: '도착지' });
+      updateRouteButtons();
+      return;
+    }
+    openReportPopup(lat, lng);
+  });
+
+  // ---- 출발지: 브라우저 위치 ----
+  document.getElementById('btnSetStart').addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      alert('이 브라우저는 위치 정보를 지원하지 않습니다.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        startPoint = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        startMarker = setMarker(startMarker, startPoint.lat, startPoint.lng, { title: '출발지' });
+        map.setCenter(new Tmapv2.LatLng(startPoint.lat, startPoint.lng));
+        updateRouteButtons();
+      },
+      () => alert('현재 위치를 가져오지 못했습니다.')
+    );
+  });
+
+  function updateRouteButtons() {
+    const ready = !!(startPoint && destPoint);
+    document.getElementById('btnNormalRoute').disabled = !ready;
+    document.getElementById('btnSafeRoute').disabled = !ready;
+    routeResultCache = null; // 출발/도착 변경 시 캐시 무효화
+  }
+
+  // ---- 경로 탐색 + Polyline 시각화 ----
+  async function ensureRouteResult() {
+    const key = JSON.stringify({ startPoint, destPoint });
+    if (routeResultCache?.key === key) return routeResultCache;
+
+    document.getElementById('routeStatus').textContent = '경로 탐색 중...';
+    const result = await findSafeRoute({
+      startLat: startPoint.lat,
+      startLng: startPoint.lng,
+      endLat: destPoint.lat,
+      endLng: destPoint.lng,
+    });
+    routeResultCache = { key, ...result };
+    return routeResultCache;
+  }
+
+  function drawPolyline(existing, coords, color) {
+    if (existing) existing.setMap(null);
+    return new Tmapv2.Polyline({
+      path: coords.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+      strokeColor: color,
+      strokeWeight: 6,
+      map,
+    });
+  }
+
+  document.getElementById('btnNormalRoute').addEventListener('click', async () => {
+    const { normalRoute } = await ensureRouteResult();
+    normalPolyline = drawPolyline(normalPolyline, normalRoute.coords, '#2563eb');
+    document.getElementById('routeStatus').textContent = `일반 경로 안심점수 ${normalRoute.score}`;
+  });
+
+  document.getElementById('btnSafeRoute').addEventListener('click', async () => {
+    const { safeRoute } = await ensureRouteResult();
+    safePolyline = drawPolyline(safePolyline, safeRoute.coords, '#16a34a');
+    document.getElementById('routeStatus').textContent =
+      `안심 경로 안심점수 ${safeRoute.score}` + (safeRoute.blocked ? ' - 경로상 공사/장애물 제보 있음, 주의' : '');
+  });
+</script>
+</body>
+</html>
