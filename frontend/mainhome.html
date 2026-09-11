@@ -263,7 +263,7 @@ tailwind.config = {
   });
 
   // 로그인이 필요한 하단 탭: 비로그인 상태에서는 이동을 막고 토스트만 표시
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const isLoggedIn = !!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token');
   const loginToast = document.getElementById('login-toast');
   let loginToastTimer = null;
   document.querySelectorAll('[data-auth-required]').forEach(link => {
