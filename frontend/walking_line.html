@@ -325,8 +325,18 @@
     let userId = null;
     let currentRoute = null;
     let routePolyline = null;
+    let userMarker = null;
     let watchId = null;
     let gpsLog = [];
+
+    // 실시간 위치 마커 아이콘 - 새 이미지 파일 없이 인라인 SVG로 표시(흰 테두리 + 초록 점)
+    const USER_MARKER_ICON =
+      'data:image/svg+xml;charset=UTF-8,' +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">' +
+          '<circle cx="14" cy="14" r="11" fill="#4FA912" stroke="white" stroke-width="3"/>' +
+          '</svg>'
+      );
 
     const map = new Tmapv2.Map('map_div', {
       center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
@@ -365,6 +375,19 @@
     function updateUserLocation(lat, lng, label) {
       userLocation = { lat, lng };
       currentPositionLabel.textContent = label;
+
+      const position = new Tmapv2.LatLng(lat, lng);
+      if (!userMarker) {
+        userMarker = new Tmapv2.Marker({
+          position,
+          map,
+          icon: USER_MARKER_ICON,
+          iconSize: new Tmapv2.Size(28, 28),
+          title: '내 실시간 위치',
+        });
+      } else {
+        userMarker.setPosition(position);
+      }
     }
 
     if (navigator.geolocation) {
