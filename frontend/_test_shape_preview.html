@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>도형 산책로 도로 정렬 테스트</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  body { margin: 0; font-family: sans-serif; }
+  #panel { position: absolute; z-index: 1000; top: 10px; left: 10px; background: white; padding: 10px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+  #map { height: 100vh; }
+  #status { margin-top: 6px; font-size: 12px; color: #333; white-space: pre; }
+  select, input, button { font-size: 14px; margin: 2px 0; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <div>
+    도형: <select id="shape">
+      <option value="rhombus">마름모</option>
+      <option value="star" selected>별</option>
+      <option value="heart">하트</option>
+      <option value="crown">왕관</option>
+      <option value="fish">물고기</option>
+    </select>
+  </div>
+  <div>중심: <input id="lat" value="37.5581" size="8" /> , <input id="lng" value="126.9936" size="8" /></div>
+  <div>반경(km): <input id="radius" value="0.3" size="4" /></div>
+  <button id="go">생성</button>
+  <div id="status"></div>
+</div>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([37.5581, 126.9936], 16);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OSM' }).addTo(map);
+  let layer = null;
+
+  document.getElementById('go').addEventListener('click', async () => {
+    const shape = document.getElementById('shape').value;
+    const centerLat = parseFloat(document.getElementById('lat').value);
+    const centerLng = parseFloat(document.getElementById('lng').value);
+    const radiusKm = parseFloat(document.getElementById('radius').value);
+    const status = document.getElementById('status');
+    status.textContent = '생성 중...';
+
+    const t0 = performance.now();
+    const res = await fetch('/api/soft-weight-route', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shape, centerLat, centerLng, radiusKm }),
+    });
+    const data = await res.json();
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+
+    if (!res.ok) {
+      status.textContent = `실패: ${data.error}`;
+      return;
+    }
+
+    if (layer) map.removeLayer(layer);
+    const latlngs = data.geojson.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+    layer = L.polyline(latlngs, { color: 'crimson', weight: 4 }).addTo(map);
+    map.fitBounds(layer.getBounds());
+
+    const roadSegments = data.segments.filter((s) => s.usedRoadNetwork).length;
+    status.textContent = `waypoints=${data.waypoints.length}\n도로망 정렬=${roadSegments}/${data.segments.length}\n소요=${elapsed}s`;
+  });
+</script>
+</body>
+</html>
