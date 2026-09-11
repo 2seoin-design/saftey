@@ -384,7 +384,7 @@
       const walkSubtitleEl = document.getElementById('walkSummarySubtitle');
       if (!nameEl) return;
 
-      const { data: { session } } = await sb.auth.getSession();
+      const session = await getFreshSession();
       const user = session?.user;
       if (!user) {
         location.href = 'login.html';

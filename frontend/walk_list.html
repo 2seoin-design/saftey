@@ -240,7 +240,7 @@
       const listEl = document.getElementById('walkHistoryList');
       const statusEl = document.getElementById('walkHistoryStatus');
 
-      const { data: { session } } = await sb.auth.getSession();
+      const session = await getFreshSession();
       if (!session) {
         location.href = 'login.html';
         return;
