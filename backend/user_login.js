@@ -1,8 +1,3 @@
-const sb = supabase.createClient(
-  "https://uaiokdnbzbvpmoqnvsho.supabase.co",
-  "sb_publishable_smBlW5ILkjZmAcYCi14K9A_LS4TktdR"
-);
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('login-form');
   if (!form) return;

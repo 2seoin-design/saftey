@@ -106,10 +106,28 @@
         }
         navigator.geolocation.getCurrentPosition(
           ({ coords }) => resolve(coords),
-          () => reject(new Error('제보를 저장하려면 위치 정보 권한이 필요합니다.')),
+          (error) => reject(new Error(
+            error.code === error.PERMISSION_DENIED
+              ? '제보를 저장하려면 브라우저의 위치 정보 권한을 허용해주세요.'
+              : '현재 위치를 확인하지 못했습니다.'
+          )),
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
         );
       });
+
+      const showCurrentLocation = ({ latitude, longitude, accuracy }) => {
+        const locationIcon = Array.from(document.querySelectorAll('.material-symbols-outlined'))
+          .find((element) => element.textContent.trim() === 'location_on');
+        const locationText = locationIcon?.parentElement?.querySelector('span:not(.material-symbols-outlined)');
+        if (locationText) {
+          locationText.textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+        }
+        const accuracyText = locationText?.parentElement?.parentElement?.querySelector('span:last-child');
+        if (accuracyText && Number.isFinite(accuracy)) {
+          accuracyText.textContent = `GPS 오차 ±${Math.round(accuracy)}m`;
+        }
+        emit('report:location-updated', { latitude, longitude, accuracy });
+      };
 
       const getSelectedReportType = () => {
         const activeChip = Array.from(document.querySelectorAll('.hazard-chip'))
@@ -129,6 +147,9 @@
         }
 
         const { data: { user } } = await client.auth.getUser();
+        if (!user) {
+          throw new Error('제보를 저장하려면 먼저 로그인해주세요.');
+        }
         const { data, error } = await client
           .from('reports')
           .insert([{
@@ -149,8 +170,20 @@
         if (photo) {
           try {
             photoResult = await uploadPhoto(photo, data.id);
+            const { data: updatedReport, error: photoUrlError } = await client
+              .from('reports')
+              .update({ photo_url: photoResult.url })
+              .eq('id', data.id)
+              .select()
+              .single();
+            if (photoUrlError) {
+              emit('report:error', photoUrlError);
+              throw photoUrlError;
+            }
+            data.photo_url = updatedReport.photo_url;
           } catch (uploadError) {
-            console.error('제보는 저장되었지만 사진 업로드에 실패했습니다:', uploadError);
+            emit('report:photo-error', uploadError);
+            throw uploadError;
           }
         }
         emit('report:created', { report: data, photo: photoResult });
@@ -259,6 +292,7 @@
           clickedButton.disabled = true;
           try {
             const position = await getCurrentPosition();
+            showCurrentLocation(position);
             const description = document.querySelector('textarea')?.value || '';
             await createReport({
               lat: position.latitude,
@@ -292,6 +326,7 @@
         client,
         getReports,
         createReport,
+        getCurrentPosition,
         updateReportStatus,
         subscribeToReports,
         openPhotoPicker,
