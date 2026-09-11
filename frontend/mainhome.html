@@ -3,12 +3,11 @@
 <head>
 <script>
   if (localStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.href = 'login.html'; // 파일명이 다르면 실제 로그인 파일명으로 변경
+    window.location.href = 'login.html' // 파일명이 다르면 실제 로그인 파일명으로 변경
   }
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>안전디딤돌 - 홈</title>
 <link rel="icon" href="/saftey/img/saftey_logo_nottext.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -143,44 +142,44 @@ tailwind.config = {
       </div>
     </div>
 
-<!-- 실시간 안전 히어로 카드 -->
+<!-- 실시간 안전 히어로 카드 (파스텔 그라데이션 + 입체감) -->
 <section
-  class="relative w-full rounded-2xl p-space-lg overflow-hidden border border-white/20 flex items-center justify-center min-h-[220px]"
-  style="background: radial-gradient(circle at center, #84a567 0%, #7aad4e 100%); box-shadow: rgba(255,255,255,0.35) 0px 1px 1px inset, rgba(70,159,15,0.35) 0px 8px 24px -6px;"
+  class="relative w-full rounded-[28px] p-space-lg overflow-hidden flex items-center min-h-[220px]"
+  style="background: linear-gradient(145deg, #eaf8dc 0%, #cdeeb0 45%, #a9dd8e 100%); box-shadow: 0 16px 32px -10px rgba(90,150,50,0.35), inset 0 2px 3px rgba(255,255,255,0.7), inset 0 -6px 10px rgba(70,120,35,0.18);"
 >
-  <div class="relative z-10 flex flex-col items-center gap-3 w-full">
+  <!-- 그래픽 도형: 화면 밖으로 걸치는 원 (파스텔 입체 볼) -->
+  <div class="absolute -right-10 -top-10 w-36 h-36 rounded-full pointer-events-none" style="background: radial-gradient(circle at 32% 28%, #eaf8dc 0%, #bfe6a0 55%, #8fca6c 100%); box-shadow: inset -8px -8px 14px rgba(60,110,25,0.35), inset 6px 6px 10px rgba(255,255,255,0.6);"></div>
+  <!-- 그래픽 도형: 회전한 사각 아웃라인 -->
+  <div class="absolute right-6 bottom-4 w-9 h-9 rounded-md rotate-45 pointer-events-none" style="background: linear-gradient(145deg, #dff2c8, #a9dd8e); box-shadow: inset -3px -3px 5px rgba(60,110,25,0.3), inset 2px 2px 4px rgba(255,255,255,0.6);"></div>
 
-    <!-- 말풍선 -->
-    <div class="relative bg-white rounded-2xl px-space-lg py-space-sm shadow-[0_6px_16px_rgba(0,0,0,0.15)] flex items-center justify-center gap-2 w-full max-w-[280px]">
-      <p class="font-title-sm text-title-sm text-on-surface font-bold text-center leading-snug">
-        우리동네 위험구간을 제보해주세요!
-      </p>
+  <div class="relative z-10 flex items-center justify-start w-full gap-3">
+    <!-- 안내 캐릭터 (왼쪽) -->
+    <img src="../img/safety_charc_annae.png" alt="안전디딤돌 안내 캐릭터" class="relative z-10 h-32 w-auto object-contain shrink-0" style="filter: drop-shadow(0 8px 10px rgba(60,110,25,0.25));">
 
-      <button
-        type="button"
-        aria-label="위험 제보 화면으로 이동"
-        onclick="location.href='report.html'"
-        class="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 active:scale-95 transition-transform shadow-sm"
-        style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);"
-      >
-        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-      </button>
+    <div class="flex flex-col items-start gap-2 max-w-[58%]">
+      <!-- 태그 배지 -->
+      <span class="inline-block px-2.5 py-1 text-white font-label-sm text-label-sm font-black uppercase tracking-wide -rotate-3 rounded-full" style="background: linear-gradient(135deg, #6cbf3a 0%, #4a9420 100%); box-shadow: 0 3px 6px rgba(70,120,35,0.35), inset 0 1px 1px rgba(255,255,255,0.5);">REPORT</span>
 
-      <!-- 말풍선 꼬리 (캐릭터 머리 쪽, 아래 방향) -->
-      <span class="absolute left-1/2 -translate-x-1/2 -bottom-[9px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[10px] border-t-white"></span>
+      <!-- 말풍선 -->
+      <div class="relative rounded-2xl px-4 py-2.5" style="background: linear-gradient(160deg, #ffffff 0%, #f3fbe9 100%); box-shadow: 0 10px 18px -6px rgba(60,110,25,0.3), inset 0 1px 1px rgba(255,255,255,0.9);">
+        <p class="font-title-sm text-title-sm text-on-surface font-bold leading-snug">
+          우리동네 위험 구간을 제보해주세요!
+        </p>
+        <!-- 말풍선 꼬리 (캐릭터 쪽, 왼쪽 방향) -->
+        <span class="absolute -left-[8px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[9px]" style="border-right-color:#f3fbe9; filter: drop-shadow(-2px 1px 1px rgba(60,110,25,0.15));"></span>
+      </div>
     </div>
-
-    <!-- 안내 캐릭터 -->
-    <img src="../img/safety_charc_annae.png" alt="안전디딤돌 안내 캐릭터" class="h-28 w-auto object-contain">
-
   </div>
 </section>
 
-    <!-- 4대 핵심 기능 -->
-    <section class="flex flex-col gap-space-xs">
-      <div class="flex items-center justify-between px-1">
+    <!-- 4대 핵심 기능 (폴더 모양 박스: 인덱스 탭에 '메인 서비스' 표기) -->
+    <section class="flex flex-col items-start w-full">
+      <!-- 폴더 인덱스 탭 -->
+      <div class="px-4 py-2 rounded-t-xl bg-surface-container-low shadow-[0_-2px_8px_rgba(15,118,110,0.04)]">
         <h3 class="font-headline-md text-headline-md text-on-surface font-bold">메인 서비스</h3>
       </div>
+      <!-- 폴더 본체 -->
+      <div class="w-full -mt-px rounded-b-2xl rounded-tr-2xl bg-surface-container-low shadow-[0_4px_16px_rgba(15,118,110,0.06)] p-space-sm">
       <div class="grid grid-cols-2 gap-space-xs">
         <button type="button" onclick="location.href='realtime_map.html'" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
           <div class="flex items-center justify-between w-full mb-space-xs">
@@ -220,6 +219,7 @@ tailwind.config = {
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">제보 접수 후 관할 지자체 조치</div>
         </button>
       </div>
+      </div>
     </section>
   </div>
 </main>
@@ -232,20 +232,25 @@ tailwind.config = {
       </a>
       <span class="font-label-sm text-[11px] font-bold mt-1" style="color: rgb(79,169,18);">홈</span>
     </div>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html" data-auth-required="true">
       <span class="material-symbols-outlined text-[22px]">map</span>
       <span class="font-label-sm text-[11px]">안전지도</span>
     </a>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html" data-auth-required="true">
       <span class="material-symbols-outlined text-[22px]">photo_camera</span>
       <span class="font-label-sm text-[11px]">10초제보</span>
     </a>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html" data-auth-required="true">
       <span class="material-symbols-outlined text-[22px]">person</span>
       <span class="font-label-sm text-[11px]">마이</span>
     </a>
   </div>
 </nav>
+
+<!-- 로그인 필요 안내 토스트 -->
+<div id="login-toast" class="fixed left-1/2 -translate-x-1/2 z-[60] px-5 py-3 rounded-full bg-[#1E293B]/90 text-white font-label-md text-label-md font-bold shadow-lg backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300" style="bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));">
+  로그인 후 이용해주세요
+</div>
 
 <script>
   document.querySelectorAll('button').forEach(btn => {
@@ -253,6 +258,25 @@ tailwind.config = {
       if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(8);
       }
+    });
+  });
+
+  // 로그인이 필요한 하단 탭: 비로그인 상태에서는 이동을 막고 토스트만 표시
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const loginToast = document.getElementById('login-toast');
+  let loginToastTimer = null;
+  document.querySelectorAll('[data-auth-required]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (isLoggedIn) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      loginToast.classList.remove('opacity-0');
+      loginToast.classList.add('opacity-100');
+      clearTimeout(loginToastTimer);
+      loginToastTimer = setTimeout(() => {
+        loginToast.classList.remove('opacity-100');
+        loginToast.classList.add('opacity-0');
+      }, 2000);
     });
   });
 
