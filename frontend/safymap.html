@@ -155,10 +155,12 @@
     body {
       min-height: max(884px, 100dvh);
     }
+    body.page-transition { opacity: 0; transition: opacity 0.22s ease; }
+    body.page-transition.page-loaded { opacity: 1; }
   </style>
 </head>
 
-<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen" style="background-color: rgb(245, 245, 245);">
+<body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen page-transition" style="background-color: rgb(245, 245, 245);">
   <svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
 
   <!-- Header (mainhome.html과 동일, 로고 텍스트 이미지 대신 '안전지도' 문구) -->
@@ -541,6 +543,20 @@
               applyCtaVisibility();
             });
           }
+
+          // 다른 페이지들과 동일한 페이드 전환: 클릭 즉시 이동하지 않고 살짝 기다렸다가 이동
+          requestAnimationFrame(() => document.body.classList.add('page-loaded'));
+          document.querySelectorAll('a[href]').forEach(function(link) {
+            var href = link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
+            link.addEventListener('click', function(e) {
+              e.preventDefault();
+              document.body.classList.remove('page-loaded');
+              setTimeout(function() {
+                window.location.href = href;
+              }, 200);
+            });
+          });
         });
       </script>
 
