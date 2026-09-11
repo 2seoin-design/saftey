@@ -399,8 +399,6 @@
         document.getElementById('profile-avatar-icon')?.classList.add('hidden');
       }
 
-      const authHeaders = { Authorization: `Bearer ${session.access_token}` };
-
       try {
         const { data: profile, error } = await sb
           .from('profiles')
