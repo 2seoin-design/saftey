@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" style="">
 <head>
+  <script>
+    // Supabase JS가 로그인 성공 시 저장하는 세션 토큰 존재 여부로 체크 (supabaseClient.js와 동일 프로젝트)
+    if (!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token')) {
+      window.location.href = 'login.html';
+    }
+  </script>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
   <link href="https://fonts.googleapis.com" rel="preconnect">
