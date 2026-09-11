@@ -4,7 +4,7 @@
       const STATUS_VALUES = ['pending', 'reviewing', 'approved', 'rejected'];
       const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
       const GEMINI_API_KEY = window.GEMINI_API_KEY || '';
-      const GEMINI_MODEL = 'gemini-2.5-flash';
+      const GEMINI_MODEL = 'gemini-3.6-flash';
       const AI_CLASSIFIER_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
       const AI_PROXY_ENDPOINT = window.AI_API_ENDPOINT || '/api/analyze-image';
       const AI_CLASSIFICATION_TIMEOUT = 30000;
