@@ -23,6 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
       errorEl.classList.remove('hidden');
       return;
     }
-    location.href = 'mainhome.html';
+    location.href = 'index.html';
   });
 });
