@@ -1,6 +1,6 @@
 import { supabase } from './supabaseService.js';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 const IMAGE_BUCKET = 'community-images';
 
 export function computeTotalPages(totalCount, pageSize = PAGE_SIZE) {
@@ -43,7 +43,7 @@ export async function createPost({ title, content, imageUrl = null }) {
 }
 
 /**
- * 게시글 목록 조회 - 작성일시 내림차순, 페이지당 20개
+ * 게시글 목록 조회 - 작성일시 내림차순, 페이지당 10개
  * @param {number} page - 1부터 시작
  */
 export async function fetchPosts(page = 1) {
