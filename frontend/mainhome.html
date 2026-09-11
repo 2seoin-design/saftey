@@ -175,7 +175,7 @@ tailwind.config = {
       <!-- 폴더 본체 -->
       <div class="w-full -mt-px rounded-b-2xl rounded-tr-2xl bg-surface-container-low shadow-[0_4px_16px_rgba(15,118,110,0.06)] p-space-sm">
       <div class="grid grid-cols-2 gap-space-xs">
-        <button type="button" onclick="location.href='walking_line.html'" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
+        <button type="button" data-href="walking_line.html" data-auth-required="true" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
           <div class="flex items-center justify-between w-full mb-space-xs">
             <div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
               <span class="material-symbols-outlined text-[22px]">camera_enhance</span>
@@ -184,7 +184,7 @@ tailwind.config = {
           <div class="font-title-sm text-title-sm text-on-surface font-bold">안심 산책로 길안내</div>
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">안전하고 재밌는 길안내</div>
         </button>
-        <button type="button" onclick="location.href='10report.html'" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
+        <button type="button" data-href="10report.html" data-auth-required="true" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
           <div class="flex items-center justify-between w-full mb-space-xs">
             <div class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
               <span class="material-symbols-outlined text-[22px]">wb_twilight</span>
@@ -193,7 +193,7 @@ tailwind.config = {
           <div class="font-title-sm text-title-sm text-on-surface font-bold">10초 사진 제보</div>
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">AI 기술을 활용한 빠른 제보 처리</div>
         </button>
-        <button type="button" onclick="location.href='community.html'" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
+        <button type="button" data-href="community.html" data-auth-required="true" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
           <div class="flex items-center justify-between w-full mb-space-xs">
             <div class="w-10 h-10 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
               <span class="material-symbols-outlined text-[22px]">accessible_forward</span>
@@ -202,7 +202,7 @@ tailwind.config = {
           <div class="font-title-sm text-title-sm text-on-surface font-bold">커뮤니티</div>
           <div class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-0.5 leading-snug">사람들과 소통하는 공간</div>
         </button>
-        <button type="button" onclick="location.href='point_change.html'" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
+        <button type="button" data-href="point_change.html" data-auth-required="true" class="flex flex-col text-left p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,118,110,0.04)] active:scale-[0.98] transition-transform">
           <div class="flex items-center justify-between w-full mb-space-xs">
             <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface">
               <span class="material-symbols-outlined text-[22px]">precision_manufacturing</span>
@@ -258,35 +258,41 @@ tailwind.config = {
     });
   });
 
-  // 로그인이 필요한 하단 탭: 비로그인 상태에서는 이동을 막고 토스트만 표시
+  // 로그인이 필요한 버튼/탭: 비로그인 상태에서는 이동을 막고 토스트만 표시
+  // (이 페이지 자체는 맨 위 스크립트가 비로그인 시 즉시 login.html로 보내지만,
+  //  뒤로가기 캐시 등 예외 상황에 대비해 각 버튼에도 동일한 가드를 걸어둠)
   const isLoggedIn = !!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token');
   const loginToast = document.getElementById('login-toast');
   let loginToastTimer = null;
-  document.querySelectorAll('[data-auth-required]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      if (isLoggedIn) return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      loginToast.classList.remove('opacity-0');
-      loginToast.classList.add('opacity-100');
-      clearTimeout(loginToastTimer);
-      loginToastTimer = setTimeout(() => {
-        loginToast.classList.remove('opacity-100');
-        loginToast.classList.add('opacity-0');
-      }, 2000);
-    });
-  });
+  function showLoginToast() {
+    loginToast.classList.remove('opacity-0');
+    loginToast.classList.add('opacity-100');
+    clearTimeout(loginToastTimer);
+    loginToastTimer = setTimeout(() => {
+      loginToast.classList.remove('opacity-100');
+      loginToast.classList.add('opacity-0');
+    }, 2000);
+  }
 
   // 페이지 전환 시 자연스러운 페이드 효과
   requestAnimationFrame(() => document.body.classList.add('page-loaded'));
 
-  document.querySelectorAll('a[href]').forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href || href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
-    link.addEventListener('click', (e) => {
+  function navigateTo(href) {
+    document.body.classList.remove('page-loaded');
+    setTimeout(() => { window.location.href = href; }, 200);
+  }
+
+  // <a href="...">와 <button data-href="...">를 동일한 방식으로 처리
+  document.querySelectorAll('a[href], [data-href]').forEach(el => {
+    const href = el.getAttribute('href') || el.getAttribute('data-href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || el.target === '_blank') return;
+    el.addEventListener('click', (e) => {
       e.preventDefault();
-      document.body.classList.remove('page-loaded');
-      setTimeout(() => { window.location.href = href; }, 200);
+      if (el.hasAttribute('data-auth-required') && !isLoggedIn) {
+        showLoginToast();
+        return;
+      }
+      navigateTo(href);
     });
   });
 </script>
