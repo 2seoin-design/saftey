@@ -1,0 +1,14 @@
+{
+  "name": "saftey-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ingest": "node scripts/dataIngestion.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0"
+  }
+}
