@@ -99,13 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
       password,
       options: { data: avatarDataUrl ? { name, avatar_url: avatarDataUrl } : { name } },
     });
-    btnSubmit.disabled = false;
 
     if (error) {
+      btnSubmit.disabled = false;
       errorEl.textContent = error.message;
       errorEl.classList.remove('hidden');
       return;
     }
-    location.href = 'login.html';
+
+    // 이메일 인증이 꺼져 있으면 signUp이 세션을 만들어 자동 로그인시키므로,
+    // 그 세션을 즉시 로그아웃시켜서 반드시 직접 로그인하도록 함
+    await sb.auth.signOut();
+    btnSubmit.disabled = false;
+    // 완료 토스트와 함께 로그인 화면으로 이동
+    location.href = 'login.html?signup=success';
   });
 });

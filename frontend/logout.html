@@ -146,8 +146,9 @@ tailwind.config = {
   <!-- Identity Header -->
   <div class="flex items-center gap-space-sm relative z-10">
     <div class="relative flex-shrink-0">
-      <div class="w-20 h-20 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5">
-        <img id="profile-avatar" class="w-full h-full rounded-full object-cover" data-alt="Warm friendly smiling South Korean civic guardian woman in her late 20s" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuuTAlHxbyVyWvDmZDfhRGAj49MVb0TL8TQ78TsKyLH2q1hIyRSXoMj4cUC4oSevxvoU3zH9Sp5QzTfTVPPbU63kZG5ja3xtyrVJvhPw4NJttjehDgc6xHj9l8XWk1WjKhVzdMDFcbc-o3nst7fe90AmuPAnvsxwhds8eCDtH-2tv-corPpxC6CPQ_VcSY5BTfHFmtu7rLEpGvwlO3lcc88OGyilg1x869Z_jzioIakvDN35dJgHwO9A">
+      <div class="w-20 h-20 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5 flex items-center justify-center">
+        <span id="profile-avatar-icon" class="material-symbols-outlined text-outline text-[52px]">account_circle</span>
+        <img id="profile-avatar" class="hidden w-full h-full rounded-full object-cover" alt="프로필 사진">
       </div>
     </div>
 
@@ -260,6 +261,8 @@ tailwind.config = {
     nameEl.textContent = displayName;
     if (avatarEl && user.user_metadata?.avatar_url) {
       avatarEl.src = user.user_metadata.avatar_url;
+      avatarEl.classList.remove('hidden');
+      document.getElementById('profile-avatar-icon')?.classList.add('hidden');
     }
 
     const authHeaders = { Authorization: `Bearer ${session.access_token}` };

@@ -128,8 +128,9 @@ tailwind.config = {
     <!-- 프로필 사진 변경 -->
     <section class="flex flex-col items-center justify-center py-space-sm">
       <div class="relative">
-        <div class="w-24 h-24 rounded-full overflow-hidden shadow-md bg-surface-container-lowest p-0.5 border-2" style="border-color: rgb(96, 194, 25);">
-          <img id="profile-preview" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuuTAlHxbyVyWvDmZDfhRGAj49MVb0TL8TQ78TsKyLH2q1hIyRSXoMj4cUC4oSevxvoU3zH9Sp5QzTfTVPPbU63kZG5ja3xtyrVJvhPw4NJttjehDgc6xHj9l8XWk1WjKhVzdMDFcbc-o3nst7fe90AmuPAnvsxwhds8eCDtH-2tv-corPpxC6CPQ_VcSY5BTfHFmtu7rLEpGvwlO3lcc88OGyilg1x869Z_jzioIakvDN35dJgHwO9A" alt="프로필 이미지">
+        <div class="w-24 h-24 rounded-full overflow-hidden shadow-md bg-surface-container-lowest p-0.5 border-2 flex items-center justify-center" style="border-color: rgb(96, 194, 25);">
+          <span id="profile-preview-icon" class="material-symbols-outlined text-outline text-[60px]">account_circle</span>
+          <img id="profile-preview" class="hidden w-full h-full rounded-full object-cover" alt="프로필 이미지">
         </div>
         <label for="profile-upload" class="absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center text-white shadow-md cursor-pointer active:scale-95 transition-transform" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);">
           <span class="material-symbols-outlined text-[16px]">photo_camera</span>
@@ -205,6 +206,7 @@ tailwind.config = {
 
   const nameInput = document.getElementById('profile-name-input');
   const preview = document.getElementById('profile-preview');
+  const previewIcon = document.getElementById('profile-preview-icon');
   const upload = document.getElementById('profile-upload');
   const form = document.getElementById('profile-edit-form');
   const submitBtn = document.getElementById('profile-edit-submit');
@@ -217,6 +219,13 @@ tailwind.config = {
     messageEl.style.color = isError ? '#ba1a1a' : 'rgb(79, 169, 18)';
   }
 
+  // 사진이 있으면 이미지를, 없으면 기본 프로필 아이콘을 보여줌
+  function showAvatarImage(src) {
+    preview.src = src;
+    preview.classList.remove('hidden');
+    previewIcon.classList.add('hidden');
+  }
+
   // 현재 사용자 정보 불러와 폼에 채우기
   document.addEventListener('DOMContentLoaded', async () => {
     const { data: { user } } = await sb.auth.getUser();
@@ -226,7 +235,7 @@ tailwind.config = {
     }
     nameInput.value = user.user_metadata?.name || '';
     if (user.user_metadata?.avatar_url) {
-      preview.src = user.user_metadata.avatar_url;
+      showAvatarImage(user.user_metadata.avatar_url);
     }
   });
 
@@ -234,7 +243,7 @@ tailwind.config = {
   upload.addEventListener('change', () => {
     const file = upload.files[0];
     if (!file) return;
-    preview.src = URL.createObjectURL(file);
+    showAvatarImage(URL.createObjectURL(file));
 
     const reader = new FileReader();
     reader.onload = () => { pendingAvatarDataUrl = reader.result; };

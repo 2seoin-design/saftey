@@ -308,7 +308,7 @@
         const container = document.getElementById('report-cards-container');
         const statusEl = document.getElementById('reportListStatus');
 
-        const { data: { session } } = await sb.auth.getSession();
+        const session = await getFreshSession();
         if (!session) {
           location.href = 'login.html';
           return;

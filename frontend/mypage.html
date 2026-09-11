@@ -182,8 +182,9 @@
           <!-- Identity Header -->
           <div class="flex items-center gap-space-sm relative z-10">
             <div class="relative flex-shrink-0">
-              <div class="w-20 h-20 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5">
-                <img id="profile-avatar" class="w-full h-full rounded-full object-cover" data-alt="Warm friendly smiling South Korean civic guardian woman in her late 20s" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuuTAlHxbyVyWvDmZDfhRGAj49MVb0TL8TQ78TsKyLH2q1hIyRSXoMj4cUC4oSevxvoU3zH9Sp5QzTfTVPPbU63kZG5ja3xtyrVJvhPw4NJttjehDgc6xHj9l8XWk1WjKhVzdMDFcbc-o3nst7fe90AmuPAnvsxwhds8eCDtH-2tv-corPpxC6CPQ_VcSY5BTfHFmtu7rLEpGvwlO3lcc88OGyilg1x869Z_jzioIakvDN35dJgHwO9A">
+              <div class="w-20 h-20 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5 flex items-center justify-center">
+                <span id="profile-avatar-icon" class="material-symbols-outlined text-outline text-[52px]">account_circle</span>
+                <img id="profile-avatar" class="hidden w-full h-full rounded-full object-cover" alt="프로필 사진">
               </div>
             </div>
 
@@ -281,7 +282,7 @@
                 </div>
                 <div class="flex flex-col">
                   <span class="font-title-sm text-title-sm text-on-surface font-semibold group-hover:text-primary transition-colors">내 제보 내역 및 실시간 조치 현황</span>
-                  <span class="font-label-sm text-label-sm text-on-surface-variant">접수 1건 · 조치중 2건 · 완료 9건</span>
+                  <span id="reportSummarySubtitle" class="font-label-sm text-label-sm text-on-surface-variant">불러오는 중...</span>
                 </div>
               </div>
               <span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
@@ -294,8 +295,8 @@
       <span class="material-symbols-outlined text-[20px]">directions_walk</span>
     </div>
     <div class="flex flex-col">
-      <span class="font-title-sm text-title-sm text-on-surface font-semibold group-hover:text-primary transition-colors">안심 산책로 성공내역</span>
-      <span class="font-label-sm text-label-sm text-on-surface-variant">완료 14회 · 누적 28.5km 달성</span>
+      <span class="font-title-sm text-title-sm text-on-surface font-semibold group-hover:text-primary transition-colors">안전 산책로 성공내역</span>
+      <span id="walkSummarySubtitle" class="font-label-sm text-label-sm text-on-surface-variant">불러오는 중...</span>
     </div>
   </div>
   <span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
@@ -379,9 +380,11 @@
       const avatarEl = document.getElementById('profile-avatar');
       const pointEl = document.getElementById('userPointText');
       const reportCountEl = document.getElementById('myReportCount');
+      const reportSubtitleEl = document.getElementById('reportSummarySubtitle');
+      const walkSubtitleEl = document.getElementById('walkSummarySubtitle');
       if (!nameEl) return;
 
-      const { data: { session } } = await sb.auth.getSession();
+      const session = await getFreshSession();
       const user = session?.user;
       if (!user) {
         location.href = 'login.html';
@@ -392,9 +395,9 @@
       nameEl.textContent = displayName;
       if (avatarEl && user.user_metadata?.avatar_url) {
         avatarEl.src = user.user_metadata.avatar_url;
+        avatarEl.classList.remove('hidden');
+        document.getElementById('profile-avatar-icon')?.classList.add('hidden');
       }
-
-      const authHeaders = { Authorization: `Bearer ${session.access_token}` };
 
       try {
         const { data: profile, error } = await sb
@@ -412,13 +415,47 @@
       try {
         const { data: reports, error } = await sb
           .from('reports')
-          .select('id')
+          .select('id, process_status')
           .eq('user_id', user.id);
         if (error) throw error;
         if (reportCountEl) reportCountEl.firstChild.textContent = String(reports?.length ?? 0);
+
+        if (reportSubtitleEl) {
+          const pendingCount = (reports ?? []).filter((r) => r.process_status === 'PENDING').length;
+          const doneCount = (reports ?? []).filter((r) => r.process_status === 'DONE').length;
+          reportSubtitleEl.textContent = (reports?.length ?? 0) === 0
+            ? '아직 등록한 제보가 없어요'
+            : `미처리 ${pendingCount}건 · 처리완료 ${doneCount}건`;
+        }
       } catch (err) {
         console.error('제보 내역을 불러오지 못했습니다:', err);
         if (reportCountEl) reportCountEl.firstChild.textContent = '0';
+        if (reportSubtitleEl) reportSubtitleEl.textContent = '불러오지 못했습니다';
+      }
+
+      // shapeRouteService.js의 SHAPE_CONFIG.targetDistanceKm과 동일한 값
+      // (course_completions에는 거리 컬럼이 없어 코스명으로 근사치를 매핑함 - walk_list.html과 동일한 방식)
+      const COURSE_DISTANCE_KM = { '마름모': 0.67, '하트': 1.33, '별': 2.0, '기하학적 물고기': 4.0, '왕관': 6.0 };
+
+      try {
+        const { data: completions, error } = await sb
+          .from('course_completions')
+          .select('course_name')
+          .eq('user_id', user.id);
+        if (error) throw error;
+
+        if (walkSubtitleEl) {
+          const count = completions?.length ?? 0;
+          const totalDistanceKm = (completions ?? []).reduce(
+            (sum, c) => sum + (COURSE_DISTANCE_KM[c.course_name] ?? 0), 0
+          );
+          walkSubtitleEl.textContent = count === 0
+            ? '아직 완주한 산책로가 없어요'
+            : `완료 ${count}회 · 누적 ${totalDistanceKm.toFixed(1)}km 달성`;
+        }
+      } catch (err) {
+        console.error('완주 내역을 불러오지 못했습니다:', err);
+        if (walkSubtitleEl) walkSubtitleEl.textContent = '불러오지 못했습니다';
       }
     });
   </script>

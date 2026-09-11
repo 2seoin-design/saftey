@@ -250,11 +250,34 @@
     </nav>
   </div>
 
+  <!-- 회원가입 완료 안내 토스트 -->
+  <div id="signup-toast" class="fixed left-1/2 -translate-x-1/2 z-[60] px-5 py-3 rounded-full bg-[#1E293B]/90 text-white text-xs font-bold shadow-lg backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300" style="bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));">
+    회원가입이 완료되었습니다. 로그인해주세요.
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../backend/data/supabaseClient.js"></script>
   <script src="../backend/user_login.js"></script>
 
   <script>
+    // 회원가입 직후 넘어온 경우 완료 토스트 표시
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('signup') !== 'success') return;
+      const toast = document.getElementById('signup-toast');
+      if (!toast) return;
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+      });
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2500);
+      // 새로고침 시 토스트가 다시 뜨지 않도록 URL에서 파라미터 제거
+      history.replaceState(null, '', window.location.pathname);
+    })();
+
     // 비밀번호 보기/숨기기 토글
     (function() {
       const pwInput = document.getElementById('login-password');

@@ -221,6 +221,10 @@
               <p id="aiAnalysisDescription" class="text-[12px] text-gray-600 mt-0.5 font-medium">카메라 또는 앨범에서 위험 구간 사진을 선택해주세요.</p>
             </div>
           </div>
+          <button id="aiAnalyzeBtn" class="w-full py-2.5 rounded-xl bg-[#4FA912] text-white text-[13px] font-bold shadow-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed active:scale-[0.99] transition-all" type="button" disabled>
+            <span class="material-symbols-outlined text-[17px] align-middle mr-1">auto_awesome</span>
+            사진 AI 분석하기
+          </button>
           <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-[12px]">
             <div class="flex items-center gap-2 min-w-0">
               <span class="material-symbols-outlined text-red-500 text-[18px] shrink-0" style="font-variation-settings: 'FILL' 1;">location_on</span>
@@ -324,6 +328,7 @@
 
   <!-- 4. 자바스크립트 로직 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../backend/data/supabaseClient.js"></script>
   <script>
     // 위험 유형 다중 선택 (Toggle) - hover 스타일 처리
     const chips = document.querySelectorAll('.hazard-chip');
@@ -365,10 +370,12 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const aiAnalyzeBtn = document.getElementById('aiAnalyzeBtn');
     const descriptionInput = document.querySelector('textarea');
     const currentLocationText = document.getElementById('currentLocationText');
     const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
     let currentPosition = null;
+    let selectedImageFile = null;
     let detectedReportType = 'HAZARD';
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
@@ -555,18 +562,27 @@
         const file = e.target.files[0];
         if (file) {
           if (file.size > 10 * 1024 * 1024) {
+            selectedImageFile = null;
+            if (aiAnalyzeBtn) aiAnalyzeBtn.disabled = true;
             showAnalysisState({
               loading: false,
-              title: 'AI 분석에 실패했습니다',
+              title: '사진을 등록할 수 없습니다',
               description: '사진은 10MB 이하만 분석할 수 있습니다.',
-              measurement: '분석 실패'
+              measurement: '용량 초과'
             });
             return;
           }
+          selectedImageFile = file;
+          if (aiAnalyzeBtn) aiAnalyzeBtn.disabled = false;
           const reader = new FileReader();
           reader.onload = function(evt) {
             cameraPreview.src = evt.target.result;
-            showAiAnalysis(file);
+            showAnalysisState({
+              loading: false,
+              title: '사진이 등록되었습니다',
+              description: '아래 버튼을 눌러 AI 위험 유형 분석을 시작하세요.',
+              measurement: '분석 대기'
+            });
             // 사진 등록 후 카메라 버튼 아이콘을 재촬영(refresh) 아이콘으로 변경
             if (cameraBtnIcon) {
               cameraBtnIcon.textContent = 'refresh';
@@ -577,15 +593,30 @@
       });
     }
 
+    if (aiAnalyzeBtn) {
+      aiAnalyzeBtn.addEventListener('click', async () => {
+        if (!selectedImageFile || aiAnalyzeBtn.disabled) return;
+        aiAnalyzeBtn.disabled = true;
+        aiAnalyzeBtn.textContent = 'AI 분석 중...';
+        try {
+          await showAiAnalysis(selectedImageFile);
+        } finally {
+          aiAnalyzeBtn.disabled = false;
+          aiAnalyzeBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[17px] align-middle mr-1">auto_awesome</span>
+            다시 AI 분석하기
+          `;
+        }
+      });
+    }
+
     // 제보 완료 시 포인트 500P 추가 및 저장 (마이페이지 연동)
     const submitBtn = document.getElementById('submitReportBtn');
-    const supabaseClient = window.supabase.createClient(
-      'https://gaicuiithjllwillleyo.supabase.co',
-      'sb_publishable_N5Cb72wbtKj-HhjIoZ20Aw_XBDlvTsy'
-    );
+    const supabaseClient = window.sb;
 
     const claimReportReward = async () => {
-      const { data: { user } } = await supabaseClient.auth.getUser();
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      const user = session?.user;
       if (!user) {
         throw new Error('로그인한 사용자만 리워드를 받을 수 있습니다.');
       }
@@ -603,7 +634,8 @@
         throw new Error('현재 위치를 확인한 뒤 다시 제출해주세요.');
       }
 
-      const { data: { user } } = await supabaseClient.auth.getUser();
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      const user = session?.user;
       if (!user) {
         throw new Error('로그인한 사용자만 제보할 수 있습니다.');
       }
