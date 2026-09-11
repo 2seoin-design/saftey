@@ -220,16 +220,21 @@
 
     function renderPost(post, index) {
       const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
-      const initial = (post.title || '?').trim().charAt(0);
+      const authorName = post.author_name || '탈퇴한 사용자';
+      const initial = authorName.trim().charAt(0) || '?';
       const isOwner = currentUserId && post.author_id === currentUserId;
+      const avatar = post.author_avatar_url
+        ? `<img src="${post.author_avatar_url}" alt="${escapeHtml(authorName)}" class="w-9 h-9 rounded-full object-cover border border-outline-variant/30">`
+        : `<div class="w-9 h-9 rounded-full border flex items-center justify-center font-bold text-xs ${colorClass}">${escapeHtml(initial)}</div>`;
 
       return `
         <article class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm space-y-2.5">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-full border flex items-center justify-center font-bold text-xs ${colorClass}">${escapeHtml(initial)}</div>
+              ${avatar}
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-on-surface">${formatDate(post.created_at)}</span>
+                <span class="text-xs font-bold text-on-surface">${escapeHtml(authorName)}</span>
+                <span class="text-[11px] text-on-surface-variant">${formatDate(post.created_at)}</span>
               </div>
             </div>
             ${isOwner ? `

@@ -260,13 +260,13 @@
       </div>
 
       <!-- TMAP SDK (route_map.html과 동일한 appKey 사용) -->
-      <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&amp;appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
+      <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&amp;appKey=xfSFc0gQM4817XjeLGmGgaAa14uiPlgV2NBv433D"></script>
 
       <!-- 실제 지도 초기화 -->
       <script>
         (function() {
           const HYEHWA_STATION = { lat: 37.5822, lng: 127.0019 };
-          const TMAP_APP_KEY = 'B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc';
+          const TMAP_APP_KEY = 'xfSFc0gQM4817XjeLGmGgaAa14uiPlgV2NBv433D';
           const mapDiv = document.getElementById('safymap_div');
           const currentLabel = document.getElementById('safymap-current-label');
           if (!mapDiv || typeof Tmapv2 === 'undefined') return;
@@ -370,6 +370,7 @@
             let marker = null;
             let timer = null;
             let token = 0;
+            let selectedLocation = null; // { lat, lng } - 길찾기에 쓸 실제 좌표
 
             function hideResults() {
               if (!resultsEl) return;
@@ -382,11 +383,16 @@
 
               inputEl.value = label || '';
               hideResults();
+              selectedLocation = { lat, lng };
 
               const pos = new Tmapv2.LatLng(lat, lng);
               if (marker) marker.setMap(null);
               marker = new Tmapv2.Marker({ position: pos, map: map, title: `${markerTitlePrefix}: ${label || ''}` });
               map.setCenter(pos); // 지도에 실시간 반영
+            }
+
+            function getLocation() {
+              return selectedLocation;
             }
 
             function selectPoi(poi) {
@@ -445,7 +451,7 @@
               runSearch(keyword);
             }
 
-            return { setLocation, searchNow };
+            return { setLocation, searchNow, getLocation };
           }
 
           const startPoiSearch = setupPoiSearch(document.getElementById('safymap-start-input'), document.getElementById('safymap-start-results'), '출발');
@@ -483,6 +489,9 @@
               );
             });
           }
+
+          // 다른 <script> 블록(안심 귀갓길 버튼 핸들러)에서 지도/검색 결과 좌표를 쓸 수 있도록 노출
+          window.__safymap = { map, startPoiSearch, destPoiSearch };
         })();
       </script>
 
@@ -493,14 +502,59 @@
           const barrierFreeBtn = document.getElementById('start-barrier-free-btn');
 
           if (navBtn) {
-            navBtn.addEventListener('click', function() {
+            navBtn.addEventListener('click', async function() {
               const startValue = document.getElementById('safymap-start-input')?.value.trim();
               const destValue = document.getElementById('safymap-dest-input')?.value.trim();
               if (!startValue || !destValue) {
                 window.showSafymapToast('출발지 및 도착지를 설정해주세요.');
                 return;
               }
-              window.location.href = 'realtime_map.html';
+
+              const ctx = window.__safymap;
+              const start = ctx?.startPoiSearch?.getLocation();
+              const dest = ctx?.destPoiSearch?.getLocation();
+              if (!start || !dest) {
+                window.showSafymapToast('검색 결과 목록에서 출발지/도착지를 선택해주세요.');
+                return;
+              }
+
+              navBtn.disabled = true;
+              window.showSafymapToast('안심 경로를 찾는 중...');
+              try {
+                const { findSafeRoute } = await import('../backend/data/routeService.js');
+                const { normalRoute, safeRoute } = await findSafeRoute({
+                  startLat: start.lat,
+                  startLng: start.lng,
+                  endLat: dest.lat,
+                  endLng: dest.lng,
+                });
+
+                if (window.__safymapNormalLine) window.__safymapNormalLine.setMap(null);
+                if (window.__safymapSafeLine) window.__safymapSafeLine.setMap(null);
+
+                window.__safymapNormalLine = new Tmapv2.Polyline({
+                  path: normalRoute.coords.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+                  strokeColor: '#2563eb',
+                  strokeWeight: 6,
+                  map: ctx.map,
+                });
+                window.__safymapSafeLine = new Tmapv2.Polyline({
+                  path: safeRoute.coords.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+                  strokeColor: '#16a34a',
+                  strokeWeight: 6,
+                  map: ctx.map,
+                });
+
+                ctx.map.setCenter(new Tmapv2.LatLng(start.lat, start.lng));
+                window.showSafymapToast(
+                  `안심 경로 안심점수 ${safeRoute.score}` + (safeRoute.blocked ? ' · 경로상 위험제보 있음' : '')
+                );
+              } catch (err) {
+                console.error('[safymap] 경로 탐색 실패:', err);
+                window.showSafymapToast('경로를 찾지 못했어요: ' + err.message);
+              } finally {
+                navBtn.disabled = false;
+              }
             });
           }
 

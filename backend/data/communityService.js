@@ -42,6 +42,23 @@ export async function createPost({ title, content, imageUrl = null }) {
   return data;
 }
 
+// 게시글 목록의 author_id들을 모아 한 번에 프로필(이름/사진)을 조회해 붙여줌
+// (게시글마다 따로 조회하면 페이지당 최대 10번 왕복하므로 배치로 처리)
+async function attachAuthorProfiles(posts) {
+  const authorIds = [...new Set(posts.map((p) => p.author_id))];
+  if (authorIds.length === 0) return posts;
+
+  const { data: profiles, error } = await supabase.from('profiles').select('id, name, avatar_url').in('id', authorIds);
+  if (error) throw error;
+
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+  return posts.map((post) => ({
+    ...post,
+    author_name: byId.get(post.author_id)?.name ?? '탈퇴한 사용자',
+    author_avatar_url: byId.get(post.author_id)?.avatar_url ?? null,
+  }));
+}
+
 /**
  * 게시글 목록 조회 - 작성일시 내림차순, 페이지당 10개
  * @param {number} page - 1부터 시작
@@ -57,7 +74,8 @@ export async function fetchPosts(page = 1) {
     .range(from, to);
   if (error) throw error;
 
-  return { posts: data ?? [], page, totalPages: computeTotalPages(count ?? 0) };
+  const posts = await attachAuthorProfiles(data ?? []);
+  return { posts, page, totalPages: computeTotalPages(count ?? 0) };
 }
 
 export async function fetchPost(id) {
