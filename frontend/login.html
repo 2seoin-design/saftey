@@ -107,9 +107,11 @@ tailwind.config = {
     .safety-border {
       border-color: #60c219;
     }
+    body.page-transition { opacity: 0; transition: opacity 0.22s ease; }
+    body.page-transition.page-loaded { opacity: 1; }
   </style>
 </head>
-<body class="text-slate-900 flex min-h-screen bg-white">
+<body class="text-slate-900 flex min-h-screen bg-white page-transition">
 <div class="w-full bg-white min-h-screen flex flex-col relative pb-28">
 <!-- 상단 헤더 (메인 홈화면 완벽 일치) -->
 <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
@@ -239,4 +241,16 @@ tailwind.config = {
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../backend/user_login"></script>
+<script>
+  requestAnimationFrame(() => document.body.classList.add('page-loaded'));
+  document.querySelectorAll('a[href]').forEach(function (link) {
+    var href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.body.classList.remove('page-loaded');
+      setTimeout(function () { window.location.href = href; }, 200);
+    });
+  });
+</script>
 </body></html>
