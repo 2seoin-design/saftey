@@ -136,33 +136,53 @@ tailwind.config = {
 <h1 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight mb-1.5">로그아웃하시겠습니까?</h1>
 
 </div>
-<!-- 로그아웃 대상 계정 정보 박스 -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm mb-5">
-<div class="flex items-center justify-between pb-3 border-b border-outline-variant/20 mb-3">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-secondary-container/30 border border-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-sm">
-            김
-          </div>
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-title-sm text-title-sm text-on-surface font-bold">김지혜 파수꾼</span>
+<!-- 프로필 부분 (마이페이지와 동일) -->
+<div class="relative w-full rounded-[28px] p-space-md overflow-hidden mb-5" style="background: linear-gradient(145deg, #eaf8dc 0%, #cdeeb0 45%, #a9dd8e 100%); box-shadow: 0 16px 32px -10px rgba(90,150,50,0.35), inset 0 2px 3px rgba(255,255,255,0.7), inset 0 -6px 10px rgba(70,120,35,0.18);">
+
+  <!-- Ambient Decorative Circles -->
+  <div class="absolute -right-10 -top-10 w-36 h-36 rounded-full pointer-events-none" style="background: radial-gradient(circle at 32% 28%, #eaf8dc 0%, #bfe6a0 55%, #8fca6c 100%); box-shadow: inset -8px -8px 14px rgba(60,110,25,0.35), inset 6px 6px 10px rgba(255,255,255,0.6);"></div>
+  <div class="absolute right-6 bottom-4 w-9 h-9 rounded-md rotate-45 pointer-events-none" style="background: linear-gradient(145deg, #dff2c8, #a9dd8e); box-shadow: inset -3px -3px 5px rgba(60,110,25,0.3), inset 2px 2px 4px rgba(255,255,255,0.6);"></div>
+
+  <!-- Identity Header -->
+  <div class="flex items-center gap-space-sm relative z-10">
+    <div class="relative flex-shrink-0">
+      <div class="w-20 h-20 rounded-full overflow-hidden shadow-sm bg-surface-container-lowest p-0.5">
+        <img id="profile-avatar" class="w-full h-full rounded-full object-cover" data-alt="Warm friendly smiling South Korean civic guardian woman in her late 20s" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuuTAlHxbyVyWvDmZDfhRGAj49MVb0TL8TQ78TsKyLH2q1hIyRSXoMj4cUC4oSevxvoU3zH9Sp5QzTfTVPPbU63kZG5ja3xtyrVJvhPw4NJttjehDgc6xHj9l8XWk1WjKhVzdMDFcbc-o3nst7fe90AmuPAnvsxwhds8eCDtH-2tv-corPpxC6CPQ_VcSY5BTfHFmtu7rLEpGvwlO3lcc88OGyilg1x869Z_jzioIakvDN35dJgHwO9A">
+      </div>
+    </div>
+
+    <div class="flex flex-col min-w-0 flex-1">
+      <!-- Monthly Report Stat -->
+      <div class="flex flex-col">
+        <span class="font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">제보내역</span>
+        <span id="myReportCount" class="font-headline-md text-headline-md font-bold text-on-surface mt-0.5 whitespace-nowrap">-<span class="font-label-md text-label-md font-normal ml-0.5">건</span></span>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-black/10 my-space-xs"></div>
+
+      <!-- Username + 프로필 수정 버튼 -->
+      <div class="flex items-center justify-between gap-1.5">
+        <span id="profile-name" class="font-title-sm text-title-sm font-bold text-on-surface truncate">user1234</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reward Points Container -->
+  <div class="mt-space-sm p-space-xs rounded-xl relative z-10" style="background: linear-gradient(160deg, #ffffff 0%, #f3fbe9 100%); box-shadow: 0 10px 18px -6px rgba(60,110,25,0.3), inset 0 1px 1px rgba(255,255,255,0.9);">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1 text-on-surface-variant">
+        <span class="material-symbols-outlined text-[14px]" style="color: rgb(79, 169, 18); font-variation-settings: &quot;FILL&quot; 1;">stars</span>
+        <span class="font-label-sm text-label-sm tracking-wide">보유 리워드 포인트</span>
+      </div>
+      <div class="flex items-baseline gap-1">
+        <span id="userPointText" class="font-title-sm text-title-sm font-bold tracking-tight text-on-surface">-</span>
+        <span class="font-label-sm text-label-sm font-bold" style="color: rgb(79, 169, 18);">P</span>
+      </div>
+    </div>
+  </div>
 </div>
-<span class="font-label-sm text-label-sm text-on-surface-variant">example@safety.kr</span>
-</div>
-</div>
-<div class="text-right">
-<span class="font-label-sm text-[10px] text-on-surface-variant block">보유 포인트</span>
-<span class="font-label-sm text-label-sm font-bold" style="color: rgb(79, 169, 18);">18,500 P</span>
-</div>
-</div>
-<!-- 안심 안전망 연동 안내 -->
-<div class="bg-surface-container-low rounded-xl p-3 border border-outline-variant/20 flex items-start gap-2.5">
-<span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5" style="color: rgb(79, 169, 18);">verified_user</span>
-<div class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">
-          로그아웃 시 실시간 안심 우회 알림 및 10초 간편제보 포인트 적립 서비스가 일시 중단됩니다.
-        </div>
-</div>
-</div>
+
 <!-- 액션 버튼들 -->
 <div class="space-y-3 mb-6">
 <!-- 메인 로그아웃 확인 버튼 -->
@@ -217,6 +237,52 @@ tailwind.config = {
       document.body.classList.remove('page-loaded');
       setTimeout(function () { window.location.href = href; }, 200);
     });
+  });
+</script>
+
+<!-- 로그인한 사용자의 이름/포인트/제보 건수를 마이페이지 API에서 불러와 표시 (mypage.html과 동일) -->
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const nameEl = document.getElementById('profile-name');
+    const avatarEl = document.getElementById('profile-avatar');
+    const pointEl = document.getElementById('userPointText');
+    const reportCountEl = document.getElementById('myReportCount');
+    if (!nameEl) return;
+
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user;
+    if (!user) {
+      location.href = 'login.html';
+      return;
+    }
+
+    const displayName = user.user_metadata?.name || user.email || '회원';
+    nameEl.textContent = displayName;
+    if (avatarEl && user.user_metadata?.avatar_url) {
+      avatarEl.src = user.user_metadata.avatar_url;
+    }
+
+    const authHeaders = { Authorization: `Bearer ${session.access_token}` };
+
+    try {
+      const res = await fetch('/api/mypage/points', { headers: authHeaders });
+      if (!res.ok) throw new Error(`포인트 조회 실패: ${res.status}`);
+      const { points } = await res.json();
+      if (pointEl) pointEl.textContent = Number(points ?? 0).toLocaleString();
+    } catch (err) {
+      console.error('포인트를 불러오지 못했습니다:', err);
+      if (pointEl) pointEl.textContent = '0';
+    }
+
+    try {
+      const res = await fetch('/api/mypage/reports', { headers: authHeaders });
+      if (!res.ok) throw new Error(`제보 내역 조회 실패: ${res.status}`);
+      const { reports } = await res.json();
+      if (reportCountEl) reportCountEl.firstChild.textContent = String(reports?.length ?? 0);
+    } catch (err) {
+      console.error('제보 내역을 불러오지 못했습니다:', err);
+      if (reportCountEl) reportCountEl.firstChild.textContent = '0';
+    }
   });
 </script>
 </body></html>

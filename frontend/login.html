@@ -159,8 +159,8 @@
           <div class="relative flex items-center">
             <span class="material-symbols-outlined absolute left-3.5 text-slate-400 text-lg pointer-events-none">lock</span>
             <input class="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#60c219] focus:bg-white focus:ring-2 focus:ring-[#60c219]/20 transition-all" id="login-password" placeholder="8자리 이상 영문, 숫자, 특수문자" type="password"/>
-            <button aria-label="비밀번호 보기" class="absolute right-3.5 text-slate-400 hover:text-slate-600 focus:outline-none" type="button">
-              <span class="material-symbols-outlined text-lg">visibility</span>
+            <button aria-label="비밀번호 보기" id="login-password-toggle" class="absolute right-3.5 text-slate-400 hover:text-slate-600 focus:outline-none" type="button">
+              <span class="material-symbols-outlined text-lg" id="login-password-toggle-icon">visibility</span>
             </button>
           </div>
         </div>
@@ -255,6 +255,21 @@
   <script src="../backend/user_login.js"></script>
 
   <script>
+    // 비밀번호 보기/숨기기 토글
+    (function() {
+      const pwInput = document.getElementById('login-password');
+      const toggleBtn = document.getElementById('login-password-toggle');
+      const toggleIcon = document.getElementById('login-password-toggle-icon');
+      if (!pwInput || !toggleBtn || !toggleIcon) return;
+
+      toggleBtn.addEventListener('click', function() {
+        const isHidden = pwInput.type === 'password';
+        pwInput.type = isHidden ? 'text' : 'password';
+        toggleIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
+        toggleBtn.setAttribute('aria-label', isHidden ? '비밀번호 숨기기' : '비밀번호 보기');
+      });
+    })();
+
     requestAnimationFrame(() => document.body.classList.add('page-loaded'));
     document.querySelectorAll('a[href]').forEach(function (link) {
       var href = link.getAttribute('href');

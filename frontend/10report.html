@@ -87,6 +87,24 @@
             "space-md": "1rem",
             "space-2xl": "3rem",
             "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
           }
         }
       }
@@ -305,6 +323,7 @@
   </nav>
 
   <!-- 4. 자바스크립트 로직 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // 위험 유형 다중 선택 (Toggle) - hover 스타일 처리
     const chips = document.querySelectorAll('.hazard-chip');
@@ -346,10 +365,14 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const descriptionInput = document.querySelector('textarea');
     const currentLocationText = document.getElementById('currentLocationText');
     const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
+    let currentPosition = null;
+    let detectedReportType = 'HAZARD';
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
+    const TMAP_APP_KEY = 'B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc';
     const categoryLabels = {
       road_damage: '보도·포트홀 파손',
       streetlight: '가로등·조도 불량',
@@ -432,6 +455,16 @@
           throw new Error(`${result.error || 'AI 분석에 실패했습니다.'}${detail}`);
         }
         selectHazardCategory(result.category);
+        detectedReportType = {
+          road_damage: 'HAZARD',
+          streetlight: 'HAZARD',
+          stairs: 'STAIRS',
+          obstruction: 'CONSTR',
+          other: 'HAZARD'
+        }[result.category] || 'HAZARD';
+        if (descriptionInput && !descriptionInput.value.trim()) {
+          descriptionInput.value = result.description || '';
+        }
         showAnalysisState({
           loading: false,
           category: categoryLabels[result.category] || '',
@@ -455,6 +488,26 @@
 
     const openFileSelector = () => albumInput && albumInput.click();
 
+    const reverseGeocode = async (latitude, longitude) => {
+      const url = new URL('https://apis.openapi.sk.com/tmap/geo/reversegeocoding');
+      url.search = new URLSearchParams({
+        version: '1',
+        lat: String(latitude),
+        lon: String(longitude),
+        coordType: 'WGS84GEO',
+        addressType: 'A02',
+        appKey: TMAP_APP_KEY
+      });
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`주소 변환에 실패했습니다. (${response.status})`);
+      }
+
+      const data = await response.json();
+      return data?.addressInfo?.fullAddress || null;
+    };
+
     const updateCurrentLocation = () => {
       if (!navigator.geolocation) {
         currentLocationText.textContent = '이 브라우저에서는 위치를 사용할 수 없습니다.';
@@ -464,11 +517,21 @@
 
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
+          currentPosition = coords;
           currentLocationText.textContent =
-            `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            '현재 위치 주소 확인 중...';
           currentLocationAccuracy.textContent = Number.isFinite(coords.accuracy)
             ? `GPS 오차 ±${Math.round(coords.accuracy)}m`
             : 'GPS 확인 완료';
+          reverseGeocode(coords.latitude, coords.longitude)
+            .then((address) => {
+              currentLocationText.textContent = address
+                || `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            })
+            .catch(() => {
+              currentLocationText.textContent =
+                `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+            });
         },
         (error) => {
           currentLocationText.textContent = error.code === error.PERMISSION_DENIED
@@ -516,8 +579,46 @@
 
     // 제보 완료 시 포인트 500P 추가 및 저장 (마이페이지 연동)
     const submitBtn = document.getElementById('submitReportBtn');
+    const supabaseClient = window.supabase.createClient(
+      'https://gaicuiithjllwillleyo.supabase.co',
+      'sb_publishable_N5Cb72wbtKj-HhjIoZ20Aw_XBDlvTsy'
+    );
+
+    const claimReportReward = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        throw new Error('로그인한 사용자만 리워드를 받을 수 있습니다.');
+      }
+
+      const { data, error } = await supabaseClient.rpc('claim_report_reward');
+      if (error) throw error;
+      if (!data?.reward_granted) {
+        throw new Error('오늘은 이미 제보 리워드를 받았습니다.');
+      }
+      return data;
+    };
+
+    const saveReport = async () => {
+      if (!currentPosition) {
+        throw new Error('현재 위치를 확인한 뒤 다시 제출해주세요.');
+      }
+
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        throw new Error('로그인한 사용자만 제보할 수 있습니다.');
+      }
+
+      const { error } = await supabaseClient.from('reports').insert({
+        user_id: user.id,
+        report_type: detectedReportType,
+        description: descriptionInput?.value.trim() || 'AI 분석 위험 제보',
+        location: `POINT(${currentPosition.longitude} ${currentPosition.latitude})`
+      });
+      if (error) throw error;
+    };
+
     if (submitBtn) {
-      submitBtn.addEventListener('click', () => {
+      submitBtn.addEventListener('click', async () => {
         if (submitBtn.dataset.submitting === "true") return;
         submitBtn.dataset.submitting = "true";
 
@@ -527,17 +628,23 @@
         `;
         submitBtn.classList.add('opacity-90');
 
-        setTimeout(() => {
-          const currentPoints = parseInt(localStorage.getItem('userPoints') || '0', 10);
-          const newPoints = currentPoints + 500;
-          localStorage.setItem('userPoints', newPoints);
-
+        try {
+          await saveReport();
+          const reward = await claimReportReward();
           submitBtn.innerHTML = `
             <span class="material-symbols-outlined text-[22px]">check_circle</span>
-            <span class="font-bold">접수 완료! +500P 적립 완료 (총 ${newPoints.toLocaleString()}P)</span>
+            <span class="font-bold">접수 완료! +500P 적립 완료 (총 ${Number(reward.total_points).toLocaleString()}P)</span>
           `;
           submitBtn.style.background = 'linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(0, 80, 54) 100%)';
-        }, 1200);
+        } catch (error) {
+          submitBtn.dataset.submitting = "false";
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[22px]">send</span>
+            <span>10초 만에 안심 제보 완료 (+500P 적립)</span>
+          `;
+          alert(error.message);
+        }
       });
     }
 

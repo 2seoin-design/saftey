@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const dupFeedback = document.getElementById('dup-feedback');
   const errorEl = document.getElementById('signup-error');
   const emailInput = document.getElementById('email');
+  const avatarInput = document.getElementById('signup-avatar-input');
+
+  function readAvatarAsDataUrl() {
+    const file = avatarInput?.files[0];
+    if (!file) return Promise.resolve(null);
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }
 
   // 마지막으로 중복확인을 통과한 이메일 (제출 시점에 이메일이 바뀌었으면 재확인 필요)
   let dupCheckedEmail = null;
@@ -81,10 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const avatarDataUrl = await readAvatarAsDataUrl();
     const { error } = await sb.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: avatarDataUrl ? { name, avatar_url: avatarDataUrl } : { name } },
     });
     btnSubmit.disabled = false;
 

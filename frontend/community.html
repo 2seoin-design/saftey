@@ -14,6 +14,13 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    }
+  }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
     tailwind.config = {
@@ -125,91 +132,12 @@
     <div class="flex flex-col w-full px-gutter-mobile pt-space-sm gap-space-sm">
 
       <!-- 커뮤니티 피드 -->
-      <div class="flex flex-col gap-space-sm" data-purpose="feed-list">
-
-        <!-- Card 1: 산책로 & 보행후기 -->
-        <article class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm space-y-2.5">
-          <!-- Author Header -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-xs">
-                지혜
-              </div>
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-on-surface">김지혜<br></span>
-                </div>
-              </div>
-            </div>
-            <button class="text-on-surface-variant hover:text-on-surface p-1">
-              <span class="material-symbols-outlined text-[18px]">more_horiz</span>
-            </button>
-          </div>
-          <!-- Content -->
-          <div class="space-y-1.5">
-            <h3 class="text-sm font-bold text-on-surface leading-snug">
-              낙산성곽길 야간 안심산책로 다녀왔어요! 조명 밝아서 휠체어도 수월하네요 ✨
-            </h3>
-            <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">
-              스마트 가로등(55 Lux) 교체 후 전 구간 시야가 매우 확보되었습니다. 경사로 단차 정비가 끝나서 유모차나 보행보조기 이용자분들도 안심하고 산책 가능해요!
-            </p>
-          </div>
-        </article>
-
-        <!-- Card 2: 실시간 위험 해결 완료 피드 -->
-        <article class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm space-y-2.5">
-          <!-- Author Header -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-xs">
-                준영
-              </div>
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-on-surface">박준영</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Content -->
-          <div class="space-y-1">
-            <h3 class="text-sm font-bold text-on-surface leading-snug">
-              대학로 마로니에 공원 입구 보도 파손 단차, 신속 보수 완료되었습니다!
-            </h3>
-            <p class="text-xs text-on-surface-variant leading-relaxed">
-              어제 안전지도 앱에서 5cm 단차 위험 제보 올렸었는데, 종로구청 도로과에서 오늘 아침 바로 평탄화 마감해 주셨네요. 휠체어/유모차 이동 이제 안전합니다 👍
-            </p>
-          </div>
-          <!-- Before / After mini badge -->
-          <div class="grid grid-cols-2 gap-2 text-xs"></div>
-        </article>
-
-        <!-- Card 3: 안심 동행 및 팁 -->
-        <article class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm space-y-2.5">
-          <!-- Author Header -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-800 font-bold text-xs">현지</div>
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-on-surface">이현지</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Content -->
-          <div class="space-y-1">
-            <h3 class="text-sm font-bold text-on-surface leading-snug">
-              심야 혜화역 4번 출구 귀갓길 '안심 스카우트 동행' 3분 매칭 팁
-            </h3>
-            <p class="text-xs text-on-surface-variant leading-relaxed">
-              자정 전후 어두운 원룸촌 골목 들어가실 때 앱 하단 [안심서비스 귀갓길 안내] 버튼 누르면 대기 중인 파수꾼 2인 1조가 현장으로 바로 동행 출동합니다. 망설이지 말고 요청하세요!
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-1.5 text-[11px]" style="color: rgb(79, 169, 18);"></div>
-        </article>
-
+      <div id="feedList" class="flex flex-col gap-space-sm" data-purpose="feed-list">
+        <p class="text-xs text-on-surface-variant text-center py-8">불러오는 중...</p>
       </div>
+
+      <!-- 페이지네이션 -->
+      <nav id="pagination" class="flex items-center justify-center gap-1.5 py-space-md"></nav>
     </div>
   </main>
 
@@ -263,6 +191,112 @@
         }, 200);
       });
     });
+  </script>
+
+  <!-- 실제 게시글 목록 + 페이지네이션 -->
+  <script type="module">
+    import { supabase } from '../backend/data/supabaseService.js';
+    import { fetchPosts, deletePost } from '../backend/data/communityService.js';
+
+    const feedList = document.getElementById('feedList');
+    const pagination = document.getElementById('pagination');
+
+    const params = new URLSearchParams(location.search);
+    let currentPage = Math.max(1, parseInt(params.get('page'), 10) || 1);
+    let currentUserId = null;
+
+    const AVATAR_COLORS = ['bg-emerald-100 border-emerald-200 text-emerald-700', 'bg-blue-100 border-blue-200 text-blue-700', 'bg-amber-100 border-amber-200 text-amber-800'];
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function renderPost(post, index) {
+      const colorClass = AVATAR_COLORS[index % AVATAR_COLORS.length];
+      const initial = (post.title || '?').trim().charAt(0);
+      const isOwner = currentUserId && post.author_id === currentUserId;
+
+      return `
+        <article class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-full border flex items-center justify-center font-bold text-xs ${colorClass}">${escapeHtml(initial)}</div>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">${formatDate(post.created_at)}</span>
+              </div>
+            </div>
+            ${isOwner ? `
+              <div class="flex items-center gap-1">
+                <button class="text-on-surface-variant hover:text-primary text-[11px] font-bold px-2 py-1" data-action="edit" data-id="${post.id}">수정</button>
+                <button class="text-on-surface-variant hover:text-error text-[11px] font-bold px-2 py-1" data-action="delete" data-id="${post.id}">삭제</button>
+              </div>
+            ` : ''}
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-sm font-bold text-on-surface leading-snug">${escapeHtml(post.title)}</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">${escapeHtml(post.content)}</p>
+            ${post.image_url ? `<img src="${post.image_url}" alt="현장 사진" class="w-full h-40 object-cover rounded-xl mt-1.5">` : ''}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPagination(page, totalPages) {
+      if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+      }
+      let html = '';
+      for (let p = 1; p <= totalPages; p += 1) {
+        const active = p === page;
+        html += `<button data-page="${p}" class="w-8 h-8 rounded-full text-xs font-bold transition-colors ${active ? 'safety-btn-grad text-white' : 'bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container'}">${p}</button>`;
+      }
+      pagination.innerHTML = html;
+      pagination.querySelectorAll('[data-page]').forEach((btn) => {
+        btn.addEventListener('click', () => loadPage(parseInt(btn.dataset.page, 10)));
+      });
+    }
+
+    async function loadPage(page) {
+      currentPage = page;
+      history.replaceState(null, '', `community.html?page=${page}`);
+      feedList.innerHTML = '<p class="text-xs text-on-surface-variant text-center py-8">불러오는 중...</p>';
+
+      try {
+        const { posts, totalPages } = await fetchPosts(page);
+        if (posts.length === 0) {
+          feedList.innerHTML = '<p class="text-xs text-on-surface-variant text-center py-8">아직 등록된 안심 소식이 없습니다. 첫 글을 남겨보세요!</p>';
+        } else {
+          feedList.innerHTML = posts.map(renderPost).join('');
+          feedList.querySelectorAll('[data-action="edit"]').forEach((btn) => {
+            btn.addEventListener('click', () => (location.href = `add_comm.html?id=${btn.dataset.id}`));
+          });
+          feedList.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              if (!confirm('이 게시글을 삭제하시겠습니까?')) return;
+              await deletePost(btn.dataset.id);
+              loadPage(currentPage);
+            });
+          });
+        }
+        renderPagination(page, totalPages);
+      } catch (err) {
+        feedList.innerHTML = `<p class="text-xs text-error text-center py-8">목록을 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+      }
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    currentUserId = user?.id ?? null;
+    loadPage(currentPage);
   </script>
 </body>
 </html>

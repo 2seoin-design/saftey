@@ -152,11 +152,15 @@
       
       <!-- Top Visual & Header -->
       <div class="flex flex-col items-center text-center pt-space-xs pb-space-lg">
-        <div class="relative flex items-center justify-center mb-space-sm">
-          <img alt="세이프티 로고" class="w-20 h-20 object-contain transition-transform duration-300 active:scale-95 drop-shadow-sm" src="../img/safety_logo_image.png">
-          <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary text-xs shadow">
-            <span class="material-symbols-outlined text-[16px]">verified_user</span>
-          </span>
+        <div class="relative mb-space-sm">
+          <div class="w-24 h-24 rounded-full overflow-hidden bg-surface-container-low border-2 border-outline-variant/40 flex items-center justify-center shadow-sm">
+            <span id="signup-avatar-icon" class="material-symbols-outlined text-on-surface-variant text-[64px]">account_circle</span>
+            <img id="signup-avatar-preview" alt="프로필 사진 미리보기" class="hidden w-full h-full object-cover">
+          </div>
+          <label for="signup-avatar-input" aria-label="프로필 사진 선택" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow cursor-pointer active:scale-95 transition-transform">
+            <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+          </label>
+          <input id="signup-avatar-input" type="file" accept="image/*" class="hidden">
         </div>
         <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight mt-1">회원가입</h1>
         <p class="font-body-md text-body-md text-on-surface-variant max-w-[280px] mt-1">
@@ -253,6 +257,17 @@
   </main>
 
   <script>
+    // 프로필 사진 선택 시 기본 아이콘 대신 미리보기 이미지 표시
+    document.getElementById('signup-avatar-input')?.addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const preview = document.getElementById('signup-avatar-preview');
+      const icon = document.getElementById('signup-avatar-icon');
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove('hidden');
+      icon.classList.add('hidden');
+    });
+
     function togglePassVisibility(inputId, btn) {
       const input = document.getElementById(inputId);
       const icon = btn.querySelector('.material-symbols-outlined');
