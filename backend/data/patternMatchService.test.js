@@ -52,9 +52,13 @@ test('analyzeGpsSimilarity denies reward when similarity is below threshold', as
 
 test('analyzeGpsSimilarity grants reward when similar enough and RPC confirms first claim', async () => {
   const originalRpc = supabase.rpc;
-  supabase.rpc = async () => ({ data: true, error: null });
+  supabase.rpc = async (fnName, args) => {
+    assert.equal(fnName, 'complete_course_walk');
+    assert.equal(args.p_course_name, '하트');
+    return { data: [{ reward_granted: true }], error: null };
+  };
   try {
-    const result = await analyzeGpsSimilarity(A, A, 'user-1');
+    const result = await analyzeGpsSimilarity(A, A, 'user-1', 'heart');
     assert.equal(result.rewardEligible, true);
     assert.equal(result.similarityScore, 100);
   } finally {
@@ -64,9 +68,9 @@ test('analyzeGpsSimilarity grants reward when similar enough and RPC confirms fi
 
 test('analyzeGpsSimilarity denies reward when RPC says already claimed today', async () => {
   const originalRpc = supabase.rpc;
-  supabase.rpc = async () => ({ data: false, error: null });
+  supabase.rpc = async () => ({ data: [{ reward_granted: false }], error: null });
   try {
-    const result = await analyzeGpsSimilarity(A, A, 'user-1');
+    const result = await analyzeGpsSimilarity(A, A, 'user-1', 'heart');
     assert.equal(result.rewardEligible, false);
     assert.match(result.message, /이미/);
   } finally {

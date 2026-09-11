@@ -68,6 +68,19 @@
             "secondary-fixed": "#6ffbbe",
             "safety-green": "#60C219",
             "safety-darkgreen": "#4FA912"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-xs": "0.5rem",
+            "space-xxs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "gutter-desktop": "1.5rem",
+            "container-max": "1200px",
+            "space-3xl": "4.5rem",
+            "space-md": "1rem",
+            "space-2xl": "3rem",
+            "space-xl": "2rem"
           }
         }
       }
@@ -97,26 +110,20 @@
 </head>
 <body class="bg-[#F6F8FA] text-on-surface font-body-md flex flex-col min-h-screen page-transition">
 
-  <!-- 상단 헤더 -->
-  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.05)] border-b border-outline-variant/30">
-    <div class="h-14 px-4 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <img alt="세이프티" class="h-8 object-contain shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVOq5ETr27gesG9EboZQj1ayIcVn8TaO7jdzeCAN6g1zINq_8k1A46nhpcZBOyQPskkdy7fP1yrBczC38UFMP94NOZKKN9Bp1NcbD4iZjUQKXeiVh1FqAxz693etS69M1V3B1x2hoiYwyhUZkc-yGaoBirNIqGqD5p6BuIyw8TvGM2M-cvJWqG0Mwneyd34SJei8J8Z10LRzG_AHltpWL50pA6cNu6eJYLcWGeCr7UC0yAMqvlDR3cTNHbWasHEckWGKo">
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+    <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+      <div class="flex items-center gap-2">
+        <a href="mainhome.html" aria-label="홈으로 이동">
+          <img alt="세이프티" class="h-12 w-auto object-contain shrink-0" src="../img/safety_logo_image.png">
+        </a>
         <h1 class="text-[18px] font-bold text-gray-900 tracking-tight">10초 간편제보</h1>
-      </div>
-      <div class="flex items-center gap-1">
-        <button aria-label="제보 안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
-          <span class="material-symbols-outlined text-[22px]">help_outline</span>
-        </button>
-        <button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button">
-          <span class="material-symbols-outlined text-[20px]">add</span>
-        </button>
       </div>
     </div>
   </header>
 
   <!-- 2. 메인 컨텐츠 영역 -->
-  <main class="flex-1 flex flex-col relative w-full pt-14 pb-32 bg-[#F6F8FA] min-h-screen">
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-32 bg-[#F6F8FA] min-h-screen">
     <div class="flex flex-col w-full px-4 pt-3 space-y-4">
       
       <!-- 가이드 배너 -->
@@ -193,9 +200,9 @@
           <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-[12px]">
             <div class="flex items-center gap-2 min-w-0">
               <span class="material-symbols-outlined text-red-500 text-[18px] shrink-0" style="font-variation-settings: 'FILL' 1;">location_on</span>
-              <span class="font-semibold text-gray-800 truncate">종로구 대학로 101 앞 보도</span>
+              <span id="currentLocationText" class="font-semibold text-gray-800 truncate">현재 위치 확인 중...</span>
             </div>
-            <span class="text-[11px] text-gray-500 shrink-0 font-medium ml-1">GPS 오차 ±2m 연동</span>
+            <span id="currentLocationAccuracy" class="text-[11px] text-gray-500 shrink-0 font-medium ml-1">GPS 확인 중</span>
           </div>
         </div>
       </div>
@@ -266,20 +273,24 @@
   <!-- 3. 하단 네비게이션 바 -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
     <div class="h-16 px-gutter-mobile flex items-center justify-around relative">
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
-        <span class="material-symbols-outlined text-[22px]">home</span>
-        <span class="font-label-sm text-[11px]">홈</span>
-      </a>
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
-        <span class="material-symbols-outlined text-[22px]">map</span>
-        <span class="font-label-sm text-[11px]">안전지도</span>
-      </a>
       <div class="flex-1 flex flex-col items-center relative -top-3">
         <a class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="10report.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);">
           <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
         </a>
         <span class="font-label-sm text-[11px] font-bold mt-1" style="color: rgb(67, 147, 14);">10초제보</span>
       </div>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
+        <span class="material-symbols-outlined text-[22px]">map</span>
+        <span class="font-label-sm text-[11px]">안전지도</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
+        <span class="material-symbols-outlined text-[22px]">home</span>
+        <span class="font-label-sm text-[11px]">홈</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="community.html">
+        <span class="material-symbols-outlined text-[22px]">group</span>
+        <span class="font-label-sm text-[11px]">커뮤니티</span>
+      </a>
       <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html">
         <span class="material-symbols-outlined text-[22px]">person</span>
         <span class="font-label-sm text-[11px]">마이</span>
@@ -329,6 +340,8 @@
     const aiAnalysisTitle = document.getElementById('aiAnalysisTitle');
     const aiAnalysisConfidence = document.getElementById('aiAnalysisConfidence');
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
+    const currentLocationText = document.getElementById('currentLocationText');
+    const currentLocationAccuracy = document.getElementById('currentLocationAccuracy');
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
     const categoryLabels = {
@@ -436,7 +449,37 @@
 
     const openFileSelector = () => albumInput && albumInput.click();
 
+    const updateCurrentLocation = () => {
+      if (!navigator.geolocation) {
+        currentLocationText.textContent = '이 브라우저에서는 위치를 사용할 수 없습니다.';
+        currentLocationAccuracy.textContent = 'GPS 사용 불가';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          currentLocationText.textContent =
+            `현재 위치 ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+          currentLocationAccuracy.textContent = Number.isFinite(coords.accuracy)
+            ? `GPS 오차 ±${Math.round(coords.accuracy)}m`
+            : 'GPS 확인 완료';
+        },
+        (error) => {
+          currentLocationText.textContent = error.code === error.PERMISSION_DENIED
+            ? '위치 권한을 허용해주세요'
+            : '현재 위치를 확인하지 못했습니다';
+          currentLocationAccuracy.textContent = 'GPS 확인 실패';
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 30000
+        }
+      );
+    };
+
     if (cameraBtn) cameraBtn.addEventListener('click', openFileSelector);
+    updateCurrentLocation();
 
     if (albumInput && cameraPreview) {
       albumInput.addEventListener('change', (e) => {

@@ -25,7 +25,13 @@ create policy "Users can view own claims"
 -- 반환값 true = 오늘 처음 지급됨 / false = 오늘 이미 지급받음
 -- user_id를 파라미터로 받지 않고 auth.uid()로 직접 확인함 - 그렇지 않으면 클라이언트가
 -- 임의의 user_id/금액을 넘겨 남의 계정에 리워드를 지급시키거나 금액을 조작할 수 있음
+--
+-- 이 파일의 예전 버전(claim_walk_reward(uuid, integer))을 이미 실행해둔 환경이 있다면
+-- 아래 drop이 그 오버로드를 정리함 - 남겨두면 p_user_id/p_reward_amount를 조작할 수 있는
+-- 취약한 버전이 계속 호출 가능한 상태로 남으므로 반드시 같이 제거해야 함.
 -- ============================================================
+drop function if exists public.claim_walk_reward(uuid, integer);
+
 create or replace function public.claim_walk_reward()
 returns boolean
 language plpgsql
