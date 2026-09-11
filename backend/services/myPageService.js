@@ -19,7 +19,7 @@ export async function getTotalPoints(client, userId) {
 export async function getMyReports(client, userId) {
   const { data, error } = await client
     .from('reports')
-    .select('id, created_at, photo_url, process_status')
+    .select('id, created_at, photo_url, report_type, description, process_status')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 

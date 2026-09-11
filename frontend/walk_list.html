@@ -36,15 +36,15 @@
 <div class="grid grid-cols-3 gap-space-xs bg-surface-container-low rounded-lg p-space-xs">
 <div class="flex flex-col items-center justify-center py-space-xs bg-surface-container-lowest rounded-lg shadow-sm">
 <span class="font-label-sm text-label-sm text-on-surface-variant">총 완주</span>
-<span class="font-headline-md text-headline-md text-secondary mt-0.5">14<span class="font-label-md text-label-md text-secondary ml-0.5">회</span></span>
+<span id="walkStatCount" class="font-headline-md text-headline-md text-secondary mt-0.5">-<span class="font-label-md text-label-md text-secondary ml-0.5">회</span></span>
 </div>
 <div class="flex flex-col items-center justify-center py-space-xs bg-surface-container-lowest rounded-lg shadow-sm">
 <span class="font-label-sm text-label-sm text-on-surface-variant">누적 거리</span>
-<span class="font-headline-md text-headline-md text-on-surface mt-0.5">28.5<span class="font-label-sm text-label-sm text-on-surface-variant ml-0.5">km</span></span>
+<span id="walkStatDistance" class="font-headline-md text-headline-md text-on-surface mt-0.5">-<span class="font-label-sm text-label-sm text-on-surface-variant ml-0.5">km</span></span>
 </div>
 <div class="flex flex-col items-center justify-center py-space-xs bg-surface-container-lowest rounded-lg shadow-sm">
 <span class="font-label-sm text-label-sm text-on-surface-variant">획득 리워드</span>
-<span class="font-headline-md text-headline-md text-primary mt-0.5">7,000<span class="font-label-sm text-label-sm text-primary ml-0.5">P</span></span>
+<span id="walkStatReward" class="font-headline-md text-headline-md text-primary mt-0.5">-<span class="font-label-sm text-label-sm text-primary ml-0.5">P</span></span>
 </div>
 </div>
 <!-- Monthly Goal Streak Banner -->
@@ -55,39 +55,8 @@
 <!-- Filter Chips (Horizontal Scrollable) -->
 
 <!-- History List Stream -->
-<div class="flex flex-col gap-space-sm mt-1">
-<!-- Card 1: 2025.02.24 -->
-<article class="flex flex-col rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow gap-space-xs"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm"><span class="material-symbols-outlined text-[14px]">schedule</span><span class="">2025.02.24 20:15</span></div><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm"><span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>성공 완료</span></div><div class="flex flex-col gap-1 mt-0.5"><h3 class="font-title-sm text-title-sm text-on-surface">별모양 산책로</h3><p class="font-body-md text-body-md text-on-surface-variant flex items-center flex-wrap gap-x-2 gap-y-0.5"><span class="font-semibold text-on-surface">2.8 km</span><span class="text-outline-variant">·</span><span class="text-outline-variant">·</span></p></div></article>
-<!-- Card 2: 2025.02.23 -->
-
-<!-- Card 3: 2025.02.21 -->
-<article class="flex flex-col rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow gap-space-xs">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm">
-<span class="material-symbols-outlined text-[14px]">schedule</span>
-<span class="">2025.02.21 21:10</span>
-</div>
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm">
-<span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
-            성공 완료
-          </span>
-</div>
-<div class="flex flex-col gap-1 mt-0.5">
-<h3 class="font-title-sm text-title-sm text-on-surface">물고기모양 산책로</h3>
-<p class="font-body-md text-body-md text-on-surface-variant flex items-center flex-wrap gap-x-2 gap-y-0.5">
-<span class="font-semibold text-on-surface">1.8 km</span>
-<span class="text-outline-variant">·</span>
-
-<span class="text-outline-variant">·</span>
-
-</p>
-</div>
-
-</article>
-<!-- Card 4: 2025.02.19 -->
-
-<!-- Card 5: 2025.02.17 -->
-
+<div class="flex flex-col gap-space-sm mt-1" id="walkHistoryList">
+<div class="text-center py-10 text-on-surface-variant font-label-md text-label-md" id="walkHistoryStatus">불러오는 중...</div>
 </div>
 </div>
 <!-- Safety Mobile Sticky Bottom Navigation Bar -->
@@ -119,4 +88,90 @@
 </nav>
 </div></main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../backend/data/supabaseClient.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  // shapeRouteService.js의 SHAPE_CONFIG.targetDistanceKm과 동일한 값
+  // (course_completions에는 거리 컬럼이 없어 코스명으로 근사치를 매핑함)
+  const COURSE_DISTANCE_KM = { '마름모': 0.67, '하트': 1.33, '별': 2.0, '기하학적 물고기': 4.0, '왕관': 6.0 };
+  const REWARD_PER_COMPLETION = 200;
+
+  const countEl = document.getElementById('walkStatCount');
+  const distanceEl = document.getElementById('walkStatDistance');
+  const rewardEl = document.getElementById('walkStatReward');
+  const listEl = document.getElementById('walkHistoryList');
+  const statusEl = document.getElementById('walkHistoryStatus');
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    location.href = 'login.html';
+    return;
+  }
+
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function renderCard(completion) {
+    const distanceKm = COURSE_DISTANCE_KM[completion.courseName];
+    const article = document.createElement('article');
+    article.className = 'flex flex-col rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow gap-space-xs';
+    article.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm">
+          <span class="material-symbols-outlined text-[14px]">schedule</span>
+          <span>${formatDateTime(completion.completedAt)}</span>
+        </div>
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm">
+          <span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          성공 완료
+        </span>
+      </div>
+      <div class="flex flex-col gap-1 mt-0.5">
+        <h3 class="font-title-sm text-title-sm text-on-surface">${completion.courseName}모양 산책로</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant flex items-center flex-wrap gap-x-2 gap-y-0.5">
+          ${distanceKm ? `<span class="font-semibold text-on-surface">${distanceKm} km</span><span class="text-outline-variant">·</span>` : ''}
+          ${completion.rewardGranted ? `<span class="font-semibold text-primary">${completion.rewardLabel}</span>` : '<span>리워드 없음(당일 중복 완주)</span>'}
+        </p>
+      </div>
+    `;
+    return article;
+  }
+
+  try {
+    const res = await fetch('/api/mypage/completions', {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    if (!res.ok) throw new Error(`완주 내역 조회 실패: ${res.status}`);
+    const { completions } = await res.json();
+
+    const totalCount = completions.length;
+    const totalDistanceKm = completions.reduce((sum, c) => sum + (COURSE_DISTANCE_KM[c.courseName] ?? 0), 0);
+    const totalReward = completions.filter((c) => c.rewardGranted).length * REWARD_PER_COMPLETION;
+
+    if (countEl) countEl.firstChild.textContent = String(totalCount);
+    if (distanceEl) distanceEl.firstChild.textContent = totalDistanceKm.toFixed(1);
+    if (rewardEl) rewardEl.firstChild.textContent = totalReward.toLocaleString();
+
+    if (statusEl) statusEl.remove();
+    if (totalCount === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'text-center py-10 text-on-surface-variant font-label-md text-label-md';
+      empty.textContent = '아직 완주한 안심 산책로가 없어요. 안전지도에서 산책로를 시작해보세요!';
+      listEl.appendChild(empty);
+    } else {
+      completions.forEach((completion) => listEl.appendChild(renderCard(completion)));
+    }
+  } catch (err) {
+    console.error('완주 내역을 불러오지 못했습니다:', err);
+    if (statusEl) statusEl.textContent = '완주 내역을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+    if (countEl) countEl.firstChild.textContent = '0';
+    if (distanceEl) distanceEl.firstChild.textContent = '0.0';
+    if (rewardEl) rewardEl.firstChild.textContent = '0';
+  }
+});
+</script>
 </body></html>
