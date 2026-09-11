@@ -331,6 +331,32 @@
     const aiAnalysisDescription = document.getElementById('aiAnalysisDescription');
     const aiApiEndpoint = window.AI_API_ENDPOINT
       || 'https://gaicuiithjllwillleyo.supabase.co/functions/v1/analyze-image';
+    const categoryLabels = {
+      road_damage: '보도·포트홀 파손',
+      streetlight: '가로등·조도 불량',
+      stairs: '계단·단차 턱',
+      obstruction: '불법 적치물·통행방해',
+      other: '기타 위험'
+    };
+
+    const selectHazardCategory = (category) => {
+      const label = categoryLabels[category];
+      if (!label) return;
+
+      const targetChip = Array.from(document.querySelectorAll('.hazard-chip'))
+        .find((chip) => chip.textContent.includes(label));
+      if (!targetChip) return;
+
+      document.querySelectorAll('.hazard-chip').forEach((chip) => {
+        if (chip !== targetChip && chip.classList.contains('bg-[#60C219]')) {
+          chip.click();
+        }
+      });
+
+      if (!targetChip.classList.contains('bg-[#60C219]')) {
+        targetChip.click();
+      }
+    };
 
     const showAnalysisState = ({ loading, category = '', title, description, confidence = '', measurement = '' }) => {
       if (aiScanStatus) {
@@ -386,13 +412,10 @@
           const detail = result.detail ? ` (${result.detail})` : '';
           throw new Error(`${result.error || 'AI 분석에 실패했습니다.'}${detail}`);
         }
+        selectHazardCategory(result.category);
         showAnalysisState({
           loading: false,
-          category: result.category === 'road_damage' ? '보도·포트홀 파손'
-            : result.category === 'streetlight' ? '가로등·조도 불량'
-              : result.category === 'stairs' ? '계단·단차 턱'
-                : result.category === 'obstruction' ? '불법 적치물·통행방해'
-                  : result.category === 'other' ? '기타 위험' : '',
+          category: categoryLabels[result.category] || '',
           title: result.title,
           description: result.description,
           confidence: `신뢰도 ${Number(result.confidence).toFixed(1)}%`,
