@@ -55,8 +55,18 @@ create policy "Users can view own course completions"
 --    불일치 위험이 생김. 한 함수 안에서 claim_walk_reward를 호출하고 이어서
 --    course_completions에 기록하는 두 단계는 같은 트랜잭션(호출자 트랜잭션) 안에서
 --    실행되므로 원자성이 유지됨.
+--
+--    p_user_id를 파라미터로 받지 않고 claim_walk_reward()와 동일하게 auth.uid()로
+--    직접 확인함 - 그렇지 않으면 클라이언트가 임의의 user_id를 넘겨 남의 계정에
+--    리워드/완주 기록을 남길 수 있음(walk_rewards.sql의 claim_walk_reward 보안 수정과 동일한 이유).
+--
+--    이전 버전(complete_course_walk(uuid, text))을 이미 실행해둔 환경이 있다면 아래
+--    drop이 그 오버로드를 정리함 - 남겨두면 p_user_id를 조작할 수 있는 취약한
+--    버전이 계속 호출 가능한 상태로 남기 때문에 반드시 같이 제거해야 함.
 -- ============================================================
-create or replace function public.complete_course_walk(p_user_id uuid, p_course_name text)
+drop function if exists public.complete_course_walk(uuid, text);
+
+create or replace function public.complete_course_walk(p_course_name text)
 returns table (
   completion_id bigint,
   course_name text,
@@ -69,27 +79,32 @@ security definer
 set search_path = public
 as $$
 declare
+  v_user_id uuid := auth.uid();
   v_reward_granted boolean;
   v_completion_id bigint;
   v_completed_at timestamptz;
   v_total_points integer;
 begin
+  if v_user_id is null then
+    raise exception 'authentication required';
+  end if;
+
   if p_course_name not in ('하트', '별', '마름모', '왕관', '기하학적 물고기') then
     raise exception '알 수 없는 코스명입니다: %', p_course_name using errcode = '22023';
   end if;
 
   -- 날짜 기준은 claim_walk_reward 내부의 current_date(DB 서버 타임존, Supabase 기본 UTC)를
   -- 그대로 따름. 사용자 로컬 자정과 어긋날 수 있는 점은 walk_rewards.sql과 동일한 전제.
-  v_reward_granted := public.claim_walk_reward(p_user_id, 200);
+  v_reward_granted := public.claim_walk_reward();
 
   insert into course_completions (user_id, course_name, reward_granted)
-  values (p_user_id, p_course_name, v_reward_granted)
+  values (v_user_id, p_course_name, v_reward_granted)
   returning id, completed_at into v_completion_id, v_completed_at;
 
-  select points into v_total_points from profiles where id = p_user_id;
+  select points into v_total_points from profiles where id = v_user_id;
 
   return query select v_completion_id, p_course_name, v_completed_at, v_reward_granted, v_total_points;
 end;
 $$;
 
-grant execute on function public.complete_course_walk(uuid, text) to authenticated;
+grant execute on function public.complete_course_walk(text) to authenticated;

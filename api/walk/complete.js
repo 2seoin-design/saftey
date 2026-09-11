@@ -15,13 +15,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { client, user } = await requireUser(req);
+    const { client } = await requireUser(req);
     const courseName = req.body?.courseName;
     if (!courseName) {
       return res.status(400).json({ error: 'courseName이 필요합니다.' });
     }
 
-    const row = await completeCourseWalk(client, user.id, courseName);
+    const row = await completeCourseWalk(client, courseName);
     return res.status(200).json({
       completionId: row.completion_id,
       courseName: row.course_name,

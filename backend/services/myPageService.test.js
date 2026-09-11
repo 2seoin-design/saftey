@@ -14,7 +14,7 @@ test('completeCourseWalk는 알 수 없는 코스명이면 RPC를 호출하지 �
   };
 
   await assert.rejects(
-    () => completeCourseWalk(client, 'user-1', '삼각형'),
+    () => completeCourseWalk(client, '삼각형'),
     (err) => {
       assert.equal(err.statusCode, 400);
       return true;
@@ -33,11 +33,11 @@ test('completeCourseWalk는 RPC 결과의 첫 번째 행을 반환한다', async
   const client = {
     rpc: (fnName, args) => {
       assert.equal(fnName, 'complete_course_walk');
-      assert.deepEqual(args, { p_user_id: 'user-1', p_course_name: '하트' });
+      assert.deepEqual(args, { p_course_name: '하트' });
       return Promise.resolve({ data: [expectedRow], error: null });
     },
   };
 
-  const result = await completeCourseWalk(client, 'user-1', '하트');
+  const result = await completeCourseWalk(client, '하트');
   assert.deepEqual(result, expectedRow);
 });

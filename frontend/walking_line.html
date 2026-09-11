@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
-  
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
@@ -142,7 +142,17 @@
     ::-webkit-scrollbar {
       display: none;
     }
+    #map_div { background: #eef1f6; }
   </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    }
+  }
+  </script>
+  <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=B2uq1pQLs8QSi84bVbgC8GHn8IzS6gQ2HbeYEkmc"></script>
 </head>
 
 <body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen">
@@ -173,19 +183,19 @@
       <section class="px-gutter-mobile pt-space-xs pb-space-sm w-full">
         <div class="flex items-center justify-between bg-surface-container-lowest/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-sm border border-outline-variant/30">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">
-              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            <div id="courseIconWrap" class="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">
+              <span id="courseIcon" class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
             </div>
             <div class="flex flex-col">
               <div class="flex items-center gap-1.5">
-                <span class="font-label-md text-label-md font-bold text-on-surface">별모양 산책로</span>
-                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white leading-none" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">추천코스</span>
+                <span id="courseName" class="font-label-md text-label-md font-bold text-on-surface">별모양 산책로</span>
+                <span id="courseDurationBadge" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white leading-none" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%);">30분 코스</span>
               </div>
-              <span class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">총 2.4km · 안전 조명 100% 안심가도</span>
+              <span id="courseInfo" class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">목표 2.0km · 안내 시작을 누르면 실제 경로가 그려집니다</span>
             </div>
           </div>
           <div class="flex items-center gap-1">
-            <button type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-secondary text-label-sm font-semibold transition-colors">
+            <button id="btnChangeCourse" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-secondary text-label-sm font-semibold transition-colors">
               <span class="material-symbols-outlined text-[15px]">swap_horiz</span>
               <span>코스변경</span>
             </button>
@@ -193,53 +203,22 @@
         </div>
       </section>
 
-      <!-- Map Canvas (세로 높이 h-[480px]로 확장) -->
+      <!-- Map Canvas -->
       <section class="px-gutter-mobile py-space-xs w-full">
-        <div class="relative w-full h-[480px] rounded-xl overflow-hidden shadow-md bg-surface-container-low" data-location="Seoul Hyehwa Marronnier Park Safe Walking Trail">
-          <!-- Vector Trail Overlay -->
-          <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" fill="none" viewBox="0 0 360 480">
-            <!-- Route Path -->
-            <path d="M 60 410 C 90 360, 110 320, 120 280 C 130 220, 180 200, 210 160 C 240 120, 270 90, 290 50" opacity="0.45" stroke="#6cf8bb" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></path>
-            <path d="M 60 410 C 90 360, 110 320, 120 280 C 130 220, 180 200, 210 160 C 240 120, 270 90, 290 50" stroke="#006c49" stroke-dasharray="2 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
-            
-            <!-- Waypoint Nodes -->
-            <circle cx="120" cy="280" fill="#ffffff" r="5" stroke="#006c49" stroke-width="3"></circle>
-            <circle cx="210" cy="160" fill="#ffffff" r="5" stroke="#006c49" stroke-width="3"></circle>
-            <circle cx="290" cy="50" fill="#0f766e" r="7" stroke="#ffffff" stroke-width="3"></circle>
-            
-            <!-- Current Location Pulsing Ring -->
-            <circle class="animate-ping" cx="60" cy="410" fill="#6cf8bb" opacity="0.35" r="16" style="transform-origin: 60px 410px;"></circle>
-            <circle cx="60" cy="410" fill="#005c55" r="9" stroke="#ffffff" stroke-width="3"></circle>
-          </svg>
+        <div class="relative w-full h-[480px] rounded-xl overflow-hidden shadow-md bg-surface-container-low">
+          <!-- 실제 TMap 지도 -->
+          <div id="map_div" class="absolute inset-0 w-full h-full"></div>
 
           <!-- Current Position Callout -->
           <div class="absolute bottom-16 left-4 z-20 flex items-center gap-1.5 bg-surface-container-lowest/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md">
             <span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
-            <span class="font-label-sm text-label-sm text-on-surface font-bold">현위치: 마로니에 공원 입구</span>
-          </div>
-
-          <!-- POI 1: Shelter -->
-          <div class="absolute top-[248px] left-[130px] z-20 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-full shadow-sm">
-            <span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">park</span>
-            <span class="font-label-sm text-label-sm text-on-surface">수목 그늘 쉼터</span>
-          </div>
-
-          <!-- POI 2: Emergency Bell -->
-          <div class="absolute top-[130px] left-[165px] z-20 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-full shadow-sm">
-            <span class="material-symbols-outlined text-[15px] text-error" style="font-variation-settings: 'FILL' 1;">emergency</span>
-            <span class="font-label-sm text-label-sm text-on-surface">안심 비상벨 (5개소)</span>
-          </div>
-
-          <!-- POI 3: Streetlight -->
-          <div class="absolute top-[42px] right-4 z-20 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2 py-1 rounded-full shadow-sm">
-            <span class="material-symbols-outlined text-[15px] text-secondary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
-            <span class="font-label-sm text-label-sm text-on-surface">스마트 가로등 (55 Lux)</span>
+            <span id="currentPositionLabel" class="font-label-sm text-label-sm text-on-surface font-bold">현위치 확인 중...</span>
           </div>
 
           <!-- Patrol Status Badge -->
           <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-secondary text-on-secondary px-3 py-1 rounded-full shadow-md">
             <span class="material-symbols-outlined text-[16px]">shield_person</span>
-            <span class="font-label-sm text-label-sm font-bold">김지혜 파수꾼 순찰 중</span>
+            <span class="font-label-sm text-label-sm font-bold">안심 귀갓길 알고리즘 적용</span>
           </div>
 
           <!-- Floating Map Controls -->
@@ -247,28 +226,21 @@
             <button aria-label="음성 안내 볼륨" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
               <span class="material-symbols-outlined text-[20px] text-primary">volume_up</span>
             </button>
-            <button aria-label="경로 레이어 전환" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
-              <span class="material-symbols-outlined text-[20px] text-on-surface-variant">layers</span>
-            </button>
-            <button aria-label="현위치 재정렬" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
+            <button id="btnRecenter" aria-label="현위치 재정렬" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md flex items-center justify-center hover:bg-surface-container transition-colors active:scale-95">
               <span class="material-symbols-outlined text-[20px] text-secondary">my_location</span>
             </button>
           </div>
 
-          <!-- Pace Indicator Bar -->
+          <!-- Pace / Status Bar -->
           <div class="absolute bottom-2.5 inset-x-3 z-20 flex items-center justify-between bg-surface-container-lowest/90 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-sm">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
                 <span class="material-symbols-outlined text-[18px]">directions_walk</span>
               </div>
               <div class="flex flex-col">
-                <span class="font-label-sm text-label-sm text-on-surface font-bold">현재 보행속도 3.5 km/h</span>
-                <span class="font-label-sm text-label-sm text-secondary font-semibold">쾌적 안심 산책 페이스</span>
+                <span id="walkStatusLine1" class="font-label-sm text-label-sm text-on-surface font-bold">아직 안내를 시작하지 않았습니다</span>
+                <span id="walkStatusLine2" class="font-label-sm text-label-sm text-secondary font-semibold">코스를 고르고 안내를 시작해보세요</span>
               </div>
-            </div>
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[16px] text-secondary">air</span>
-              <span class="font-label-sm text-label-sm text-on-surface-variant">피톤치드 보통 (0.8ppm)</span>
             </div>
           </div>
         </div>
@@ -277,15 +249,16 @@
       <!-- Navigation Action Buttons -->
       <section class="px-gutter-mobile pt-space-xs pb-space-lg w-full">
         <div class="flex items-center gap-3 w-full">
-          <button type="button" class="flex-1 h-[52px] rounded-full text-white font-bold font-label-md text-label-md flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(79, 169, 18, 0.3) 0px 4px 14px;">
+          <button id="btnStartGuide" type="button" class="flex-1 h-[52px] rounded-full text-white font-bold font-label-md text-label-md flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all" style="background: linear-gradient(135deg, rgb(105, 208, 15) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(79, 169, 18, 0.3) 0px 4px 14px;">
             <span class="material-symbols-outlined text-[20px]">navigation</span>
             <span>안내 시작</span>
           </button>
-          <button type="button" class="flex-1 h-[52px] rounded-full bg-surface-container-high text-on-surface-variant font-semibold font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-dim active:scale-98 transition-all">
+          <button id="btnEndGuide" type="button" disabled class="flex-1 h-[52px] rounded-full bg-surface-container-high text-on-surface-variant font-semibold font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-dim active:scale-98 transition-all disabled:opacity-50">
             <span class="material-symbols-outlined text-[20px]">close</span>
             <span>안내 종료</span>
           </button>
         </div>
+        <p id="resultLine" class="mt-2 text-label-sm text-on-surface-variant text-[12px] whitespace-pre-line"></p>
       </section>
     </div>
   </main>
@@ -293,30 +266,29 @@
   <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-4px_24px_rgba(15,118,110,0.08)] border-t border-outline-variant/30">
     <div class="flex items-center justify-around h-16 px-space-xs relative">
-      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="mainhome.html">
         <span class="material-symbols-outlined text-[22px]">home</span>
         <span class="font-label-sm text-label-sm">홈</span>
       </a>
       <div class="flex flex-col items-center -mt-6">
-        <a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="#" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+        <a class="w-[52px] h-[52px] rounded-full shadow-lg flex flex-col items-center justify-center active:scale-95 transition-transform text-white" href="safymap.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
           <span class="material-symbols-outlined text-[26px] text-white">map</span>
         </a>
         <span class="font-label-sm text-label-sm font-bold mt-1" style="color: rgb(79, 169, 18);">안전지도</span>
       </div>
-      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="10report.html">
         <span class="material-symbols-outlined text-[22px]">photo_camera</span>
         <span class="font-label-sm text-label-sm">10초제보</span>
       </a>
-      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="#">
+      <a class="flex flex-col items-center justify-center w-14 h-12 gap-0.5 text-on-surface-variant hover:text-primary transition-colors" href="mypage.html">
         <span class="material-symbols-outlined text-[22px]">person</span>
         <span class="font-label-sm text-label-sm">마이</span>
       </a>
     </div>
   </nav>
 
-  <!-- Interactions Script -->
+  <!-- Decorative micro-interactions (음성 안내 볼륨 토글) -->
   <script>
-    // Audio guidance toggle
     document.querySelectorAll('[aria-label="음성 안내 볼륨"]').forEach(btn => {
       btn.addEventListener('click', () => {
         const icon = btn.querySelector('span');
@@ -331,14 +303,163 @@
         }
       });
     });
+  </script>
 
-    // Layer switch feedback
-    document.querySelectorAll('[aria-label="경로 레이어 전환"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('bg-secondary-container');
-        btn.classList.toggle('text-on-secondary-container');
-      });
+  <!-- 실제 동작 로직: 도형 산책로 생성 + 실시간 GPS 추적 + 일치도/리워드 -->
+  <script type="module">
+    import { supabase } from '../backend/data/supabaseService.js';
+    import { generateShapeRoute, SHAPE_CONFIG } from '../backend/data/shapeRouteService.js';
+    import { analyzeGpsSimilarity } from '../backend/data/patternMatchService.js';
+
+    const SHAPE_ORDER = ['rhombus', 'heart', 'star', 'fish', 'crown'];
+    const SHAPE_ICON = { rhombus: 'diamond', heart: 'favorite', star: 'star', fish: 'set_meal', crown: 'crown' };
+    const SHAPE_ZOOM = { rhombus: 18, heart: 17, star: 16, fish: 15, crown: 14 };
+    const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 }; // 서울시청 (위치 미허용 시 폴백)
+
+    let shapeIndex = SHAPE_ORDER.indexOf('star');
+    let userLocation = null;
+    let userId = null;
+    let currentRoute = null;
+    let routePolyline = null;
+    let watchId = null;
+    let gpsLog = [];
+
+    const map = new Tmapv2.Map('map_div', {
+      center: new Tmapv2.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+      width: '100%',
+      height: '100%',
+      zoom: 16,
     });
+
+    const courseIcon = document.getElementById('courseIcon');
+    const courseName = document.getElementById('courseName');
+    const courseDurationBadge = document.getElementById('courseDurationBadge');
+    const courseInfo = document.getElementById('courseInfo');
+    const currentPositionLabel = document.getElementById('currentPositionLabel');
+    const walkStatusLine1 = document.getElementById('walkStatusLine1');
+    const walkStatusLine2 = document.getElementById('walkStatusLine2');
+    const resultLine = document.getElementById('resultLine');
+    const btnStartGuide = document.getElementById('btnStartGuide');
+    const btnEndGuide = document.getElementById('btnEndGuide');
+
+    function renderCourseCard() {
+      const shape = SHAPE_ORDER[shapeIndex];
+      const config = SHAPE_CONFIG[shape];
+      courseIcon.textContent = SHAPE_ICON[shape];
+      courseName.textContent = `${config.label}모양 산책로`;
+      courseDurationBadge.textContent = `${config.durationMin}분 코스`;
+      courseInfo.textContent = `목표 ${config.targetDistanceKm}km · 안내 시작을 누르면 실제 경로가 그려집니다`;
+    }
+    renderCourseCard();
+
+    document.getElementById('btnChangeCourse').addEventListener('click', () => {
+      if (watchId !== null) return; // 안내 중에는 코스 변경 불가
+      shapeIndex = (shapeIndex + 1) % SHAPE_ORDER.length;
+      renderCourseCard();
+    });
+
+    function updateUserLocation(lat, lng, label) {
+      userLocation = { lat, lng };
+      currentPositionLabel.textContent = label;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          updateUserLocation(pos.coords.latitude, pos.coords.longitude, '현위치 확인됨');
+          map.setCenter(new Tmapv2.LatLng(pos.coords.latitude, pos.coords.longitude));
+        },
+        () => {
+          updateUserLocation(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng, '위치 접근 거부 - 서울시청 기준');
+        }
+      );
+    } else {
+      updateUserLocation(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng, '위치 미지원 - 서울시청 기준');
+    }
+
+    document.getElementById('btnRecenter').addEventListener('click', () => {
+      if (userLocation) map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
+    });
+
+    btnStartGuide.addEventListener('click', async () => {
+      if (!userLocation) return;
+      const shape = SHAPE_ORDER[shapeIndex];
+      const config = SHAPE_CONFIG[shape];
+
+      btnStartGuide.disabled = true;
+      walkStatusLine1.textContent = `${config.label}모양 산책로 생성 중...`;
+      walkStatusLine2.textContent = '실제 도로를 따라가므로 몇 초 걸릴 수 있어요';
+      resultLine.textContent = '';
+
+      try {
+        currentRoute = await generateShapeRoute({ lat: userLocation.lat, lng: userLocation.lng, shape });
+
+        if (routePolyline) routePolyline.setMap(null);
+        routePolyline = new Tmapv2.Polyline({
+          path: currentRoute.waypoints.map((c) => new Tmapv2.LatLng(c.lat, c.lng)),
+          strokeColor: '#4fa912',
+          strokeWeight: 6,
+          map,
+        });
+        map.setZoom(SHAPE_ZOOM[shape] ?? 16);
+        map.setCenter(new Tmapv2.LatLng(userLocation.lat, userLocation.lng));
+
+        courseInfo.textContent =
+          `실제 거리 ${currentRoute.distanceKm.toFixed(2)}km · 안심점수 ${currentRoute.score}` +
+          (currentRoute.blocked ? ' · 경로상 위험제보 있음' : '');
+
+        gpsLog = [];
+        walkStatusLine1.textContent = '안내 중 - 실제로 걸어보세요';
+        walkStatusLine2.textContent = 'GPS 궤적을 기록하고 있어요';
+        btnEndGuide.disabled = false;
+
+        if (navigator.geolocation) {
+          watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+              gpsLog.push({ lat: pos.coords.latitude, lng: pos.coords.longitude, timestamp: Date.now() });
+              updateUserLocation(pos.coords.latitude, pos.coords.longitude, '이동 중');
+            },
+            () => {},
+            { enableHighAccuracy: true }
+          );
+        }
+      } catch (err) {
+        walkStatusLine1.textContent = '산책로 생성 실패';
+        walkStatusLine2.textContent = err.message;
+        btnStartGuide.disabled = false;
+      }
+    });
+
+    btnEndGuide.addEventListener('click', async () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      btnEndGuide.disabled = true;
+      btnStartGuide.disabled = false;
+      walkStatusLine1.textContent = '아직 안내를 시작하지 않았습니다';
+      walkStatusLine2.textContent = '코스를 고르고 안내를 시작해보세요';
+
+      if (!currentRoute) return;
+
+      if (gpsLog.length < 2) {
+        resultLine.textContent = 'GPS 기록이 너무 적어 일치도를 분석할 수 없습니다.';
+        return;
+      }
+      if (!userId) {
+        resultLine.textContent = '로그인하면 완주 일치도를 분석하고 리워드를 받을 수 있어요.';
+        return;
+      }
+
+      resultLine.textContent = '일치도 분석 중...';
+      const result = await analyzeGpsSimilarity(currentRoute.waypoints, gpsLog, userId);
+      resultLine.textContent = `일치도 ${result.similarityScore}% - ${result.message}`;
+    });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) userId = user.id;
   </script>
 </body>
 </html>

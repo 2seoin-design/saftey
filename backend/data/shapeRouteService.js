@@ -85,6 +85,41 @@ export function toAnchors(centerLat, centerLng, vertices, radiusMeters) {
   return vertices.map((v) => offsetLatLng(centerLat, centerLng, v.x * radiusMeters, v.y * radiusMeters));
 }
 
+// 도형 모양을 유지하는 게 최우선이므로 항상 최대 허용 반경을 꽉 채워서 최대한 뚜렷하게 그림
+// (목표 거리는 참고용으로만 보여주고, 도형 크기를 줄여서 맞추지 않음)
+function computeRadiusMeters(config) {
+  return config.maxRadiusKm * 1000;
+}
+
+// 두 꼭짓점 사이가 너무 멀면 TMAP이 그 사이 아무 도로나 골라 크게 우회/곡선을 타서
+// 도형이 뭉개짐 - 직선 변을 따라 촘촘히 경유점을 추가해 실제 도로가 그 직선에서
+// 크게 벗어날 여지를 줄임(짧은 구간일수록 우회 폭이 작아짐).
+// 도형이 클수록 구간을 길게 잡아 TMAP 요청 수가 과도해지는 것을 막음(80m~200m).
+function hopMetersFor(maxRadiusKm) {
+  return Math.min(200, Math.max(60, (maxRadiusKm * 1000) / 8));
+}
+
+function subdivideEdge(from, to, hopMeters) {
+  const dist = haversineMeters(from.lat, from.lng, to.lat, to.lng);
+  const segments = Math.max(1, Math.ceil(dist / hopMeters));
+  const points = [from];
+  for (let i = 1; i < segments; i += 1) {
+    const t = i / segments;
+    points.push({ lat: from.lat + (to.lat - from.lat) * t, lng: from.lng + (to.lng - from.lng) * t });
+  }
+  return points; // to 자체는 포함하지 않음 (다음 변의 시작점으로 이어짐)
+}
+
+function densifyVertices(anchors, hopMeters) {
+  const dense = [];
+  for (let i = 0; i < anchors.length; i += 1) {
+    const from = anchors[i];
+    const to = anchors[(i + 1) % anchors.length];
+    dense.push(...subdivideEdge(from, to, hopMeters));
+  }
+  return dense;
+}
+
 // anchor 근처(안심 스냅 반경 내)에 안심시설이 있으면 그 시설 좌표로 살짝 당겨서
 // 경로가 실제 CCTV/비상벨 옆을 지나가도록 유도
 const SAFETY_SNAP_RADIUS_M = 60;
@@ -95,19 +130,36 @@ async function snapToSafety(anchor) {
   return { lat: nearby[0].lat, lng: nearby[0].lng };
 }
 
-// 인접 anchor 쌍을 순서대로 TMAP 보행자 경로로 이어 붙여 폐곡선(순환) 경로를 만듦
+// 동시에 너무 많이 보내면 TMAP이 429(요청 과다)로 막으므로, 정해진 개수만큼만 동시에
+// 실행하는 간단한 워커 풀 - 구간 수가 많은 큰 도형에서도 안전하게 동작
+const TMAP_CONCURRENCY = 3;
+
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < items.length) {
+      const i = nextIndex;
+      nextIndex += 1;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
+// 인접 anchor 쌍을 TMAP 보행자 경로로 이어 붙여 폐곡선(순환) 경로를 만듦.
+// 구간끼리 서로 의존관계가 없으므로 (동시요청 수를 제한해가며) 병렬로 요청하고 순서대로 이어붙임
 async function buildLoopRoute(anchors) {
-  const coords = [];
-  for (let i = 0; i < anchors.length; i += 1) {
-    const from = anchors[i];
+  const segments = await mapWithConcurrency(anchors, TMAP_CONCURRENCY, (from, i) => {
     const to = anchors[(i + 1) % anchors.length];
-    const tmap = await callTmapPedestrian({
-      startLat: from.lat,
-      startLng: from.lng,
-      endLat: to.lat,
-      endLng: to.lng,
-    });
-    const segment = extractRouteCoords(tmap);
+    return callTmapPedestrian({ startLat: from.lat, startLng: from.lng, endLat: to.lat, endLng: to.lng }).then(
+      extractRouteCoords
+    );
+  });
+
+  const coords = [];
+  for (const segment of segments) {
     // 구간 경계 좌표가 중복되므로(이전 구간의 끝 = 다음 구간의 시작) 첫 좌표는 건너뜀
     coords.push(...(coords.length ? segment.slice(1) : segment));
   }
@@ -122,8 +174,22 @@ function computeRouteDistanceKm(coords) {
   return meters / 1000;
 }
 
+async function buildShapeWaypoints(lat, lng, vertices, radiusMeters, hopMeters) {
+  const rawAnchors = toAnchors(lat, lng, vertices, radiusMeters);
+  const denseAnchors = densifyVertices(rawAnchors, hopMeters);
+  const anchors = await Promise.all(denseAnchors.map(snapToSafety));
+  return buildLoopRoute(anchors);
+}
+
+// 도형/최대반경 유지가 우선이라 거리는 통제하지 않지만, 큰 도형(물고기/왕관)은 촘촘한
+// 경유점과 맞물려 목표거리의 몇 배씩 나올 수 있어 "몇 시간짜리 산책"이 되는 극단적인
+// 경우만 막음 - 이때만 반경을 줄여 딱 한 번 다시 생성 (모양 비율은 그대로, 크기만 축소)
+const EXTREME_OVERSHOOT_RATIO = 2.5;
+
 /**
- * 사용자 위치를 중심으로 지정된 도형 모양의 안심 산책로를 생성
+ * 사용자 위치를 중심으로 지정된 도형 모양의 안심 산책로를 생성.
+ * 도형 모양 유지가 최우선 - 기본적으로 최대 반경으로 그리고, 변마다 촘촘한 경유점으로
+ * 한붓그리기처럼 순서대로만 이어서 실제 도로가 직선 변에서 크게 벗어나지 않게 함.
  * @param {{lat:number, lng:number, shape: keyof typeof SHAPE_CONFIG}} params
  * @returns {Promise<{shape:string, waypoints:Array<{lat:number,lng:number}>, distanceKm:number,
  *   targetDistanceKm:number, estimatedMinutes:number, maxRadiusKm:number, score:number, blocked:boolean}>}
@@ -133,16 +199,25 @@ export async function generateShapeRoute({ lat, lng, shape }) {
   if (!config) throw new Error(`알 수 없는 도형: ${shape}`);
 
   const vertices = SHAPE_VERTICES[shape];
-  const rawAnchors = toAnchors(lat, lng, vertices, config.maxRadiusKm * 1000);
-  const anchors = await Promise.all(rawAnchors.map(snapToSafety));
+  const hopMeters = hopMetersFor(config.maxRadiusKm);
+  let radiusMeters = computeRadiusMeters(config);
+  let waypoints = await buildShapeWaypoints(lat, lng, vertices, radiusMeters, hopMeters);
+  let distanceKm = computeRouteDistanceKm(waypoints);
 
-  const waypoints = await buildLoopRoute(anchors);
+  const targetMeters = config.targetDistanceKm * 1000;
+  if (distanceKm * 1000 > targetMeters * EXTREME_OVERSHOOT_RATIO) {
+    const scale = (targetMeters * EXTREME_OVERSHOOT_RATIO) / (distanceKm * 1000);
+    radiusMeters *= scale;
+    waypoints = await buildShapeWaypoints(lat, lng, vertices, radiusMeters, hopMeters);
+    distanceKm = computeRouteDistanceKm(waypoints);
+  }
+
   const { score, blocked } = await scoreRoute(waypoints);
 
   return {
     shape,
     waypoints,
-    distanceKm: computeRouteDistanceKm(waypoints),
+    distanceKm,
     targetDistanceKm: config.targetDistanceKm,
     estimatedMinutes: config.durationMin,
     maxRadiusKm: config.maxRadiusKm,

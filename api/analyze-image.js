@@ -1,5 +1,12 @@
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const DEFAULT_MODEL = 'gemini-2.0-flash';
+const DEFAULT_MODEL = 'gemini-3.6-flash';
+const CATEGORY_DEFINITIONS = [
+  ['road_damage', '보도·포트홀 파손'],
+  ['streetlight', '가로등·조도 불량'],
+  ['stairs', '계단·단차 턱'],
+  ['obstruction', '불법 적치물·통행방해'],
+  ['other', '기타 위험'],
+];
 
 export const config = {
   api: {
@@ -14,6 +21,8 @@ function parseModelResponse(text) {
   const result = JSON.parse(jsonText);
 
   if (
+    typeof result.category !== 'string' ||
+    !CATEGORY_DEFINITIONS.some(([id]) => id === result.category) ||
     typeof result.title !== 'string' ||
     typeof result.description !== 'string' ||
     typeof result.confidence !== 'number' ||
@@ -23,10 +32,12 @@ function parseModelResponse(text) {
   }
 
   return {
+    category: result.category,
     title: result.title,
     description: result.description,
     confidence: Math.max(0, Math.min(100, result.confidence)),
     measurement: result.measurement,
+    explanation: typeof result.explanation === 'string' ? result.explanation : result.description,
   };
 }
 
@@ -36,7 +47,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'POST 요청만 허용됩니다.' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) {
     return res.status(500).json({ error: 'GEMINI_API_KEY 환경변수가 설정되지 않았습니다.' });
   }
@@ -55,7 +66,9 @@ export default async function handler(req, res) {
     '한국의 보행 안전 신고 앱에서 사용할 위험 요소 사진 분석을 수행하세요.',
     '사진에 보이는 위험 요소만 근거로 판단하고, 보이지 않는 수치나 위치를 지어내지 마세요.',
     '반드시 아래 JSON 형식만 반환하세요. 마크다운 코드 블록이나 추가 설명은 포함하지 마세요.',
-    '{"title":"[AI 위험 감지] ...","description":"위험 요소와 보행자 주의사항","confidence":0,"measurement":"측정 가능한 경우에만 수치, 아니면 확인 필요"}',
+    '싱크홀, 도로 함몰, 큰 구멍, 포트홀, 보도 붕괴처럼 지면이 꺼지거나 파손된 경우 category는 반드시 "road_damage"로 지정하세요.',
+    `category는 다음 중 하나여야 합니다: ${CATEGORY_DEFINITIONS.map(([id, label]) => `${id}(${label})`).join(', ')}`,
+    '{"category":"road_damage","title":"[AI 위험 감지] ...","description":"위험 요소와 보행자 주의사항","confidence":0,"measurement":"측정 가능한 경우에만 수치, 아니면 현장 확인 필요","explanation":"위험 유형을 판단한 근거"}',
     'confidence는 0부터 100 사이의 숫자이며, measurement는 사진만으로 측정할 수 없으면 "현장 확인 필요"로 작성하세요.',
   ].join('\n');
 

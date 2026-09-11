@@ -48,8 +48,12 @@ export async function getMyCourseCompletions(client, userId) {
  * 여기서 애플리케이션 레벨로 "조회 후 지급" 하지 않는 이유: 같은 유저가 짧은 시간 안에
  * 두 번 요청을 보내면(중복 클릭, 네트워크 재시도 등) 두 요청이 모두 "아직 지급 안 됨"을
  * 보고 이중 지급할 수 있기 때문 (전형적인 check-then-act race condition).
+ *
+ * userId를 RPC 파라미터로 넘기지 않음: RPC는 호출자의 JWT에서 auth.uid()로 대상을
+ * 직접 확인함 - 그렇지 않으면 클라이언트가 임의의 user_id를 넘겨 남의 계정에 완주
+ * 기록/리워드를 남길 수 있음 (walk_rewards.sql의 claim_walk_reward와 동일한 이유).
  */
-export async function completeCourseWalk(client, userId, courseName) {
+export async function completeCourseWalk(client, courseName) {
   if (!COURSE_NAMES.includes(courseName)) {
     const err = new Error(`알 수 없는 코스명입니다: ${courseName}`);
     err.statusCode = 400;
@@ -57,7 +61,6 @@ export async function completeCourseWalk(client, userId, courseName) {
   }
 
   const { data, error } = await client.rpc('complete_course_walk', {
-    p_user_id: userId,
     p_course_name: courseName,
   });
 

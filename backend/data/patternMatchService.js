@@ -79,7 +79,8 @@ export const COURSE_NAME_BY_SHAPE = {
  * GPS 궤적-목표 경로 일치도 분석 및 리워드 지급 판정
  * @param {Array<{lat:number,lng:number}>} targetRouteCoords - 선택한 도형 산책로 좌표
  * @param {Array<{lat:number,lng:number,timestamp:number}>} userGpsLogs - 실제 GPS 궤적
- * @param {string} userId - Supabase auth 사용자 id
+ * @param {string} userId - 호출한 사용자 id (현재 로그인 세션과 일치해야 실제 지급됨,
+ *   메시지 표시/로깅용 - 실제 지급 대상은 서버에서 auth.uid()로 강제 확인함)
  * @param {keyof typeof COURSE_NAME_BY_SHAPE} shape - 완주 시도한 도형 key (예: 'heart')
  * @returns {Promise<{similarityScore:number, rewardEligible:boolean, message:string}>}
  */
@@ -103,10 +104,11 @@ export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userI
     return { similarityScore, rewardEligible: false, message: `알 수 없는 도형입니다: ${shape}` };
   }
 
-  // complete_course_walk RPC가 내부적으로 claim_walk_reward(하루 1회 판정+지급)를 호출한 뒤
+  // p_user_id를 클라이언트가 넘기면 조작 가능하므로, complete_course_walk RPC는
+  // (claim_walk_reward와 마찬가지로) 서버에서 auth.uid()로 대상을 직접 확인함.
+  // 내부적으로 claim_walk_reward(하루 1회 판정+지급)를 호출한 뒤
   // course_completions에 완주 내역을 기록함 (backend/data/mypage_rewards.sql 참고).
   const { data, error } = await supabase.rpc('complete_course_walk', {
-    p_user_id: userId,
     p_course_name: courseName,
   });
 
