@@ -150,19 +150,13 @@
 <body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen page-transition">
 
   <!-- Header -->
-  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.05)] border-b border-outline-variant/30">
-    <div class="h-14 px-4 flex items-center justify-between">
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+    <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
       <div class="flex items-center gap-2.5">
-        <img alt="세이프티" class="h-8 object-contain shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYrDKjWh8A7c0RLU4KXVsBBZgT_OTY1HFyyQfHdhJjX-rytKqQt1dzapf-dXOgTnF5yUionQHmDuYqorphV8ISsYYh_qxG_fpP8_r4ynWwSAk_eVVwiarz5CzkYgvj0y-X5o7GXPx46r1BGsRFzFH21niT9iyCpaTs9ALkDlkstqevSfrih1tyRwneQJFKENvc2hUWVStfC4pTauqJoLTq5FIjWJPzC-_8iFWO0qXhosxw2LPnFVN6fTMQS2QxeHrt4mQ">
+        <a href="mainhome.html" aria-label="홈으로 이동">
+          <img alt="세이프티" class="h-12 w-auto object-contain shrink-0" src="../img/safety_logo_image.png">
+        </a>
         <h1 class="text-[18px] font-bold text-gray-900 tracking-tight">마이페이지</h1>
-      </div>
-      <div class="flex items-center gap-1">
-        <button aria-label="안내 도움말" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
-          <span class="material-symbols-outlined text-[22px]">help_outline</span>
-        </button>
-        <button class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%);" type="button">
-          <span class="material-symbols-outlined text-[20px]">add</span>
-        </button>
       </div>
     </div>
   </header>
@@ -335,10 +329,10 @@
   <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
     <div class="h-16 px-2 flex items-center justify-around relative">
-      <!-- 1. 홈 -->
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
-        <span class="material-symbols-outlined text-[22px]">home</span>
-        <span class="font-label-sm text-[11px]">홈</span>
+      <!-- 1. 10초제보 (평일 아이콘 스타일) -->
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
+        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
+        <span class="font-label-sm text-[11px]">10초제보</span>
       </a>
 
       <!-- 2. 안전지도 -->
@@ -347,25 +341,25 @@
         <span class="font-label-sm text-[11px]">안전지도</span>
       </a>
 
-      <!-- 3. 10초제보 (평일 아이콘 스타일) -->
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
-        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
-        <span class="font-label-sm text-[11px]">10초제보</span>
+      <!-- 3. 홈 -->
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
+        <span class="material-symbols-outlined text-[22px]">home</span>
+        <span class="font-label-sm text-[11px]">홈</span>
       </a>
 
-      <!-- 4. 커뮤니티 (초록색 원형 강조 버튼) -->
+      <!-- 4. 커뮤니티 -->
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="community.html">
+        <span class="material-symbols-outlined text-[22px]">group</span>
+        <span class="font-label-sm text-[11px]">커뮤니티</span>
+      </a>
+
+      <!-- 5. 마이 (현재 페이지, 초록색 원형 강조 버튼) -->
       <div class="flex-1 flex flex-col items-center relative -top-3">
-        <a class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="community.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
-          <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">group</span>
+        <a aria-current="page" class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="mypage.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: rgba(96, 194, 25, 0.35) 0px 6px 16px;">
+          <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">person</span>
         </a>
-        <span class="font-label-sm text-[11px] font-bold text-[#4FA912] mt-1">커뮤니티</span>
+        <span class="font-label-sm text-[11px] font-bold text-[#4FA912] mt-1">마이</span>
       </div>
-
-      <!-- 5. 마이 (평일 아이콘 스타일) -->
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html">
-        <span class="material-symbols-outlined text-[22px]">person</span>
-        <span class="font-label-sm text-[11px]">마이</span>
-      </a>
     </div>
   </nav>
 

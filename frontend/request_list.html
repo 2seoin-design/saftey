@@ -184,19 +184,23 @@
 <body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen">
 
   <!-- 헤더 영역 -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 py-3 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-2">
-      <!-- 화살표 클릭 시 mypage.html 이동 -->
-      <button aria-label="뒤로 가기" class="p-2 -ml-2 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-100 transition-colors" onclick="location.href='mypage.html'" type="button">
-        <span class="material-symbols-outlined text-2xl">arrow_back</span>
-      </button>
-      <img alt="세이프티 로고" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEeKYo0FCOZlAeJy27ZkBIevyCJZyAQu78g5CrRegDsRaYn12kpBvYsqPyYvzzT-xaS7-iVM1JaDsjeUyrQDYd1zHBaNELKXTDjRY-8Ct8UdDKwrRb7IqfiM4Cj2rEFbeCU6g0WLPkLw2HvY-gjihi6LsVczpgvMHQjVrxuP-pfEeJtio90ju3rQxTrbevzIs6RGXAt9AbxnDwg7Dbl-x479SHX506AJ3aN-atnvGFItewWJ3Z6IEKlSday7rPSIuEJU8">
-      <h1 class="text-lg font-bold text-slate-900 ml-1">내 제보 내역</h1>
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.04)]">
+    <div class="relative h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
+      <div class="flex items-center gap-2">
+        <!-- 화살표 클릭 시 mypage.html 이동 -->
+        <button aria-label="뒤로 가기" class="p-2 -ml-2 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-100 transition-colors" onclick="location.href='mypage.html'" type="button">
+          <span class="material-symbols-outlined text-2xl">arrow_back</span>
+        </button>
+        <a href="mainhome.html" aria-label="홈으로 이동">
+          <img alt="세이프티 로고" class="h-12 w-auto object-contain" src="../img/safety_logo_image.png">
+        </a>
+        <h1 class="text-lg font-bold text-slate-900 ml-1">내 제보 내역</h1>
+      </div>
     </div>
   </header>
 
   <!-- 메인 영역 -->
-  <main class="flex flex-col relative w-full bg-surface min-h-screen pb-20">
+  <main class="flex flex-col relative w-full bg-surface min-h-screen pt-16 pb-20">
     <div class="flex flex-col w-full pb-safe">
       
       <!-- Top Summary & Real-time Pulse Card -->
@@ -506,17 +510,21 @@
   <!-- 하단 네비게이션 바 (mypage.html 과 동일한 구조) -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
     <div class="h-16 px-gutter-mobile flex items-center justify-around relative">
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
-        <span class="material-symbols-outlined text-[22px]">home</span>
-        <span class="font-label-sm text-[11px]">홈</span>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html">
+        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
+        <span class="font-label-sm text-[11px]">10초제보</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html">
         <span class="material-symbols-outlined text-[22px]">map</span>
         <span class="font-label-sm text-[11px]">안전지도</span>
       </a>
-      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="#">
-        <span class="material-symbols-outlined text-[22px]">photo_camera</span>
-        <span class="font-label-sm text-[11px]">10초제보</span>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mainhome.html">
+        <span class="material-symbols-outlined text-[22px]">home</span>
+        <span class="font-label-sm text-[11px]">홈</span>
+      </a>
+      <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="community.html">
+        <span class="material-symbols-outlined text-[22px]">group</span>
+        <span class="font-label-sm text-[11px]">커뮤니티</span>
       </a>
       <div class="flex-1 flex flex-col items-center relative -top-3">
         <a class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="mypage.html" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); box-shadow: 0 6px 16px rgba(96, 194, 25, 0.35);">

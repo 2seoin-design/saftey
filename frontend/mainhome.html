@@ -119,13 +119,6 @@ tailwind.config = {
       <img src="../img/safety_logo_image.png" alt="안전디딤돌 로고" class="h-12 w-auto object-contain">
       <img src="../img/safety_logo_text.png" alt="안전디딤돌 로고 텍스트" class="h-6 w-auto object-contain">
     </a>
-
-    <div class="flex items-center gap-2">
-      <p class="font-label-md text-label-sm text-on-surface-variant whitespace-nowrap bg-surface-container-low px-3 py-1.5 rounded-full">로그인 후 이용해주세요</p>
-      <a href="login.html" aria-label="로그인" class="w-8 h-8 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform shadow-sm shrink-0" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
-        <span class="material-symbols-outlined text-[20px]">login</span>
-      </a>
-    </div>
   </div>
 </header>
 
@@ -226,19 +219,23 @@ tailwind.config = {
 
 <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg pb-safe">
   <div class="h-16 px-gutter-mobile flex items-center justify-around relative">
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html" data-auth-required="true">
+      <span class="material-symbols-outlined text-[22px]">photo_camera</span>
+      <span class="font-label-sm text-[11px]">10초제보</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html" data-auth-required="true">
+      <span class="material-symbols-outlined text-[22px]">map</span>
+      <span class="font-label-sm text-[11px]">안전지도</span>
+    </a>
     <div class="flex-1 flex flex-col items-center relative -top-3">
       <a aria-current="page" class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg transition-transform active:scale-95" href="mainhome.html" style="background: linear-gradient(135deg, rgb(96,194,25) 0%, rgb(79,169,18) 100%);">
         <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">home</span>
       </a>
       <span class="font-label-sm text-[11px] font-bold mt-1" style="color: rgb(79,169,18);">홈</span>
     </div>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="safymap.html" data-auth-required="true">
-      <span class="material-symbols-outlined text-[22px]">map</span>
-      <span class="font-label-sm text-[11px]">안전지도</span>
-    </a>
-    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="10report.html" data-auth-required="true">
-      <span class="material-symbols-outlined text-[22px]">photo_camera</span>
-      <span class="font-label-sm text-[11px]">10초제보</span>
+    <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="community.html" data-auth-required="true">
+      <span class="material-symbols-outlined text-[22px]">group</span>
+      <span class="font-label-sm text-[11px]">커뮤니티</span>
     </a>
     <a class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-colors flex-1 py-1" href="mypage.html" data-auth-required="true">
       <span class="material-symbols-outlined text-[22px]">person</span>
