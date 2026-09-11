@@ -368,6 +368,14 @@
         }, 200);
       });
     });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const userPoints = parseInt(localStorage.getItem('userPoints') || '1200', 10); // 기본값 설정 가능
+      const pointElement = document.getElementById('userPointText'); // 포인트 표시 element ID
+      if (pointElement) {
+        pointElement.textContent = `${userPoints.toLocaleString()} P`;
+      }
+    });
   </script>
 
 </body>
