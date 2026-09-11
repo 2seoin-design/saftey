@@ -10,7 +10,7 @@ const FACILITY_SCORE = { BELL: 5, CCTV: 3, LIGHT: 1 };
 const HAZARD_PENALTY = -5;
 const BLOCKING_REPORT_TYPES = ['CONSTR']; // 공사/장애물: 완전 회피 대상
 
-async function callTmapPedestrian({ startLat, startLng, endLat, endLng, passList, searchOption = 30 }) {
+export async function callTmapPedestrian({ startLat, startLng, endLat, endLng, passList, searchOption = 30 }) {
   const res = await fetch(TMAP_PEDESTRIAN_URL, {
     method: 'POST',
     headers: { appKey: TMAP_APP_KEY, 'Content-Type': 'application/json' },
@@ -31,7 +31,7 @@ async function callTmapPedestrian({ startLat, startLng, endLat, endLng, passList
   return res.json();
 }
 
-function extractRouteCoords(tmapResponse) {
+export function extractRouteCoords(tmapResponse) {
   const coords = [];
   for (const feature of tmapResponse?.features ?? []) {
     if (feature.geometry?.type === 'LineString') {
@@ -46,7 +46,7 @@ function sampleEvery(coords, step = 5) {
   return coords.filter((_, i) => i % step === 0);
 }
 
-async function scoreRoute(coords, radiusMeters = 30) {
+export async function scoreRoute(coords, radiusMeters = 30) {
   const samples = sampleEvery(coords);
   const seenFacilities = new Map();
   const seenReports = new Map();

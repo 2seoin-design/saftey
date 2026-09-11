@@ -2,17 +2,7 @@
 // 한 번만 받아와 캐시해두고, 이후 좌표별 "반경 내 조회"는 로컬에서 거리 계산으로 처리.
 // (경로 탐색 시 지점마다 매번 API를 다시 부르면 느리고 서버 부담도 커짐)
 
-const EARTH_RADIUS_M = 6371000;
-
-function haversineMeters(lat1, lng1, lat2, lng2) {
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(a));
-}
+import { haversineMeters } from './geoUtils.js';
 
 let facilitiesPromise = null;
 
