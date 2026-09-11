@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>
+    // Supabase JS가 로그인 성공 시 저장하는 세션 토큰 존재 여부로 체크 (supabaseClient.js와 동일 프로젝트)
+    if (!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token')) {
+      window.location.href = 'login.html';
+    }
+  </script>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -211,35 +217,27 @@
           <div class="flex items-center justify-between mb-space-xs">
             <div class="flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
-              <span class="font-label-sm text-label-sm text-secondary tracking-tight">실시간 행정망 동기화 중</span>
-            </div>
-            <div class="inline-flex items-center gap-1 bg-surface-container px-2.5 py-0.5 rounded-full" style="background-color: rgb(240, 251, 238); border: 1px solid rgb(212, 242, 188);">
-              <span class="material-symbols-outlined text-[14px] text-primary" style="color: rgb(79, 169, 18); font-variation-settings: 'FILL' 1;">verified_user</span>
-              <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">1급 안전 파수꾼</span>
+              <span class="font-label-sm text-label-sm text-secondary tracking-tight">제보 접수 · 처리 현황</span>
             </div>
           </div>
-          
+
           <h2 class="font-headline-md text-headline-md text-on-surface mb-space-sm">
-            김지혜 파수꾼님의<br>
-            <span class="text-primary font-bold">생활안전 제보 및 조치 현황</span>
+            <span id="reportListUserName">회원</span>님의<br>
+            <span class="text-primary font-bold">생활안전 제보 내역</span>
           </h2>
 
-          <div class="grid grid-cols-4 gap-2 bg-surface-container-low p-space-xs rounded-xl mb-space-sm text-center">
+          <div class="grid grid-cols-3 gap-2 bg-surface-container-low p-space-xs rounded-xl mb-space-sm text-center">
             <div class="flex flex-col py-1">
               <span class="font-label-sm text-label-sm text-on-surface-variant">총 제보</span>
-              <span class="font-title-sm text-title-sm text-on-surface font-bold mt-0.5">12<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
+              <span id="statTotal" class="font-title-sm text-title-sm text-on-surface font-bold mt-0.5">-<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
             </div>
             <div class="flex flex-col py-1">
-              <span class="font-label-sm text-label-sm text-error">접수 대기</span>
-              <span class="font-title-sm text-title-sm text-error font-bold mt-0.5">1<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
+              <span class="font-label-sm text-label-sm text-error">미처리</span>
+              <span id="statPending" class="font-title-sm text-title-sm text-error font-bold mt-0.5">-<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
             </div>
             <div class="flex flex-col py-1">
-              <span class="font-label-sm text-label-sm text-tertiary">조치 진행</span>
-              <span class="font-title-sm text-title-sm text-tertiary font-bold mt-0.5">2<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
-            </div>
-            <div class="flex flex-col py-1">
-              <span class="font-label-sm text-label-sm text-secondary">보수 완료</span>
-              <span class="font-title-sm text-title-sm text-secondary font-bold mt-0.5">9<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
+              <span class="font-label-sm text-label-sm text-secondary">처리 완료</span>
+              <span id="statDone" class="font-title-sm text-title-sm text-secondary font-bold mt-0.5">-<span class="font-label-sm text-label-sm font-normal text-on-surface-variant">건</span></span>
             </div>
           </div>
         </div>
@@ -249,228 +247,20 @@
       <section class="px-gutter-mobile py-space-xs sticky top-16 z-40 bg-surface/90 backdrop-blur-md">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="filter-tabs">
           <button class="filter-tab active shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-primary text-on-primary shadow-sm font-medium" data-filter="all" type="button" style="background: linear-gradient(135deg, rgb(96, 194, 25) 0%, rgb(79, 169, 18) 100%); color: rgb(255, 255, 255); box-shadow: rgba(96, 194, 25, 0.35) 0px 3px 10px;">
-            전체 <span class="opacity-90">12</span>
+            전체 <span class="opacity-90" id="filterCountAll">-</span>
           </button>
-          <button class="filter-tab shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container shadow-sm font-medium" data-filter="progress" type="button">
-            조치중 <span class="opacity-80">2</span>
+          <button class="filter-tab shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container shadow-sm font-medium" data-filter="PENDING" type="button">
+            미처리 <span class="opacity-80" id="filterCountPending">-</span>
           </button>
-          <button class="filter-tab shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container shadow-sm font-medium" data-filter="completed" type="button">
-            완료 <span class="opacity-80">9</span>
-          </button>
-          <button class="filter-tab shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container shadow-sm font-medium" data-filter="waiting" type="button">
-            접수 <span class="opacity-80">1</span>
+          <button class="filter-tab shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container shadow-sm font-medium" data-filter="DONE" type="button">
+            처리 완료 <span class="opacity-80" id="filterCountDone">-</span>
           </button>
         </div>
       </section>
 
       <!-- Report List Stream -->
       <section class="px-gutter-mobile pt-space-xs pb-space-3xl flex flex-col gap-space-sm" id="report-cards-container">
-        
-        <!-- Card 1 -->
-        <article class="report-card progress bg-surface-container-lowest rounded-2xl p-space-md shadow-sm transition-all hover:shadow-md">
-          <div class="flex items-start justify-between gap-2 mb-space-xs">
-            <div class="inline-flex items-center gap-1.5 bg-tertiary-container/15 text-tertiary px-2.5 py-1 rounded-full" style="background-color: rgb(234, 248, 226); color: rgb(79, 169, 18);">
-              <span class="material-symbols-outlined text-[16px] text-tertiary animate-spin" style="color: rgb(79, 169, 18); animation-duration: 4s;">engineering</span>
-              <span class="font-label-sm text-label-sm font-bold">지자체 긴급 보수 중</span>
-            </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant">2025.02.24 14:20</span>
-          </div>
-
-          <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-1">
-            보도블록 침하 및 휠체어 걸림 위험 구간
-          </h3>
-          <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mb-space-xs">
-            <span class="material-symbols-outlined text-[16px] text-primary shrink-0">pin_drop</span>
-            <span class="truncate">종로구 혜화로 12길 보도블록 (혜화초 방면)</span>
-          </p>
-
-          <div class="flex items-center gap-2 mb-space-sm">
-            <div class="inline-flex items-center gap-1 bg-error-container/40 text-on-error-container px-2 py-0.5 rounded-md">
-              <span class="material-symbols-outlined text-[14px]">warning</span>
-              <span class="font-label-sm text-label-sm font-bold">AI 위험도 심각 (Lv.3) 자동 판정</span>
-            </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant">보행취약 구역 가산 적용</span>
-          </div>
-
-          <div class="relative w-full h-44 rounded-xl overflow-hidden mb-space-sm shadow-sm bg-surface-container">
-            <img class="w-full h-full object-cover" data-alt="제보 현장 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRBBlbBrl1sZQEMMU1hPOey-L_SdclpLMRL2tCzgPgbl4tkActFtWmTQ55JhZDOVuf5maW_KTn8ru9eLAmR-hmmh2BJInCXgheUBZDcxMJ5t1keQvtzw8oQKmbkAnn8_72wZf5HaAG0n30sJCWB5N2FhKpY6Fb4vOXAo1P6SpHhG_9NSZylqdAQ1JCCc600ALj3ZKjAIFosWstzjSAW40REgPYYtUzEHnJO3BkZ2kj4oSnFs7cphVeog">
-            <div class="absolute bottom-2 left-2 bg-inverse-surface/85 backdrop-blur-sm text-inverse-on-surface px-2 py-0.5 rounded-md flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">photo_camera</span>
-              <span class="font-label-sm text-label-sm">제보 현장 사진 (종로-202502-089)</span>
-            </div>
-          </div>
-
-          <div class="bg-surface-container-low rounded-xl p-space-sm mb-space-sm">
-            <h4 class="font-label-md text-label-md text-on-surface font-bold mb-3 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px] text-primary">cloud_upload</span>
-              실시간 현장 조치 타임라인
-            </h4>
-            <div class="flex flex-col gap-3 pl-1 relative before:absolute before:left-[9px] before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant/40">
-              <div class="flex items-start gap-3 relative">
-                <span class="w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center shrink-0 z-10">
-                  <span class="material-symbols-outlined text-[11px]">check</span>
-                </span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-label-md text-label-md font-bold text-on-surface">10초 간편제보 접수</span>
-                    <span class="font-label-sm text-label-sm text-on-surface-variant">14:20</span>
-                  </div>
-                  <p class="font-label-sm text-label-sm text-on-surface-variant">시민 파수꾼 현장 위치 및 사진 전송 완료</p>
-                </div>
-              </div>
-              <div class="flex items-start gap-3 relative">
-                <span class="w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center shrink-0 z-10">
-                  <span class="material-symbols-outlined text-[11px]">check</span>
-                </span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-label-md text-label-md font-bold text-on-surface">AI 중복 검증 및 부서 배정</span>
-                    <span class="font-label-sm text-label-sm text-on-surface-variant">14:25</span>
-                  </div>
-                  <p class="font-label-sm text-label-sm text-on-surface-variant">종로구 도로과 긴급 기동보수반 즉시 이첩</p>
-                </div>
-              </div>
-              <div class="flex items-start gap-3 relative">
-                <span class="w-4 h-4 rounded-full bg-tertiary ring-4 ring-tertiary/20 flex items-center justify-center shrink-0 z-10 animate-pulse">
-                  <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary"></span>
-                </span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-label-md text-label-md font-bold text-tertiary">현장 안전 펜스 설치 및 평탄화 공사진행 중</span>
-                    <span class="font-label-sm text-label-sm font-bold text-tertiary">진행중</span>
-                  </div>
-                  <p class="font-label-sm text-label-sm text-on-surface">현장 통제관 배치 완료 (예상 완료: 오늘 18:00)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between pt-1 text-on-surface">
-            <div class="flex items-center gap-1.5">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm font-bold">
-                <span class="material-symbols-outlined text-[14px]">toll</span> +500P 적립 완료
-              </span>
-            </div>
-            <span class="font-label-sm text-label-sm text-secondary font-medium">보수 완료 시 보너스 +1,000P 지급 예정</span>
-          </div>
-        </article>
-
-        <!-- Card 2 -->
-        <article class="report-card completed bg-surface-container-lowest rounded-2xl p-space-md shadow-sm transition-all hover:shadow-md">
-          <div class="flex items-start justify-between gap-2 mb-space-xs">
-            <div class="inline-flex items-center gap-1.5 bg-secondary-container/40 text-on-secondary-container px-2.5 py-1 rounded-full" style="background-color: rgb(234, 248, 226); color: rgb(53, 122, 7);">
-              <span class="material-symbols-outlined text-[16px] text-secondary" style="color: rgb(96, 194, 25); font-variation-settings: 'FILL' 1;">check_circle</span>
-              <span class="font-label-sm text-label-sm font-bold">보수 및 조치 완료</span>
-            </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant">2025.02.22 09:15</span>
-          </div>
-
-          <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-1">
-            시각장애인 점자블록 파손 및 턱 걸림
-          </h3>
-          <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mb-space-sm">
-            <span class="material-symbols-outlined text-[16px] text-primary shrink-0">pin_drop</span>
-            <span class="truncate">혜화역 4번 출구 앞 횡단보도 진입로</span>
-          </p>
-
-          <div class="grid grid-cols-2 gap-2 mb-space-sm">
-            <div class="relative rounded-xl overflow-hidden bg-surface-container aspect-[4/3] shadow-sm">
-              <img class="w-full h-full object-cover grayscale opacity-90" data-alt="Before 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyHIOpUyLPmmZVpLJQlHBmrADhGffpuW1LV43QA5K1A68KTBz2rTZyXBHecARjL-p9mq7aTwhoRDwN0wsFRYm6kzZA8qo0vzG-d4t4mrck_3HJ-fnx1PxaJnbyR4Dn4nclbAM_X_owyGiZTARZ04T49zTbYJWx-skOaQYw1FmXBw4wr5iSHDmda1FcpUVI2Cm0V-AEFcWJOiwYyo4OI6hs56K3bwBWjiSvtb3ahJT5W8UvN_z5gl9uBw">
-              <span class="absolute top-1.5 left-1.5 bg-error/90 text-on-error px-1.5 py-0.5 rounded font-label-sm text-label-sm font-bold">Before</span>
-              <span class="absolute bottom-1.5 left-1.5 right-1.5 text-center text-inverse-on-surface bg-inverse-surface/75 backdrop-blur-sm rounded py-0.5 font-label-sm text-label-sm truncate px-1">파손·탈락 점자블록</span>
-            </div>
-            <div class="relative rounded-xl overflow-hidden bg-surface-container aspect-[4/3] shadow-sm">
-              <img class="w-full h-full object-cover" data-alt="After 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX7NgdRyJEZ1XqvztsniAlvgMAYh5jnidbIm8Gc9H2rtNel2yFAFGbQZelXpxaDz0QP0tVbCqjxovwsLHFqcGGlDxRekPDYARxqPNhgL--1NmS7w57GG8TG3DosKAieCtIkhZc_MxjnGjwYIWA8InDwCgQ2-FPvCnSPT8FJlmWW_dFB3w_gabITh4GIIzpAkbv9G-lPdjwhI4xBbX9a42Uw67lpHx_XL8bmnUAXh_nV6Aq3Ij4E-lzgQ">
-              <span class="absolute top-1.5 left-1.5 bg-secondary text-on-secondary px-1.5 py-0.5 rounded font-label-sm text-label-sm font-bold" style="background-color: rgb(96, 194, 25); color: rgb(255, 255, 255);">After</span>
-              <span class="absolute bottom-1.5 left-1.5 right-1.5 text-center text-inverse-on-surface bg-inverse-surface/75 backdrop-blur-sm rounded py-0.5 font-label-sm text-label-sm truncate px-1">규격 황색블록 재시공</span>
-            </div>
-          </div>
-
-          <div class="bg-surface-container-low rounded-xl p-space-sm mb-space-sm flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="font-label-sm text-label-sm text-on-surface-variant">조치 관할 부서</span>
-              <span class="font-label-md text-label-md text-on-surface font-semibold">서울특별시 종로구 도로관리과</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="font-label-sm text-label-sm text-on-surface-variant">소요 시간</span>
-              <span class="font-label-md text-label-md text-secondary font-bold flex items-center gap-1" style="color: rgb(79, 169, 18);">
-                <span class="material-symbols-outlined text-[14px]">bolt</span>접수 후 24시간 이내 원스톱 보수
-              </span>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between bg-surface-container px-3 py-2 rounded-xl" style="background-color: rgb(241, 248, 238); border: 1px solid rgb(224, 242, 213);">
-            <div class="flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-secondary text-[18px]" style="color: rgb(96, 194, 25); font-variation-settings: 'FILL' 1;">stars</span>
-              <span class="font-label-md text-label-md font-bold text-on-surface">리워드 정산 완료</span>
-            </div>
-            <div class="text-right">
-              <span class="font-label-md text-label-md font-bold text-secondary" style="color: rgb(79, 169, 18);">+1,500P</span>
-              <span class="font-label-sm text-label-sm text-on-surface-variant block">(기본 500P + 우수 1,000P)</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Card 3 -->
-        <article class="report-card progress bg-surface-container-lowest rounded-2xl p-space-md shadow-sm transition-all hover:shadow-md">
-          <div class="flex items-start justify-between gap-2 mb-space-xs">
-            <div class="inline-flex items-center gap-1.5 bg-tertiary-container/15 text-tertiary px-2.5 py-1 rounded-full" style="background-color: rgb(234, 248, 226); color: rgb(79, 169, 18);">
-              <span class="material-symbols-outlined text-[16px] text-tertiary" style="color: rgb(79, 169, 18);">search_insights</span>
-              <span class="font-label-sm text-label-sm font-bold">현장 실사 중</span>
-            </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant">2025.02.23 18:40</span>
-          </div>
-
-          <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-1">
-            가로등 조도 불량 및 야간 보행 사각지대
-          </h3>
-          <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mb-space-sm">
-            <span class="material-symbols-outlined text-[16px] text-primary shrink-0">pin_drop</span>
-            <span class="truncate">대학로 마로니에공원 뒷골목 소극장 거리</span>
-          </p>
-
-          <div class="bg-surface-container-low rounded-xl p-space-sm mb-space-sm">
-            <div class="flex items-start gap-2">
-              <span class="material-symbols-outlined text-tertiary text-[18px] shrink-0 mt-0.5" style="color: rgb(79, 169, 18);">assignment_turned_in</span>
-              <div class="text-on-surface">
-                <span class="font-label-md text-label-md font-bold block mb-0.5">조치 현황 업데이트</span>
-                <p class="font-body-md text-body-md text-on-surface-variant">
-                  종로구 스마트도시과 현장 확인 완료. 해당 골목 내 고효율 스마트 보안등 신규 교체 발주가 완료되었습니다.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between text-on-surface">
-            <span class="font-label-sm text-label-sm text-on-surface-variant">교체 시공 예정일: 2025.02.27</span>
-            <span class="font-label-sm text-label-sm text-secondary font-semibold">+500P 적립 완료</span>
-          </div>
-        </article>
-
-        <!-- Card 4 -->
-        <article class="report-card waiting bg-surface-container-lowest rounded-2xl p-space-md shadow-sm transition-all hover:shadow-md">
-          <div class="flex items-start justify-between gap-2 mb-space-xs">
-            <div class="inline-flex items-center gap-1.5 bg-surface-container text-on-surface-variant px-2.5 py-1 rounded-full">
-              <span class="material-symbols-outlined text-[16px]">hourglass_empty</span>
-              <span class="font-label-sm text-label-sm font-bold">행정 접수 검토 중</span>
-            </div>
-            <span class="font-label-sm text-label-sm text-on-surface-variant">오늘 11:05</span>
-          </div>
-
-          <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-1">
-            빗물받이 덮개 이탈로 인한 휠체어 바퀴 빠짐 우려
-          </h3>
-          <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
-            <span class="material-symbols-outlined text-[16px] text-primary shrink-0">pin_drop</span>
-            <span class="truncate">창경궁로 버스 정류소 후면 보도</span>
-          </p>
-
-          <div class="mt-2 flex items-center justify-between">
-            <span class="font-label-sm text-label-sm text-on-surface-variant">AI 1차 필터링 정상 통과 · 공무원 접수 중</span>
-            <span class="font-label-sm text-label-sm text-secondary font-bold">+500P 심사대기</span>
-          </div>
-        </article>
-
+        <div class="text-center py-10 text-on-surface-variant font-label-md text-label-md" id="reportListStatus">불러오는 중...</div>
       </section>
     </div>
 
@@ -489,7 +279,7 @@
           const cards = document.querySelectorAll('.report-card');
 
           cards.forEach(card => {
-            if (filter === 'all' || card.classList.contains(filter)) {
+            if (filter === 'all' || card.dataset.status === filter) {
               card.style.display = 'block';
             } else {
               card.style.display = 'none';
@@ -504,6 +294,93 @@
         }
         alert('카메라 및 위치 확인 후 10초 간편제보 화면으로 이동합니다.');
       }
+    </script>
+
+    <!-- 마이페이지 API에서 실제 제보 내역을 불러와 표시 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../backend/data/supabaseClient.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const nameEl = document.getElementById('reportListUserName');
+        const statTotal = document.getElementById('statTotal');
+        const statPending = document.getElementById('statPending');
+        const statDone = document.getElementById('statDone');
+        const filterCountAll = document.getElementById('filterCountAll');
+        const filterCountPending = document.getElementById('filterCountPending');
+        const filterCountDone = document.getElementById('filterCountDone');
+        const container = document.getElementById('report-cards-container');
+        const statusEl = document.getElementById('reportListStatus');
+
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+          location.href = 'login.html';
+          return;
+        }
+
+        const displayName = session.user.user_metadata?.name || session.user.email || '회원';
+        if (nameEl) nameEl.textContent = displayName;
+
+        function formatDateTime(iso) {
+          const d = new Date(iso);
+          const pad = (n) => String(n).padStart(2, '0');
+          return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function renderCard(report) {
+          const isDone = report.status === 'DONE';
+          const article = document.createElement('article');
+          article.className = 'report-card bg-surface-container-lowest rounded-2xl p-space-md shadow-sm transition-all hover:shadow-md';
+          article.dataset.status = report.status;
+          article.innerHTML = `
+            <div class="flex items-start justify-between gap-2 mb-space-xs">
+              <div class="inline-flex items-center gap-1.5 ${isDone ? 'bg-secondary-container/40 text-on-secondary-container' : 'bg-surface-container text-on-surface-variant'} px-2.5 py-1 rounded-full">
+                <span class="material-symbols-outlined text-[16px] ${isDone ? 'text-secondary' : ''}" style="${isDone ? "color: rgb(96, 194, 25); font-variation-settings: 'FILL' 1;" : ''}">${isDone ? 'check_circle' : 'hourglass_empty'}</span>
+                <span class="font-label-sm text-label-sm font-bold">${report.statusLabel}</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">${formatDateTime(report.reportedAt)}</span>
+            </div>
+            <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-1">${report.reportTypeLabel}</h3>
+            ${report.description ? `<p class="font-body-md text-body-md text-on-surface-variant mb-space-xs">${report.description}</p>` : ''}
+            ${report.photoUrl ? `
+              <div class="relative w-full h-44 rounded-xl overflow-hidden shadow-sm bg-surface-container">
+                <img class="w-full h-full object-cover" alt="제보 현장 사진" src="${report.photoUrl}">
+              </div>
+            ` : ''}
+          `;
+          return article;
+        }
+
+        try {
+          const res = await fetch('/api/mypage/reports', {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          if (!res.ok) throw new Error(`제보 내역 조회 실패: ${res.status}`);
+          const { reports } = await res.json();
+
+          const pendingCount = reports.filter((r) => r.status === 'PENDING').length;
+          const doneCount = reports.filter((r) => r.status === 'DONE').length;
+
+          [statTotal, filterCountAll].forEach((el) => { if (el) (el.firstChild ?? el).textContent = String(reports.length); });
+          if (statPending) statPending.firstChild.textContent = String(pendingCount);
+          if (statDone) statDone.firstChild.textContent = String(doneCount);
+          if (filterCountPending) filterCountPending.textContent = String(pendingCount);
+          if (filterCountDone) filterCountDone.textContent = String(doneCount);
+
+          statusEl.remove();
+          if (reports.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-center py-10 text-on-surface-variant font-label-md text-label-md';
+            empty.textContent = '아직 등록한 제보가 없어요.';
+            container.appendChild(empty);
+          } else {
+            reports.forEach((report) => container.appendChild(renderCard(report)));
+          }
+        } catch (err) {
+          console.error('제보 내역을 불러오지 못했습니다:', err);
+          statusEl.textContent = '제보 내역을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+          [statTotal, statPending, statDone].forEach((el) => { if (el) el.firstChild.textContent = '0'; });
+        }
+      });
     </script>
   </main>
 

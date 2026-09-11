@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>
+    // Supabase JS가 로그인 성공 시 저장하는 세션 토큰 존재 여부로 체크 (supabaseClient.js와 동일 프로젝트)
+    if (!localStorage.getItem('sb-gaicuiithjllwillleyo-auth-token')) {
+      window.location.href = 'login.html';
+    }
+  </script>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -391,19 +397,24 @@
       const authHeaders = { Authorization: `Bearer ${session.access_token}` };
 
       try {
-        const res = await fetch('/api/mypage/points', { headers: authHeaders });
-        if (!res.ok) throw new Error(`포인트 조회 실패: ${res.status}`);
-        const { points } = await res.json();
-        if (pointEl) pointEl.textContent = Number(points ?? 0).toLocaleString();
+        const { data: profile, error } = await sb
+          .from('profiles')
+          .select('points')
+          .eq('id', user.id)
+          .single();
+        if (error) throw error;
+        if (pointEl) pointEl.textContent = Number(profile?.points ?? 0).toLocaleString();
       } catch (err) {
         console.error('포인트를 불러오지 못했습니다:', err);
-        if (pointEl) pointEl.textContent = '0';
+        if (pointEl) pointEl.textContent = '조회 실패';
       }
 
       try {
-        const res = await fetch('/api/mypage/reports', { headers: authHeaders });
-        if (!res.ok) throw new Error(`제보 내역 조회 실패: ${res.status}`);
-        const { reports } = await res.json();
+        const { data: reports, error } = await sb
+          .from('reports')
+          .select('id')
+          .eq('user_id', user.id);
+        if (error) throw error;
         if (reportCountEl) reportCountEl.firstChild.textContent = String(reports?.length ?? 0);
       } catch (err) {
         console.error('제보 내역을 불러오지 못했습니다:', err);
