@@ -1,174 +1,291 @@
-<!DOCTYPE html><html lang="ko" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-surface": "#2e3229", "surface-container-high": "#e6eadc", "secondary-fixed-dim": "#7fdd44", "surface-variant": "#e1e4d7", "secondary-container": "#97f75c", "tertiary-fixed-dim": "#c1caab", "secondary": "#2f6c00", "surface-bright": "#f8fbed", "error": "#ba1a1a", "on-secondary-fixed": "#092100", "primary-fixed-dim": "#77df25", "on-secondary-fixed-variant": "#215100", "surface-container-low": "#f2f5e8", "tertiary-fixed": "#dde7c6", "on-primary": "#ffffff", "inverse-primary": "#77df25", "outline": "#6f7b64", "inverse-on-surface": "#eff2e5", "tertiary": "#586248", "on-primary-fixed-variant": "#245100", "on-tertiary-fixed": "#161e0a", "on-tertiary": "#ffffff", "on-error": "#ffffff", "tertiary-container": "#b2bc9e", "on-error-container": "#93000a", "surface": "#f8fbed", "secondary-fixed": "#9afa5e", "background": "#f8fbed", "on-primary-container": "#255300", "on-secondary-container": "#317000", "outline-variant": "#bfcbb1", "on-secondary": "#ffffff", "surface-container": "#ecefe2", "on-primary-fixed": "#0b2000", "primary-fixed": "#92fc44", "error-container": "#ffdad6", "on-surface": "#191d15", "surface-dim": "#d8dbcf", "surface-container-lowest": "#ffffff", "on-tertiary-fixed-variant": "#414a32", "on-tertiary-container": "#434c34", "primary": "#326b00", "surface-tint": "#326b00", "on-surface-variant": "#3f4a36", "surface-container-highest": "#e1e4d7", "primary-container": "#69d00f", "on-background": "#191d15" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.5rem", "container-max": "75rem", "space-xl": "2rem", "space-md": "1rem", "space-2xs": "0.25rem", "gutter-mobile": "1rem", "touch-min": "3rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.75rem", "space-2xl": "3rem" }, "fontFamily": { "body-lg": [ "Plus Jakarta Sans" ], "display-lg": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "label-badge": [ "JetBrains Mono" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Plus Jakarta Sans" ], "headline-sm": [ "Plus Jakarta Sans" ], "label-navigation": [ "JetBrains Mono" ], "body-sm": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-md": [ "Plus Jakarta Sans" ] }, "fontSize": { "body-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "display-lg": [ "40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-badge": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-lg-mobile": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-sm": [ "17px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "label-navigation": [ "13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "body-sm": [ "12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "headline-lg": [ "30px", { "lineHeight": "38px", "letterSpacing": "-0.015em", "fontWeight": "700" } ], "body-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface pt-safe pb-safe flex flex-col min-h-screen"><main class="flex-1 flex flex-col relative w-full bg-surface"><div class="flex flex-col w-full px-gutter-mobile pb-space-2xl">
-<!-- Top Visual & Delight Header -->
-<div class="flex flex-col items-center text-center pt-space-md pb-space-lg">
-<div class="relative w-20 h-20 rounded-full bg-surface-container flex items-center justify-center mb-space-sm shadow-sm overflow-hidden">
-<img alt="세이프티 로고" class="w-14 h-14 object-contain transition-transform duration-300 active:scale-95" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZfCHE0d43e-HxvO4GbhzpECEUKEuOs8OJrhAdMdMLPe8qqTWil9k3Dyz0XQkCrcRPwR8CEYDlbuPSVQ1zBwEUsjIJOJzpz2vJGNGo7ZMpniWnPhrLUpioZ1Q5kdfDxPsK5OVBBVbLGJz9xMd9KNKNeMRBh1RlIAeAKxNKpjAv0m6nkyXo6fitCeeWctY6pN6zaaH-njoF23y541DrfC-2PcDzlOkZZ7OYuVPBVD1TvH2smNDKKfIKddXMRXoCqVKLoiw">
-<span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary text-xs shadow">
-<span class="material-symbols-outlined text-[16px]">verified_user</span>
-</span>
-</div>
-<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-secondary font-label-badge text-label-badge mb-space-2xs">
-<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-      안심 보행 &amp; 배리어프리 커뮤니티
-    </div>
-<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight mt-1">회원가입
-    </h1>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px] mt-1">
-      시민과 함께 만드는 실시간 무장애 안심 플랫폼
-    </p>
-</div>
-<!-- Registration Main Card Form -->
-<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-5 flex flex-col gap-space-md">
-<!-- 1. 이름 (실명) -->
-<div class="flex flex-col gap-1.5">
-<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="name">
-        이름 (실명)
-        <span class="text-primary text-xs">*</span>
-</label>
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
-          person
-        </span>
-<input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="name" placeholder="홍길동" type="text">
-</div>
-</div>
-<!-- 2. 아이디 또는 이메일 -->
-<div class="flex flex-col gap-1.5">
-<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="email">
-        아이디 또는 이메일
-        <span class="text-primary text-xs">*</span>
-</label>
-<div class="relative flex items-center gap-2">
-<div class="relative flex-1 flex items-center min-w-0">
-<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
-            mail
-          </span>
-<input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-3 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all truncate" id="email" placeholder="example@safety.kr" type="email">
-</div>
-<button class="h-[52px] px-3.5 rounded-lg bg-surface-container text-secondary font-headline-sm text-body-md hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center shrink-0" id="btn-check-dup" type="button">
-          중복확인
-        </button>
-</div>
-<p class="hidden font-body-sm text-body-sm text-secondary pl-1" id="dup-feedback">
-        사용 가능한 아이디/이메일입니다.
-      </p>
-</div>
-<!-- 3. 비밀번호 -->
-<div class="flex flex-col gap-1.5">
-<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="password">
-        비밀번호
-        <span class="text-primary text-xs">*</span>
-</label>
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
-          lock
-        </span>
-<input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-11 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="password" placeholder="8자리 이상 영문, 숫자, 특수문자" type="password">
-<button aria-label="비밀번호 보기 토글" class="absolute right-3.5 text-on-surface-variant hover:text-on-surface active:scale-90 transition p-1" onclick="togglePassVisibility('password', this)" type="button">
-<span class="material-symbols-outlined text-[22px] block">visibility</span>
-</button>
-</div>
-</div>
-<!-- 4. 비밀번호 확인 -->
-<div class="flex flex-col gap-1.5">
-<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="password-confirm">
-        비밀번호 확인
-        <span class="text-primary text-xs">*</span>
-</label>
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
-          lock_clock
-        </span>
-<input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-11 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="password-confirm" placeholder="비밀번호를 한 번 더 입력하세요" type="password">
-<button aria-label="비밀번호 확인 보기 토글" class="absolute right-3.5 text-on-surface-variant hover:text-on-surface active:scale-90 transition p-1" onclick="togglePassVisibility('password-confirm', this)" type="button">
-<span class="material-symbols-outlined text-[22px] block">visibility</span>
-</button>
-</div>
-</div>
-<!-- 5. 휴대폰 번호 -->
-<div class="flex flex-col gap-1.5">
-
-
-</div>
-<!-- 6. 약관 동의 체크박스 영역 -->
-<div class="flex flex-col gap-2.5 pt-space-xs">
-
-</div>
-<!-- 7. 메인 가입하기 CTA 버튼 -->
-<p class="hidden font-body-sm text-body-sm text-error text-center" id="signup-error"></p>
-<div class="pt-2">
-<button class="w-full h-[52px] rounded-lg bg-gradient-to-r from-primary-container to-secondary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-[0.99] transition-all" id="btn-submit" type="button">
-<span class="">회원가입 완료</span>
-<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-</button>
-</div>
-<!-- 8. 하단 보조 링크 -->
-<div class="flex items-center justify-center gap-1.5 py-1 text-center">
-
-
-</div>
-</div>
-<!-- Safety Mission Badge Footer -->
-<div class="mt-space-lg flex items-center justify-center gap-2 text-on-surface-variant font-label-badge text-label-badge opacity-80">
-
-
-</div>
-</div>
-<script>
-  function togglePassVisibility(inputId, btn) {
-    const input = document.getElementById(inputId);
-    const icon = btn.querySelector('.material-symbols-outlined');
-    if (input.type === 'password') {
-      input.type = 'text';
-      icon.textContent = 'visibility_off';
-    } else {
-      input.type = 'password';
-      icon.textContent = 'visibility';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-surface": "#2e3229",
+            "surface-container-high": "#e6eadc",
+            "secondary-fixed-dim": "#7fdd44",
+            "surface-variant": "#e1e4d7",
+            "secondary-container": "#97f75c",
+            "tertiary-fixed-dim": "#c1caab",
+            "secondary": "#2f6c00",
+            "surface-bright": "#f8fbed",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#092100",
+            "primary-fixed-dim": "#77df25",
+            "on-secondary-fixed-variant": "#215100",
+            "surface-container-low": "#f2f5e8",
+            "tertiary-fixed": "#dde7c6",
+            "on-primary": "#ffffff",
+            "inverse-primary": "#77df25",
+            "outline": "#6f7b64",
+            "inverse-on-surface": "#eff2e5",
+            "tertiary": "#586248",
+            "on-primary-fixed-variant": "#245100",
+            "on-tertiary-fixed": "#161e0a",
+            "on-tertiary": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-container": "#b2bc9e",
+            "on-error-container": "#93000a",
+            "surface": "#f8fbed",
+            "secondary-fixed": "#9afa5e",
+            "background": "#f8fbed",
+            "on-primary-container": "#255300",
+            "on-secondary-container": "#317000",
+            "outline-variant": "#bfcbb1",
+            "on-secondary": "#ffffff",
+            "surface-container": "#ecefe2",
+            "on-primary-fixed": "#0b2000",
+            "primary-fixed": "#92fc44",
+            "error-container": "#ffdad6",
+            "on-surface": "#191d15",
+            "surface-dim": "#d8dbcf",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#414a32",
+            "on-tertiary-container": "#434c34",
+            "primary": "#326b00",
+            "surface-tint": "#326b00",
+            "on-surface-variant": "#3f4a36",
+            "surface-container-highest": "#e1e4d7",
+            "primary-container": "#69d00f",
+            "on-background": "#191d15"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.5rem",
+            "container-max": "75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-2xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "touch-min": "3rem",
+            "space-lg": "1.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-sm": "0.75rem",
+            "space-2xl": "3rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-badge": ["JetBrains Mono"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-navigation": ["JetBrains Mono"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "500" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "label-navigation": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+      main > :first-child {
+        margin-top: 0 !important;
+      }
+      main > :last-child {
+        margin-bottom: 0 !important;
+      }
     }
-  }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
 
-  // 중복확인 피드백
-  const btnCheckDup = document.getElementById('btn-check-dup');
-  const dupFeedback = document.getElementById('dup-feedback');
-  if (btnCheckDup && dupFeedback) {
-    btnCheckDup.addEventListener('click', () => {
-      dupFeedback.classList.remove('hidden');
-      btnCheckDup.textContent = '확인완료';
-      btnCheckDup.classList.add('bg-secondary-container', 'text-on-secondary-container');
-    });
-  }
+<body class="bg-surface font-body-md text-body-md text-on-surface pt-safe pb-safe flex flex-col min-h-screen">
+  
+  <!-- 상단 네비게이션 헤더 (뒤로가기 버튼) -->
+  <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md px-gutter-mobile py-2 flex items-center">
+    <button aria-label="뒤로 가기" class="p-2 -ml-2 text-on-surface hover:text-primary transition-colors rounded-full" onclick="location.href='login.html'" type="button">
+      <span class="material-symbols-outlined text-[28px]">arrow_back</span>
+    </button>
+  </header>
 
-  // 본인인증 피드백
-  const btnVerify = document.getElementById('btn-verify');
-  if (btnVerify) {
-    btnVerify.addEventListener('click', () => {
-      btnVerify.textContent = '발송완료';
-      btnVerify.classList.add('bg-secondary-container', 'text-on-secondary-container');
-    });
-  }
+  <main class="flex-1 flex flex-col relative w-full bg-surface">
+    <div class="flex flex-col w-full px-gutter-mobile pb-space-2xl">
+      
+      <!-- Top Visual & Header -->
+      <div class="flex flex-col items-center text-center pt-space-xs pb-space-lg">
+        <div class="relative flex items-center justify-center mb-space-sm">
+          <img alt="세이프티 로고" class="w-20 h-20 object-contain transition-transform duration-300 active:scale-95 drop-shadow-sm" src="../img/safety_logo_image.png">
+          <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary text-xs shadow">
+            <span class="material-symbols-outlined text-[16px]">verified_user</span>
+          </span>
+        </div>
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight mt-1">회원가입</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-[280px] mt-1">
+          시민과 함께 만드는 실시간 무장애 안심 플랫폼
+        </p>
+      </div>
 
-  // 약관 전체 동의 연동
-  const checkAll = document.getElementById('check-all');
-  const termItems = document.querySelectorAll('.term-item');
+      <!-- Registration Main Card Form -->
+      <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-5 flex flex-col gap-space-md">
+        
+        <!-- 1. 이름 (실명) -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="name">
+            이름 (실명)
+            <span class="text-primary text-xs">*</span>
+          </label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
+              person
+            </span>
+            <input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="name" placeholder="홍길동" type="text">
+          </div>
+        </div>
 
-  if (checkAll) {
-    checkAll.addEventListener('change', (e) => {
-      termItems.forEach(item => {
-        item.checked = e.target.checked;
+        <!-- 2. 아이디 또는 이메일 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="email">
+            아이디 또는 이메일
+            <span class="text-primary text-xs">*</span>
+          </label>
+          <div class="relative flex items-center gap-2">
+            <div class="relative flex-1 flex items-center min-w-0">
+              <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
+                mail
+              </span>
+              <input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-3 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all truncate" id="email" placeholder="example@safety.kr" type="email">
+            </div>
+            <button class="h-[52px] px-3.5 rounded-lg bg-surface-container text-secondary font-headline-sm text-body-md hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center shrink-0" id="btn-check-dup" type="button">
+              중복확인
+            </button>
+          </div>
+          <p class="hidden font-body-sm text-body-sm text-secondary pl-1" id="dup-feedback">
+            사용 가능한 아이디/이메일입니다.
+          </p>
+        </div>
+
+        <!-- 3. 비밀번호 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="password">
+            비밀번호
+            <span class="text-primary text-xs">*</span>
+          </label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
+              lock
+            </span>
+            <input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-11 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="password" placeholder="8자리 이상 영문, 숫자, 특수문자" type="password">
+            <button aria-label="비밀번호 보기 토글" class="absolute right-3.5 text-on-surface-variant hover:text-on-surface active:scale-90 transition p-1" onclick="togglePassVisibility('password', this)" type="button">
+              <span class="material-symbols-outlined text-[22px] block">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. 비밀번호 확인 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1" for="password-confirm">
+            비밀번호 확인
+            <span class="text-primary text-xs">*</span>
+          </label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[22px] pointer-events-none">
+              lock_clock
+            </span>
+            <input class="w-full h-[52px] bg-surface-container-low rounded-lg pl-11 pr-11 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="password-confirm" placeholder="비밀번호를 한 번 더 입력하세요" type="password">
+            <button aria-label="비밀번호 확인 보기 토글" class="absolute right-3.5 text-on-surface-variant hover:text-on-surface active:scale-90 transition p-1" onclick="togglePassVisibility('password-confirm', this)" type="button">
+              <span class="material-symbols-outlined text-[22px] block">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 오류 메시지 표시 영역 -->
+        <p class="hidden font-body-sm text-body-sm text-error text-center" id="signup-error"></p>
+
+        <!-- 7. 메인 가입하기 CTA 버튼 -->
+        <div class="pt-2">
+          <button class="w-full h-[52px] rounded-lg bg-gradient-to-r from-primary-container to-secondary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-[0.99] transition-all" id="btn-submit" type="button">
+            <span>회원가입 완료</span>
+            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function togglePassVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // 중복확인 피드백
+    const btnCheckDup = document.getElementById('btn-check-dup');
+    const dupFeedback = document.getElementById('dup-feedback');
+    if (btnCheckDup && dupFeedback) {
+      btnCheckDup.addEventListener('click', () => {
+        dupFeedback.classList.remove('hidden');
+        btnCheckDup.textContent = '확인완료';
+        btnCheckDup.classList.add('bg-secondary-container', 'text-on-secondary-container');
       });
-    });
+    }
 
-    termItems.forEach(item => {
-      item.addEventListener('change', () => {
-        const allChecked = Array.from(termItems).every(i => i.checked);
-        checkAll.checked = allChecked;
+    // 회원가입 완료 버튼 클릭 처리
+    const btnSubmit = document.getElementById('btn-submit');
+    if (btnSubmit) {
+      btnSubmit.addEventListener('click', () => {
+        alert('회원가입이 완료되었습니다! 로그인 해주세요!');
+        window.location.href = 'login.html';
       });
-    });
-  }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../backend/sign_in"></script>
-</main>
-
-</body></html>
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../backend/sign_in"></script>
+</body>
+</html>
