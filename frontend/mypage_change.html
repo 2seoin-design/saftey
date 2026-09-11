@@ -212,7 +212,7 @@ tailwind.config = {
   const submitBtn = document.getElementById('profile-edit-submit');
   const messageEl = document.getElementById('profile-edit-message');
 
-  let pendingAvatarDataUrl = null;
+  let pendingAvatarFile = null;
 
   function showMessage(text, isError) {
     messageEl.textContent = text;
@@ -226,6 +226,8 @@ tailwind.config = {
     previewIcon.classList.add('hidden');
   }
 
+  let currentUserId = null;
+
   // 현재 사용자 정보 불러와 폼에 채우기
   document.addEventListener('DOMContentLoaded', async () => {
     const { data: { user } } = await sb.auth.getUser();
@@ -233,21 +235,19 @@ tailwind.config = {
       location.href = 'login.html';
       return;
     }
+    currentUserId = user.id;
     nameInput.value = user.user_metadata?.name || '';
     if (user.user_metadata?.avatar_url) {
       showAvatarImage(user.user_metadata.avatar_url);
     }
   });
 
-  // 사진 선택 시 미리보기 + 저장용 데이터 준비
+  // 사진 선택 시 미리보기 + 저장용 파일 보관 (제출 시 Storage에 업로드)
   upload.addEventListener('change', () => {
     const file = upload.files[0];
     if (!file) return;
     showAvatarImage(URL.createObjectURL(file));
-
-    const reader = new FileReader();
-    reader.onload = () => { pendingAvatarDataUrl = reader.result; };
-    reader.readAsDataURL(file);
+    pendingAvatarFile = file;
   });
 
   // 저장
@@ -263,9 +263,23 @@ tailwind.config = {
     submitBtn.classList.add('opacity-60');
     showMessage('저장 중...', false);
 
+    // 사진을 auth 메타데이터에 base64로 직접 넣으면 그 메타데이터가 그대로 JWT에
+    // 포함되어 토큰이 수만 자로 커짐 - 이후 모든 API 요청의 Authorization 헤더가
+    // 너무 커져 431 오류로 전부 실패하게 됨. 반드시 Storage에 업로드하고 짧은
+    // 공개 URL만 저장해야 함.
     const updateData = { name };
-    if (pendingAvatarDataUrl) {
-      updateData.avatar_url = pendingAvatarDataUrl;
+    if (pendingAvatarFile) {
+      const ext = (pendingAvatarFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = `${currentUserId}/avatar.${ext}`;
+      const { error: uploadError } = await sb.storage.from('avatars').upload(path, pendingAvatarFile, { upsert: true });
+      if (uploadError) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-60');
+        showMessage('사진 업로드에 실패했습니다: ' + uploadError.message, true);
+        return;
+      }
+      const { data: pub } = sb.storage.from('avatars').getPublicUrl(path);
+      updateData.avatar_url = `${pub.publicUrl}?v=${Date.now()}`;
     }
 
     const { error } = await sb.auth.updateUser({ data: updateData });
@@ -276,6 +290,11 @@ tailwind.config = {
     if (error) {
       showMessage('저장에 실패했습니다: ' + error.message, true);
       return;
+    }
+
+    // 커뮤니티 게시글 등에서 쓰는 profiles.avatar_url/name도 함께 갱신
+    if (updateData.avatar_url || name) {
+      await sb.from('profiles').update({ name, ...(updateData.avatar_url ? { avatar_url: updateData.avatar_url } : {}) }).eq('id', currentUserId);
     }
 
     showMessage('프로필이 수정되었습니다.', false);

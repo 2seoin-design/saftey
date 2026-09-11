@@ -148,15 +148,33 @@ async function mapWithConcurrency(items, limit, fn) {
   return results;
 }
 
+// snapToSafety가 인접한 두 anchor를 같은(또는 거의 같은) 안심시설 좌표로 당기면 구간
+// 거리가 0에 가까워짐 - TMAP은 이런 좌표쌍에 "waypoints are too near"로 400을 반환함
+const MIN_TMAP_SEGMENT_METERS = 15;
+
+// 위 근접 케이스 외에도, snapToSafety가 당긴 안심시설 좌표가 실제로는 보행 경로가
+// 없는 지점(건물 안, 부정확한 공공데이터 좌표 등)일 수 있어 TMAP이 "요청 데이터 오류"
+// 등으로 400을 반환하는 경우가 있음. 한 구간이 실패했다고 산책로 전체(Promise.all)가
+// 실패하면 안 되므로, 그 구간만 직선으로 건너뛰고 계속 진행함
+// (softWeightRouteService.js의 도로 끊김 폴백과 동일한 방식)
+async function fetchSegmentOrFallback(from, to) {
+  if (haversineMeters(from.lat, from.lng, to.lat, to.lng) < MIN_TMAP_SEGMENT_METERS) {
+    return [from, to];
+  }
+  try {
+    const tmap = await callTmapPedestrian({ startLat: from.lat, startLng: from.lng, endLat: to.lat, endLng: to.lng });
+    return extractRouteCoords(tmap);
+  } catch (err) {
+    return [from, to];
+  }
+}
+
 // 인접 anchor 쌍을 TMAP 보행자 경로로 이어 붙여 폐곡선(순환) 경로를 만듦.
 // 구간끼리 서로 의존관계가 없으므로 (동시요청 수를 제한해가며) 병렬로 요청하고 순서대로 이어붙임
-async function buildLoopRoute(anchors) {
-  const segments = await mapWithConcurrency(anchors, TMAP_CONCURRENCY, (from, i) => {
-    const to = anchors[(i + 1) % anchors.length];
-    return callTmapPedestrian({ startLat: from.lat, startLng: from.lng, endLat: to.lat, endLng: to.lng }).then(
-      extractRouteCoords
-    );
-  });
+export async function buildLoopRoute(anchors) {
+  const segments = await mapWithConcurrency(anchors, TMAP_CONCURRENCY, (from, i) =>
+    fetchSegmentOrFallback(from, anchors[(i + 1) % anchors.length])
+  );
 
   const coords = [];
   for (const segment of segments) {
