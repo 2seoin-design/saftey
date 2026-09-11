@@ -456,7 +456,7 @@
       }
 
       resultLine.textContent = '일치도 분석 중...';
-      const result = await analyzeGpsSimilarity(currentRoute.waypoints, gpsLog, userId);
+      const result = await analyzeGpsSimilarity(currentRoute.waypoints, gpsLog, userId, currentRoute.shape);
       resultLine.textContent = `일치도 ${result.similarityScore}% - ${result.message}`;
     });
 
