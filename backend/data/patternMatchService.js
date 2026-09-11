@@ -65,15 +65,26 @@ export function computeSimilarityScore(targetRouteCoords, userGpsLogs) {
   return { similarityScore: distanceToPercent(combinedError), frechet, hausdorff };
 }
 
+// shapeRouteService.js의 도형 key -> 마이페이지 "모양 달성 내역"에 쓰이는 공식 코스명.
+// SHAPE_CONFIG.fish.label('물고기')과 다르게 여기서는 도형 5종의 공식 표기('기하학적 물고기')를 씀.
+export const COURSE_NAME_BY_SHAPE = {
+  rhombus: '마름모',
+  heart: '하트',
+  star: '별',
+  fish: '기하학적 물고기',
+  crown: '왕관',
+};
+
 /**
  * GPS 궤적-목표 경로 일치도 분석 및 리워드 지급 판정
  * @param {Array<{lat:number,lng:number}>} targetRouteCoords - 선택한 도형 산책로 좌표
  * @param {Array<{lat:number,lng:number,timestamp:number}>} userGpsLogs - 실제 GPS 궤적
  * @param {string} userId - 호출한 사용자 id (현재 로그인 세션과 일치해야 실제 지급됨,
  *   메시지 표시/로깅용 - 실제 지급 대상은 서버에서 auth.uid()로 강제 확인함)
+ * @param {keyof typeof COURSE_NAME_BY_SHAPE} shape - 완주 시도한 도형 key (예: 'heart')
  * @returns {Promise<{similarityScore:number, rewardEligible:boolean, message:string}>}
  */
-export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userId) {
+export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userId, shape) {
   if (!targetRouteCoords?.length || !userGpsLogs || userGpsLogs.length < 2) {
     return { similarityScore: 0, rewardEligible: false, message: 'GPS 기록이 부족해 분석할 수 없습니다.' };
   }
@@ -88,13 +99,25 @@ export async function analyzeGpsSimilarity(targetRouteCoords, userGpsLogs, userI
     };
   }
 
-  // p_user_id를 클라이언트가 넘기면 조작 가능하므로 RPC가 서버에서 auth.uid()로 직접 확인함
-  const { data: claimed, error } = await supabase.rpc('claim_walk_reward');
+  const courseName = COURSE_NAME_BY_SHAPE[shape];
+  if (!courseName) {
+    return { similarityScore, rewardEligible: false, message: `알 수 없는 도형입니다: ${shape}` };
+  }
+
+  // p_user_id를 클라이언트가 넘기면 조작 가능하므로, complete_course_walk RPC는
+  // (claim_walk_reward와 마찬가지로) 서버에서 auth.uid()로 대상을 직접 확인함.
+  // 내부적으로 claim_walk_reward(하루 1회 판정+지급)를 호출한 뒤
+  // course_completions에 완주 내역을 기록함 (backend/data/mypage_rewards.sql 참고).
+  const { data, error } = await supabase.rpc('complete_course_walk', {
+    p_course_name: courseName,
+  });
 
   if (error) {
     return { similarityScore, rewardEligible: false, message: `리워드 지급 확인 중 오류: ${error.message}` };
   }
-  if (!claimed) {
+
+  const rewardGranted = data?.[0]?.reward_granted ?? false;
+  if (!rewardGranted) {
     return { similarityScore, rewardEligible: false, message: '오늘은 이미 리워드를 받으셨습니다.' };
   }
 

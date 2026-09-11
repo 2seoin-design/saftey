@@ -185,7 +185,7 @@
               <!-- Monthly Report Stat -->
               <div class="flex flex-col">
                 <span class="font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">제보내역</span>
-                <span class="font-headline-md text-headline-md font-bold text-on-surface mt-0.5 whitespace-nowrap">12<span class="font-label-md text-label-md font-normal ml-0.5">건</span></span>
+                <span id="myReportCount" class="font-headline-md text-headline-md font-bold text-on-surface mt-0.5 whitespace-nowrap">-<span class="font-label-md text-label-md font-normal ml-0.5">건</span></span>
               </div>
 
               <!-- Divider -->
@@ -210,7 +210,7 @@
                 <span class="font-label-sm text-label-sm tracking-wide">보유 리워드 포인트</span>
               </div>
               <div class="flex items-baseline gap-1">
-                <span class="font-title-sm text-title-sm font-bold tracking-tight text-on-surface">18,500</span>
+                <span id="userPointText" class="font-title-sm text-title-sm font-bold tracking-tight text-on-surface">-</span>
                 <span class="font-label-sm text-label-sm font-bold" style="color: rgb(79, 169, 18);">P</span>
               </div>
             </div>
@@ -378,22 +378,17 @@
       });
     });
     
-    document.addEventListener('DOMContentLoaded', () => {
-      const userPoints = parseInt(localStorage.getItem('userPoints') || '1200', 10); // 기본값 설정 가능
-      const pointElement = document.getElementById('userPointText'); // 포인트 표시 element ID
-      if (pointElement) {
-        pointElement.textContent = `${userPoints.toLocaleString()} P`;
-      }
-    });
   </script>
 
-  <!-- 로그인한 사용자의 회원가입 시 이름을 프로필에 표시 -->
+  <!-- 로그인한 사용자의 이름/포인트/제보 건수를 마이페이지 API에서 불러와 표시 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../backend/data/supabaseClient.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const nameEl = document.getElementById('profile-name');
       const avatarEl = document.getElementById('profile-avatar');
+      const pointEl = document.getElementById('userPointText');
+      const reportCountEl = document.getElementById('myReportCount');
       if (!nameEl) return;
 
       const { data: { session } } = await sb.auth.getSession();
@@ -407,6 +402,28 @@
       nameEl.textContent = displayName;
       if (avatarEl && user.user_metadata?.avatar_url) {
         avatarEl.src = user.user_metadata.avatar_url;
+      }
+
+      const authHeaders = { Authorization: `Bearer ${session.access_token}` };
+
+      try {
+        const res = await fetch('/api/mypage/points', { headers: authHeaders });
+        if (!res.ok) throw new Error(`포인트 조회 실패: ${res.status}`);
+        const { points } = await res.json();
+        if (pointEl) pointEl.textContent = Number(points ?? 0).toLocaleString();
+      } catch (err) {
+        console.error('포인트를 불러오지 못했습니다:', err);
+        if (pointEl) pointEl.textContent = '0';
+      }
+
+      try {
+        const res = await fetch('/api/mypage/reports', { headers: authHeaders });
+        if (!res.ok) throw new Error(`제보 내역 조회 실패: ${res.status}`);
+        const { reports } = await res.json();
+        if (reportCountEl) reportCountEl.firstChild.textContent = String(reports?.length ?? 0);
+      } catch (err) {
+        console.error('제보 내역을 불러오지 못했습니다:', err);
+        if (reportCountEl) reportCountEl.firstChild.textContent = '0';
       }
     });
   </script>

@@ -1,5 +1,5 @@
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+const DEFAULT_MODEL = 'gemini-3.6-flash';
 const CATEGORY_DEFINITIONS = [
   ['road_damage', '보도·포트홀 파손'],
   ['streetlight', '가로등·조도 불량'],
